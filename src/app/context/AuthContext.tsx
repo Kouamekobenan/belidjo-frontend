@@ -1,8 +1,8 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User } from "../lib/globals.type";
-import axios from "axios";
-// ✅ Interface du contexte
+import { api } from "../lib/api"; // ✅ importer ton instance axios
+
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
@@ -12,45 +12,29 @@ interface AuthContextType {
   refreshUser: () => Promise<void>;
 }
 
-// ✅ Création du contexte
 const AuthContext = createContext<AuthContextType | null>(null);
-// ✅ Provider
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // ------------------------------------
-  // 🟢 LOGIN
-  // ------------------------------------
   const login = async (phone: string, password: string): Promise<User> => {
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-        {
-          phone,
-          password,
-        }
-      );
-
+      const res = await api.post(`/auth/login`, { phone, password });
       const { access_token, refresh_token, user } = res.data;
 
-      // Stocker les tokens dans localStorage (ou sessionStorage)
       localStorage.setItem("access_token", access_token);
       localStorage.setItem("refresh_token", refresh_token);
 
       setUser(user);
       setIsAuthenticated(true);
-
       return user;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || "Erreur de connexion");
     }
   };
 
-  // ------------------------------------
-  // 🔴 LOGOUT
-  // ------------------------------------
   const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
@@ -58,9 +42,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsAuthenticated(false);
   };
 
-  // ------------------------------------
-  // ♻️ REFRESH USER
-  // ------------------------------------
   const refreshUser = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) {
@@ -69,13 +50,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/me`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
+      const res = await api.get(`/auth/me`); // ✅ utilise l’instance api
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
@@ -86,26 +61,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // ------------------------------------
-  // 🚀 Chargement initial de l'utilisateur
-  // ------------------------------------
+  // ✅ Attendre un petit délai avant refreshUser pour éviter le race condition
   useEffect(() => {
-    refreshUser();
+    const timer = setTimeout(() => {
+      refreshUser();
+    }, 100); // léger délai
+    return () => clearTimeout(timer);
   }, []);
 
-  const value: AuthContextType = {
-    user,
-    isAuthenticated,
-    loading,
-    login,
-    logout,
-    refreshUser,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, loading, login, logout, refreshUser }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-// ✅ Hook personnalisé pour utiliser le contexte
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {

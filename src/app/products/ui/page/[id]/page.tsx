@@ -1,14 +1,15 @@
-// src/app/vendor/[id]/page.tsx
 "use client";
 
 import { useParams } from "next/navigation";
 import VendorProducts from "../../components/GetProduct";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "@/app/lib/api";
 import VendorNavBar from "@/app/components/layout/Vendor-NavBar";
 import Image from "next/image";
 import CategoriesList from "@/app/categories/ui/components/FindCategory";
 import { VendorFooter } from "@/app/components/layout/Vendor-Footer";
+import { WholeWord, Copy, Check } from "lucide-react"; // Import des icônes Copy et Check
+import Link from "next/link";
 
 interface Site {
   id: string;
@@ -34,6 +35,60 @@ interface Vendor {
   user: User;
 }
 
+// --- NOUVEAU COMPOSANT : Bouton de Copie du Domaine ---
+
+interface DomainCopyButtonProps {
+  domain: string;
+}
+
+const DomainCopyButton = ({ domain }: DomainCopyButtonProps) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = useCallback(async () => {
+    try {
+      // Construction de l'URL complète pour un partage facile
+      const vendorUrl = window.location.href;
+      const fullUrl = `Lien pour visiter mon site:` + vendorUrl;
+      await navigator.clipboard.writeText(fullUrl);
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 3000); // Réinitialise l'état après 3 secondes
+    } catch (err) {
+      console.error("Erreur lors de la copie: ", err);
+      // Optionnel : Afficher une notification d'erreur à l'utilisateur
+    }
+  }, [domain]);
+
+  return (
+    <div
+      className="flex items-center gap-2 text-sm cursor-pointer group"
+      onClick={handleCopy}
+      role="button"
+      aria-label={`Copier le domaine ${domain}`}
+    >
+      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+        {isCopied ? (
+          <Check className="w-4 h-4 text-green-600" />
+        ) : (
+          <Copy className="w-4 h-4 text-slate-600 group-hover:text-blue-700" />
+        )}
+      </div>
+      <span
+        className={`font-medium transition-colors duration-300 ${
+          isCopied
+            ? "text-green-600 font-bold"
+            : "text-slate-600 group-hover:text-blue-700"
+        }`}
+      >
+        {isCopied ? "Lien Copié ! partager à vos amis👥" : domain}
+      </span>
+    </div>
+  );
+};
+
+// --- Composant Principal de la Page ---
+
 export default function VendorProductsPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,14 +113,16 @@ export default function VendorProductsPage() {
     fetchVendor();
   }, [id]);
 
-  // Loading State
+  // Loading State (inchangé)
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <VendorNavBar />
+
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden animate-pulse">
             {/* Banner Skeleton */}
+
             <div className="h-80 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"></div>
             {/* Content Skeleton */}
             <div className="p-8 space-y-6">
@@ -83,7 +140,7 @@ export default function VendorProductsPage() {
       </div>
     );
   }
-  // Error State
+  // Error State (inchangé)
   if (error || !vendor) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -122,6 +179,7 @@ export default function VendorProductsPage() {
       </div>
     );
   }
+
   // Destruction pour des variables plus propres
   const { name, id: vendorId, site } = vendor;
   const bannerImageUrl = site?.logoUrl || "/images/img.jpg";
@@ -131,9 +189,11 @@ export default function VendorProductsPage() {
       <VendorNavBar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Vendor Header Card avec Design Premium */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-10 transform transition-all duration-300 hover:shadow-3xl">
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transform transition-all duration-300 hover:shadow-3xl">
           {/* BANNIÈRE DE COUVERTURE - Grande et Impactante */}
-          <div className="relative h-96 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+          <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+            {" "}
+            {/* Ajusté h-96 à h-64 sm:h-80 pour un meilleur responsive */}
             <Image
               src={bannerImageUrl}
               alt={`Bannière ${name}`}
@@ -161,13 +221,14 @@ export default function VendorProductsPage() {
             </div>
           </div>
           {/* Contenu Principal - Sous la bannière */}
-          <div className="relative px-8 pb-8">
-            {/* Logo flottant qui chevauche la bannière */}
+          <div className="relative px-4 sm:px-8 pb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-16 relative z-10">
               {/* Logo Container avec bordure blanche */}
               <div className="flex-shrink-0 bg-white p-2 rounded-3xl shadow-sm ring-4 ring-white">
                 {site?.logoUrl ? (
-                  <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-2xl overflow-hidden">
+                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden">
+                    {" "}
+                    {/* Ajusté w-32 h-32 sm:w-40 sm:h-40 à w-24 h-24 sm:w-32 sm:h-32 pour le responsive */}
                     <Image
                       src={bannerImageUrl}
                       fill
@@ -177,9 +238,9 @@ export default function VendorProductsPage() {
                     />
                   </div>
                 ) : (
-                  <div className="w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 rounded-2xl flex items-center justify-center">
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 rounded-2xl flex items-center justify-center">
                     <svg
-                      className="w-16 h-16 sm:w-20 sm:h-20 text-white"
+                      className="w-10 h-10 sm:w-12 sm:h-12 text-white"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -206,7 +267,7 @@ export default function VendorProductsPage() {
                     </span>
                   )}
                 </div>
-                <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-3 leading-tight">
+                <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3 leading-tight">
                   {name}
                 </h1>
                 {/* Informations supplémentaires */}
@@ -231,45 +292,25 @@ export default function VendorProductsPage() {
                       ID: {vendorId.slice(0, 8)}...
                     </span>
                   </div>
+
+                  {/* REMPLACEMENT: Utilisation du nouveau composant de copie */}
+                  {site?.domain && <DomainCopyButton domain={site.domain} />}
+
+                  {/* Lien direct vers le site si souhaité (optionnel, peut être dédoublé) */}
                   {site?.domain && (
-                    <a
-                      href={`https://${site.domain}`}
+                    <Link
+                      href={`/products/ui/page/${id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm group"
                     >
-                      <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center group-hover:bg-teal-200 transition-colors">
-                        <svg
-                          className="w-4 h-4 text-teal-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
-                          />
-                        </svg>
+                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-teal-200 transition-colors">
+                        <WholeWord className="w-4 h-4 text-teal-600" />
                       </div>
                       <span className="font-medium text-teal-600 group-hover:text-teal-700 group-hover:underline">
-                        {site.domain}
+                        Visiter le site
                       </span>
-                      <svg
-                        className="w-4 h-4 text-teal-600 group-hover:translate-x-1 transition-transform"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
+                    </Link>
                   )}
                 </div>
                 {/* Description si disponible */}
@@ -280,36 +321,6 @@ export default function VendorProductsPage() {
                     </p>
                   </div>
                 )}
-              </div>
-            </div>
-            {/* Statistiques ou actions (optionnel) */}
-            <div className="mt-8 pt-6 border-t border-slate-200">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-6">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-slate-900">4.8</p>
-                    <p className="text-sm text-slate-600">Note moyenne</p>
-                  </div>
-                  <div className="h-12 w-px bg-slate-200"></div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-slate-900">156</p>
-                    <p className="text-sm text-slate-600">Produits</p>
-                  </div>
-                  <div className="h-12 w-px bg-slate-200"></div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-slate-900">2.4k</p>
-                    <p className="text-sm text-slate-600">Avis clients</p>
-                  </div>
-                </div>
-                {/* Boutons d'action */}
-                <div className="flex items-center gap-3">
-                  <button className="px-6 cursor-pointer py-3 bg-white border-2 border-slate-300 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 hover:border-slate-400 transition-all duration-200">
-                    Suivre
-                  </button>
-                  <button className="px-6 py-3 cursor-pointer bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-95 transition-all duration-200">
-                    Contacter
-                  </button>
-                </div>
               </div>
             </div>
           </div>

@@ -75,9 +75,19 @@ export default function LoginUser() {
     setIsLoading(true);
     setErrors({ phone: "", password: "", general: "" });
     try {
-      await login(formData.phone, formData.password);
-      toast.success("Vous êtes connectez avec succès!");
-      router.push("/vendor");
+      const loggedUser = await login(formData.phone, formData.password);
+      switch (loggedUser.role) {
+        case "VENDEUR":
+          toast.success("Vous êtes connectez avec succès! en tant que admin");
+          router.push("/admin/ui");
+          break;
+        case "CUSTOMER":
+          toast.success("Vous êtes connectez avec succès!");
+          router.push("/vendor");
+          break;
+        default:
+          router.push("/dashbord");
+      }
     } catch (err) {
       console.error("Erreur de connexion:", err);
       setErrors((prev) => ({
@@ -104,7 +114,7 @@ export default function LoginUser() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 p-2 bg-white rounded-xl shadow-lg border border-gray-100 transition-transform duration-300 hover:rotate-2">
               <Image
                 src={LOGO_SRC}
-                width={80} // Taille maximale pour le conteneur w-20
+                width={80}
                 height={80}
                 alt="Logo Belidjo - Retour à l'accueil"
                 className="object-contain w-full h-full"
@@ -116,12 +126,12 @@ export default function LoginUser() {
             Bienvenue sur
           </h1>
           <h2 className="text-2xl font-serif md:text-3xl font-bold bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">
-            Belidjo Connect
+            Belidjo
           </h2>
         </div>
         {/* Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 backdrop-blur-lg border border-gray-200 dark:border-gray-700">
-          <div className="mb-6">
+          <div className="mb-6 text-center">
             <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
               Connectez-vous
             </h3>
@@ -137,7 +147,6 @@ export default function LoginUser() {
               </p>
             </div>
           )}
-
           <div className="space-y-5">
             {/* Phone Input */}
             <div>
@@ -173,7 +182,6 @@ export default function LoginUser() {
                 </p>
               )}
             </div>
-
             {/* Password Input */}
             <div>
               <label
@@ -241,7 +249,6 @@ export default function LoginUser() {
               )}
             </button>
           </div>
-
           {/* Sign Up Link */}
           <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
             <div className="text-center">
@@ -252,7 +259,7 @@ export default function LoginUser() {
                 <button
                   type="button"
                   onClick={() => router.push("/register")}
-                  className="inline-flex items-center space-x-2 text-green-500 hover:text-green-600 dark:text-green-400 dark:hover:text-green-300 font-medium transition-colors"
+                  className="inline-flex cursor-pointer items-center space-x-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 font-medium transition-colors"
                   disabled={isLoading}
                 >
                   <UserPlus className="w-5 h-5" />
@@ -262,7 +269,6 @@ export default function LoginUser() {
             </div>
           </div>
         </div>
-
         {/* Footer */}
         <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-6">
           © 2024 Belidjo Connect. Tous droits réservés.

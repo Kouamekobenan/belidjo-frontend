@@ -4,6 +4,15 @@ export enum Role {
   CUSTOMER = "CUSTOMER",
   VENDEUR = "VENDEUR",
 }
+export interface IvendorProfile {
+  id: string;
+  userId: string;
+  name: string;
+  description: string;
+  logoUrl: string;
+  cityId: string;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -14,6 +23,8 @@ export interface User {
   cityId: string;
   createdAt: Date;
   updatedAt: Date;
+  vendorProfile: IvendorProfile;
+  cityName: string;
 }
 
 // domain/interfaces/pagination.interface.ts

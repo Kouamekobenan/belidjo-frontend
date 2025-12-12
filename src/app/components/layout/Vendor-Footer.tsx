@@ -156,17 +156,6 @@ export const VendorFooter = ({ name, site, user }: Vendor) => {
             </h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-gray-400">
-                <Globe className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" />
-                <a
-                  href={`https://${site.domain}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-teal-400 transition-colors duration-200 break-all"
-                >
-                  {site.domain}
-                </a>
-              </li>
-              <li className="flex items-start gap-3 text-gray-400">
                 <Mail className="w-5 h-5 text-teal-400 mt-0.5 flex-shrink-0" />
                 <a
                   href={`mailto:contact@${user.email}`}

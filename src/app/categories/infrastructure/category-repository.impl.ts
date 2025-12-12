@@ -3,10 +3,31 @@ import { Category } from "../domain/entities/category.entity";
 import { ICategoryRepository } from "../domain/interfaces/category-repository.interface";
 import { CategoryMapper } from "../domain/mappers/category.mapper";
 import { api } from "@/app/lib/api";
+import { CreateCategoryDto } from "../application/dtos/create-cat.dto";
+import { UpdateCategoryDto } from "../application/dtos/update-dto.uscase";
 
 export class CategoryRepository implements ICategoryRepository {
   constructor(private readonly mapper: CategoryMapper) {}
-
+  async create(dto: CreateCategoryDto, file: File | null): Promise<Category> {
+    const url = "/cat";
+    let response;
+    if (file) {
+      const formData = new FormData();
+      formData.append("imageUrl", file);
+      formData.append("name", dto.name);
+      formData.append("description", dto.description);
+      if (dto.vendorId) {
+        formData.append("vendorId", dto.vendorId);
+      }
+      response = await api.post(url, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } else {
+      const catgory = this.mapper.toApplication(dto);
+      response = await api.post(url, catgory);
+    }
+    return this.mapper.toEntity(response.data.data);
+  }
   async findAll(
     vendorId: string,
     limit: number,
@@ -39,5 +60,31 @@ export class CategoryRepository implements ICategoryRepository {
       );
       throw error;
     }
+  }
+  async delete(id: string): Promise<void> {
+    await api.delete(`/cat/${id}`);
+  }
+
+  async update(
+    id: string,
+    dto: CreateCategoryDto,
+    file: File | null
+  ): Promise<Category> {
+    const url = `/cat/${id}`;
+    let response;
+    if (file) {
+      const formData = new FormData();
+      formData.append("imageUrl", file);
+      formData.append("name", dto.name);
+      formData.append("description", dto.description);
+
+      response = await api.patch(url, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } else {
+      const category = await this.mapper.toApplication(dto);
+      response = await api.patch(url, category);
+    }
+    return this.mapper.toEntity(response.data.data);
   }
 }

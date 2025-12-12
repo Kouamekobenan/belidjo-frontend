@@ -4,9 +4,10 @@ import Link from "next/link";
 import { IProduct } from "../../domain/entities/product.entity";
 import { GetProductsByVendorUseCase } from "../../application/usecases/get-product.usecase";
 import { ProductRepository } from "../../infrastructure/product-repository";
+import { ProductMapper } from "../../domain/mappers/product.mapper";
 
 // --- Configuration de la Logique Métier ---
-const repo = new ProductRepository();
+const repo = new ProductRepository(new ProductMapper());
 const getProducts = new GetProductsByVendorUseCase(repo);
 // Le chemin de votre page de détail du produit est supposé être `/products/[id]`
 const PRODUCT_DETAIL_BASE_PATH = "/products"; // Ajustez si votre chemin est différent (ex: '/pages/page')
