@@ -8,8 +8,11 @@ import VendorNavBar from "@/app/components/layout/Vendor-NavBar";
 import Image from "next/image";
 import CategoriesList from "@/app/categories/ui/components/FindCategory";
 import { VendorFooter } from "@/app/components/layout/Vendor-Footer";
-import { WholeWord, Copy, Check } from "lucide-react"; // Import des icônes Copy et Check
-import Link from "next/link";
+import { Copy, Check, Bell, BellOff, Loader2 } from "lucide-react";
+import { CustomerRepository } from "@/app/customer/infrastructure/customer-repository.impl";
+import { CreateCustomerUseCase } from "@/app/customer/application/usecases/create-customer.usecase";
+import { CreateCustomerDto } from "@/app/customer/application/dtos/create-customer.dto";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface Site {
   id: string;
@@ -34,8 +37,10 @@ interface Vendor {
   site: Site;
   user: User;
 }
+const customerRepo = new CustomerRepository();
+const createCustomerUseCase = new CreateCustomerUseCase(customerRepo);
 
-// --- NOUVEAU COMPOSANT : Bouton de Copie du Domaine ---
+// --- COMPOSANT : Bouton de Copie du Domaine ---
 
 interface DomainCopyButtonProps {
   domain: string;
@@ -46,17 +51,15 @@ const DomainCopyButton = ({ domain }: DomainCopyButtonProps) => {
 
   const handleCopy = useCallback(async () => {
     try {
-      // Construction de l'URL complète pour un partage facile
       const vendorUrl = window.location.href;
-      const fullUrl = `Lien pour visiter mon site:` + vendorUrl;
+      const fullUrl = `Lien pour visiter mon site: ` + vendorUrl;
       await navigator.clipboard.writeText(fullUrl);
       setIsCopied(true);
       setTimeout(() => {
         setIsCopied(false);
-      }, 3000); // Réinitialise l'état après 3 secondes
+      }, 3000);
     } catch (err) {
       console.error("Erreur lors de la copie: ", err);
-      // Optionnel : Afficher une notification d'erreur à l'utilisateur
     }
   }, [domain]);
 
@@ -87,12 +90,163 @@ const DomainCopyButton = ({ domain }: DomainCopyButtonProps) => {
   );
 };
 
+// --- COMPOSANT : Bouton d'Abonnement ---
+
+interface SubscribeButtonProps {
+  vendorId: string;
+  userId: string | null; // ID de l'utilisateur connecté
+  cityId: string; // ID de la ville du vendeur
+}
+interface CustomerType {
+  id: string;
+  vendorId: string;
+  userId: string | null; // ID de l'utilisateur connecté
+  cityId: string;
+}
+
+const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [customer, setCustomer] = useState<CustomerType>();
+  const { user } = useAuth();
+  const userId = user?.id;
+  const customerId = customer?.id;
+  // Vérifier si l'utilisateur est déjà client de ce vendeur
+
+  useEffect(() => {
+    const checkSubscription = async () => {
+      if (!userId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Vérifier si la relation client-vendeur existe déjà
+        const response = await api.get(`/customer/user/${userId}`);
+        console.log("client ", response.data.data);
+        setCustomer(response.data.data);
+        setIsSubscribed(response.data.data || false);
+      } catch (error) {
+        console.error("Erreur lors de la vérification:", error);
+        setIsSubscribed(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkSubscription();
+  }, [userId, vendorId]);
+
+  const handleSubscribe = async () => {
+    // Vérifier si l'utilisateur est connecté
+    if (!userId) {
+      alert("Veuillez vous connecter pour vous abonner à ce vendeur");
+      // Optionnel: rediriger vers la page de connexion
+      window.location.href = "/users/ui/login";
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      if (isSubscribed) {
+        // Se désabonner (supprimer la relation client)
+        const response = await api.delete(`/customer/${customerId}`);
+
+        if (response.status === 200) {
+          setIsSubscribed(false);
+          alert("Vous n'êtes plus client de ce vendeur");
+        }
+      } else {
+        // S'abonner (créer la relation client)
+        const clientData = {
+          userId: userId,
+          vendorId: vendorId,
+          cityId: user.cityId,
+        };
+
+        const response = await api.post("/customer", clientData);
+
+        if (response.status === 201 || response.status === 200) {
+          setIsSubscribed(true);
+          alert("Vous êtes maintenant client de ce vendeur ! 🎉");
+        }
+      }
+    } catch (error: any) {
+      console.error("Erreur lors de l'abonnement:", error);
+
+      if (error.response?.status === 409) {
+        alert("Vous êtes déjà client de ce vendeur");
+        setIsSubscribed(true);
+      } else {
+        alert("Une erreur est survenue. Veuillez réessayer.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Si pas connecté, afficher un bouton différent
+  if (!user) {
+    return (
+      <button
+        onClick={() => alert("Veuillez vous connecter pour vous abonner")}
+        className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 shadow-md hover:shadow-lg group"
+      >
+        <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors bg-white/20 group-hover:bg-white/30">
+          <Bell className="w-4 h-4" />
+        </div>
+        <span className="font-semibold">Se connecter pour s'abonner</span>
+      </button>
+    );
+  }
+
+  return (
+    <button
+      onClick={handleSubscribe}
+      disabled={isLoading}
+      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
+        isSubscribed
+          ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
+          : "bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 shadow-md hover:shadow-lg"
+      } disabled:opacity-50 disabled:cursor-not-allowed group`}
+    >
+      {isLoading ? (
+        <>
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span>Chargement...</span>
+        </>
+      ) : (
+        <>
+          <div
+            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+              isSubscribed
+                ? "bg-gray-200 group-hover:bg-gray-300"
+                : "bg-white/20 group-hover:bg-white/30"
+            }`}
+          >
+            {isSubscribed ? (
+              <BellOff className="w-4 h-4" />
+            ) : (
+              <Bell className="w-4 h-4" />
+            )}
+          </div>
+          <span className="font-semibold">
+            {isSubscribed ? "Client" : "Devenir client"}
+          </span>
+        </>
+      )}
+    </button>
+  );
+};
+
 // --- Composant Principal de la Page ---
 
 export default function VendorProductsPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { id } = useParams();
 
   useEffect(() => {
@@ -111,9 +265,10 @@ export default function VendorProductsPage() {
       }
     };
     fetchVendor();
+    // getUserFromContext();
   }, [id]);
 
-  // Loading State (inchangé)
+  // Loading State
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -122,7 +277,6 @@ export default function VendorProductsPage() {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden animate-pulse">
             {/* Banner Skeleton */}
-
             <div className="h-80 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"></div>
             {/* Content Skeleton */}
             <div className="p-8 space-y-6">
@@ -140,7 +294,8 @@ export default function VendorProductsPage() {
       </div>
     );
   }
-  // Error State (inchangé)
+
+  // Error State
   if (error || !vendor) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -190,10 +345,8 @@ export default function VendorProductsPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Vendor Header Card avec Design Premium */}
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transform transition-all duration-300 hover:shadow-3xl">
-          {/* BANNIÈRE DE COUVERTURE - Grande et Impactante */}
+          {/* BANNIÈRE DE COUVERTURE */}
           <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
-            {" "}
-            {/* Ajusté h-96 à h-64 sm:h-80 pour un meilleur responsive */}
             <Image
               src={bannerImageUrl}
               alt={`Bannière ${name}`}
@@ -202,9 +355,9 @@ export default function VendorProductsPage() {
               priority
               sizes="(max-width: 1280px) 100vw, 1280px"
             />
-            {/* Overlay gradient pour meilleure lisibilité */}
+            {/* Overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-            {/* Badge Premium en haut à droite */}
+            {/* Badge Premium */}
             <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
               <div className="flex items-center gap-2">
                 <svg
@@ -220,15 +373,14 @@ export default function VendorProductsPage() {
               </div>
             </div>
           </div>
-          {/* Contenu Principal - Sous la bannière */}
+
+          {/* Contenu Principal */}
           <div className="relative px-4 sm:px-8 pb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-16 relative z-10">
-              {/* Logo Container avec bordure blanche */}
+              {/* Logo Container */}
               <div className="flex-shrink-0 bg-white p-2 rounded-3xl shadow-sm ring-4 ring-white">
                 {site?.logoUrl ? (
                   <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden">
-                    {" "}
-                    {/* Ajusté w-32 h-32 sm:w-40 sm:h-40 à w-24 h-24 sm:w-32 sm:h-32 pour le responsive */}
                     <Image
                       src={bannerImageUrl}
                       fill
@@ -255,6 +407,7 @@ export default function VendorProductsPage() {
                   </div>
                 )}
               </div>
+
               {/* Informations du vendeur */}
               <div className="flex-1 pt-12">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
@@ -267,10 +420,12 @@ export default function VendorProductsPage() {
                     </span>
                   )}
                 </div>
+
                 <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3 leading-tight">
                   {name}
                 </h1>
-                {/* Informations supplémentaires */}
+
+                {/* Informations supplémentaires avec bouton d'abonnement */}
                 <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-slate-600">
                   <div className="flex items-center gap-2 text-sm">
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
@@ -293,27 +448,18 @@ export default function VendorProductsPage() {
                     </span>
                   </div>
 
-                  {/* REMPLACEMENT: Utilisation du nouveau composant de copie */}
+                  {/* Bouton de copie du domaine */}
                   {site?.domain && <DomainCopyButton domain={site.domain} />}
 
-                  {/* Lien direct vers le site si souhaité (optionnel, peut être dédoublé) */}
-                  {site?.domain && (
-                    <Link
-                      href={`/products/ui/page/${id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm group"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-teal-200 transition-colors">
-                        <WholeWord className="w-4 h-4 text-teal-600" />
-                      </div>
-                      <span className="font-medium text-teal-600 group-hover:text-teal-700 group-hover:underline">
-                        Visiter le site
-                      </span>
-                    </Link>
-                  )}
+                  {/* NOUVEAU : Bouton d'abonnement */}
+                  <SubscribeButton
+                    vendorId={vendorId}
+                    userId={currentUserId}
+                    cityId={vendor.cityId}
+                  />
                 </div>
-                {/* Description si disponible */}
+
+                {/* Description */}
                 {site?.description && (
                   <div className="mt-6 p-5 bg-slate-50 rounded-2xl border border-slate-200">
                     <p className="text-slate-700 leading-relaxed">
@@ -325,6 +471,7 @@ export default function VendorProductsPage() {
             </div>
           </div>
         </div>
+
         {/* Products Section */}
         <CategoriesList vendorId={vendorId} />
         <VendorProducts vendorId={id as string} />

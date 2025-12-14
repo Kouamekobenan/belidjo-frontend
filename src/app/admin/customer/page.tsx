@@ -1,17 +1,13 @@
 "use client";
 import NavbarDashbordVendor from "@/app/components/layout/DashBordVendor";
 import { useAuth } from "@/app/context/AuthContext";
-import Link from "next/link";
-import React from "react";
 import { AlertCircle, LogIn } from "lucide-react";
-import CategoriesList from "../ui/components/categories/Category";
-
-export default function CategoryPage() {
+import React from "react";
+import CustomerVendor from "../ui/components/customer/CustomerVendor";
+import Link from "next/link";
+export default function CustomerPage() {
   const { user } = useAuth();
-  const vendorId = user?.vendorProfile.id;
-
-  // État non connecté avec design moderne
-  if (!vendorId) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full">
@@ -30,8 +26,7 @@ export default function CategoryPage() {
                 Authentification requise
               </h1>
               <p className="text-gray-600 leading-relaxed">
-                Veuillez vous connecter pour accéder à la gestion de vos
-                catégories et organiser vos produits.
+                Veuillez vous connecter pour voir vos abonnées.
               </p>
             </div>
 
@@ -60,29 +55,16 @@ export default function CategoryPage() {
       </div>
     );
   }
-  // Interface principale avec design moderne
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="sticky top-0 h-screen">
-          <NavbarDashbordVendor
-            name={user?.name}
-            phone={user?.phone}
-            cityName={user?.cityName}
-            vendorProfile={user?.vendorProfile}
-          />
-        </aside>
-        {/* Contenu principal */}
-        <main className="flex-1 p-8 ">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-              <div className="text-center py-12 space-y-4">
-                <CategoriesList vendorId={vendorId} />
-              </div>
-            </div>
-          </div>
-        </main>
+    <div className="flex">
+      <NavbarDashbordVendor
+        name={user?.name}
+        phone={user?.phone}
+        cityName={user?.cityName}
+        vendorProfile={user?.vendorProfile}
+      />
+      <div className="mt-8 md:mt-auto">
+        <CustomerVendor vendorId={user.vendorProfile.id} />
       </div>
     </div>
   );

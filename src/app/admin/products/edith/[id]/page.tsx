@@ -152,7 +152,7 @@ export default function EditProductPage() {
             </p>
           </div>
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push("/admin/products")}
             className="w-full px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors duration-200"
           >
             Retour

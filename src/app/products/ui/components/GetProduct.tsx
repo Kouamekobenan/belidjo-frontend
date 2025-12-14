@@ -149,29 +149,29 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
   // --- Rendu du Composant ---
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-12">
+    <div className="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-8 lg:p-12">
       <div className="max-w-7xl mx-auto">
-        {/* Skeleton Loader (amélioré pour un affichage propre) */}
+        {/* Skeleton Loader (amélioré pour un affichage propre avec 2 colonnes sur mobile) */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse border border-gray-100"
+                className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden animate-pulse border border-gray-100"
               >
-                <div className="w-full h-40 bg-gray-200"></div>
-                <div className="p-4">
-                  <div className="h-6 bg-gray-200 rounded-lg mb-2 w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded-lg w-1/2 mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded-lg w-2/5"></div>
+                <div className="w-full h-32 sm:h-40 bg-gray-200"></div>
+                <div className="p-2 sm:p-3 md:p-4">
+                  <div className="h-4 sm:h-5 md:h-6 bg-gray-200 rounded-lg mb-2 w-3/4"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 rounded-lg w-1/2 mb-2 sm:mb-2"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 rounded-lg w-2/5"></div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <>
-            {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+            {/* Products Grid - 2 colonnes sur mobile, 3 sur tablette, 4 sur desktop */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-8 md:mb-12">
               {products.map((p) => {
                 // IMPORTANT : Utilisez p.comments ou p.comment de manière cohérente
                 const productComments = p.comment || p.comment || [];
@@ -187,40 +187,40 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                   // Utiliser Link pour englober la carte entière rend la carte cliquable
                   <div
                     key={p.id}
-                    className="group bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl border border-gray-100 flex flex-col"
+                    className="group bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden transition-all duration-300 transform  hover:shadow-xl border border-gray-100 flex flex-col"
                   >
                     <Link href={detailLink} className="flex-grow">
                       {/* Image du produit */}
-                      <div className="relative w-full h-40 bg-gray-100 overflow-hidden">
+                      <div className="relative w-full h-32 sm:h-40 bg-gray-100 overflow-hidden">
                         <img
                           src={p.imageUrl}
                           alt={p.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                         />
                         {p.quantity <= 0 && (
-                          <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-                            <span className="text-white font-extrabold text-base tracking-wider px-2 py-1 bg-red-600 rounded-md">
-                              RUPTURE DE STOCK
+                          <div className="absolute inset-0 bg-opacity-60 flex items-center justify-center">
+                            <span className="text-white font-extrabold text-xs sm:text-sm md:text-base tracking-wider px-1.5 sm:px-2 py-0.5 sm:py-1 bg-red-600 rounded-md">
+                              RUPTURE
                             </span>
                           </div>
                         )}
                       </div>
 
-                      <div className="p-4 flex flex-col justify-between flex-grow">
+                      <div className="p-2 sm:p-3 md:p-4 flex flex-col justify-between flex-grow">
                         {/* Titre du produit - Le lien est déjà appliqué via le Link parent */}
-                        <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-cyan-600 transition-colors duration-300">
+                        <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-cyan-600 transition-colors duration-300">
                           {p.name}
                         </h3>
 
-                        <div className="flex items-end justify-between mb-3 mt-auto">
-                          <span className="text-xl font-extrabold text-teal-600">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2 mb-2 sm:mb-3 mt-auto">
+                          <span className="text-base sm:text-lg md:text-xl font-extrabold text-teal-600">
                             {p.price.toLocaleString()}{" "}
-                            <span className="text-xs font-semibold text-gray-500">
+                            <span className="text-[10px] sm:text-xs font-semibold text-gray-500">
                               FCFA
                             </span>
                           </span>
                           <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                            className={`px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider ${
                               p.quantity > 10
                                 ? "bg-green-100 text-green-700"
                                 : p.quantity > 0
@@ -228,65 +228,44 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                                 : "bg-red-100 text-red-700"
                             }`}
                           >
-                            {p.quantity > 0
-                              ? `${p.quantity} en stock`
-                              : "Épuisé"}
+                            {p.quantity > 0 ? `${p.quantity}` : "Épuisé"}
                           </span>
                         </div>
                       </div>
                     </Link>
                     {/* Nouvelle section pour les boutons d'action et les commentaires */}
-                    <div className="p-4 pt-0">
+                    <div className="p-2 sm:p-3 md:p-4 pt-0">
                       {/* Bouton Voir les détails */}
                       <Link
                         href={detailLink}
-                        className="block w-full text-center py-2 text-sm font-semibold rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-100 transition-colors duration-300 mb-4 border border-cyan-200"
+                        className="block w-full text-center py-1.5 sm:py-2 text-xs sm:text-sm font-semibold rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-100 transition-colors duration-300 mb-2 sm:mb-4 border border-cyan-200"
                       >
-                        Voir les détails (voir +)
+                        <span className="hidden sm:inline">
+                          Voir les détails
+                        </span>
+                        <span className="sm:hidden">Détails</span>
                       </Link>
-
-                      {/* Section Commentaires */}
-                      <div className="border-t border-gray-200 pt-3">
-                        <div className="flex items-center gap-1 mb-2">
-                          <svg
-                            className="w-4 h-4 text-cyan-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                            />
-                          </svg>
-                          <span className="text-xs font-semibold text-gray-700">
-                            Commentaires ({productComments.length})
-                          </span>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Section Pagination */}
+            {/* Section Pagination - Optimisée pour mobile */}
             {pagination.totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-8 pb-8">
+              <div className="flex justify-center items-center gap-1 sm:gap-2 mt-6 sm:mt-8 pb-6 sm:pb-8">
                 {/* Bouton Précédent */}
                 <button
                   onClick={handlePreviousPage}
                   disabled={pagination.page === 1}
-                  className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg font-semibold transition-all duration-200 flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${
                     pagination.page === 1
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-white text-cyan-600 hover:bg-cyan-50 border border-cyan-200 shadow-sm hover:shadow-md"
                   }`}
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4 sm:w-5 sm:h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -298,16 +277,16 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                       d="M15 19l-7-7 7-7"
                     />
                   </svg>
-                  <span className="hidden sm:inline">Précédent</span>
+                  <span className="hidden md:inline">Précédent</span>
                 </button>
                 {/* Numéros de page */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   {getPageNumbers().map((pageNum, index) => {
                     if (pageNum === "...") {
                       return (
                         <span
                           key={`ellipsis-${index}`}
-                          className="px-3 py-2 text-gray-400"
+                          className="px-1 sm:px-2 md:px-3 py-2 text-gray-400 text-xs sm:text-sm"
                         >
                           ...
                         </span>
@@ -319,7 +298,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                       <button
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum as number)}
-                        className={`min-w-[2.5rem] h-10 rounded-lg font-semibold transition-all duration-200 ${
+                        className={`min-w-[2rem] sm:min-w-[2.5rem] h-8 sm:h-10 rounded-lg font-semibold transition-all duration-200 text-xs sm:text-sm ${
                           isActive
                             ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg scale-110"
                             : "bg-white text-gray-700 hover:bg-cyan-50 border border-gray-200 hover:border-cyan-300 shadow-sm"
@@ -334,15 +313,15 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                 <button
                   onClick={handleNextPage}
                   disabled={pagination.page === pagination.totalPages}
-                  className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  className={`px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg font-semibold transition-all duration-200 flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${
                     pagination.page === pagination.totalPages
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-white text-cyan-600 hover:bg-cyan-50 border border-cyan-200 shadow-sm hover:shadow-md"
                   }`}
                 >
-                  <span className="hidden sm:inline">Suivant</span>
+                  <span className="hidden md:inline">Suivant</span>
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4 sm:w-5 sm:h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -360,7 +339,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
 
             {/* Informations de pagination */}
             {pagination.totalPages > 1 && (
-              <div className="text-center text-sm text-gray-600 mt-4">
+              <div className="text-center text-xs sm:text-sm text-gray-600 mt-3 sm:mt-4">
                 Page {pagination.page} sur {pagination.totalPages}
               </div>
             )}

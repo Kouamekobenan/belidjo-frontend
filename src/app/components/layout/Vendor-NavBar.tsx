@@ -15,6 +15,10 @@ import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import AnimatedPromoBanner, {
+  MinimalPromoBanner,
+  NeonPromoBanner,
+} from "../features/Animation";
 
 function VendorNavBar() {
   const { user, logout } = useAuth();
@@ -81,7 +85,7 @@ function VendorNavBar() {
                 >
                   <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
                   <Store className="w-4 h-4 xl:w-5 xl:h-5" />
-                  <span>Espace vendeur</span>
+                  <span>Profile vendeur</span>
                   <ArrowRight className="w-3 h-3 xl:w-4 xl:h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
               )}
@@ -206,7 +210,7 @@ function VendorNavBar() {
                 >
                   <div className="flex items-center space-x-3">
                     <Store className="w-5 h-5" />
-                    <span>Espace vendeur</span>
+                    <span>Profile vendeur</span>
                   </div>
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -254,7 +258,6 @@ function VendorNavBar() {
             </div>
           </div>
         )}
-
         {/* Dropdown User Mobile */}
         {isDropdownOpen && user && (
           <div className="lg:hidden absolute right-3 top-16 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
@@ -273,30 +276,9 @@ function VendorNavBar() {
             </button>
           </div>
         )}
-
         {/* Bannière d'invitation */}
-        {!user && (
-          <div className="bg-gradient-to-r from-teal-50 via-blue-50 to-purple-50 border-t border-teal-100 shadow-lg">
-            <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5">
-              <p className="text-xs sm:text-sm text-gray-700 text-center leading-relaxed">
-                <span className="font-semibold text-teal-600">
-                  🎉 Offre exclusive :
-                </span>{" "}
-                <Link
-                  href="/users/ui/login"
-                  className="underline hover:no-underline font-bold text-green-700 hover:text-green-800 transition-colors"
-                >
-                  Créez votre compte
-                </Link>
-                <span className="hidden sm:inline">
-                  {" "}
-                  pour bénéficier de réductions et suivre ce vendeur !
-                </span>
-                <span className="sm:hidden"> pour des réductions !</span>
-              </p>
-            </div>
-          </div>
-        )}
+        <AnimatedPromoBanner user={user} />
+        <NeonPromoBanner user={user} />
       </nav>
 
       {/* Overlay pour fermer les menus */}

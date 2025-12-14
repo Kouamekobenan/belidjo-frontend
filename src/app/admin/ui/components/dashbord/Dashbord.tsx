@@ -410,7 +410,7 @@ export default function DashbordVendor() {
                     </td>
                     <td className="py-4 px-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibo`}
+                        className={`px-3 py-1 text-teal-600 rounded-full text-xs font-semibo`}
                       >
                         {product ? "Disponible" : "Indisponible"}
                       </span>

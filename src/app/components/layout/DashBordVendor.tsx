@@ -53,7 +53,7 @@ export default function NavbarDashbordVendor({
     },
     {
       href: "/admin/customer",
-      label: "Clients",
+      label: "Mes abonnées",
       icon: Users,
     },
     {

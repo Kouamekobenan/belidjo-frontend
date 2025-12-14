@@ -43,3 +43,11 @@ export interface IComment {
   createdAt: string;
   updatedAt?: Date;
 }
+
+export interface ICustomer {
+  id: string;
+  userId: string;
+  vendorId: string;
+  cityId: string;
+  user: User[];
+}
