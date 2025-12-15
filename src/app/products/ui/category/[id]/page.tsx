@@ -143,24 +143,24 @@ export default function VendorProducts() {
 
       <div className="max-w-7xl mx-auto p-4 md:p-12 mt-6">
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse border border-gray-100"
               >
-                <div className="w-full h-40 bg-gray-200"></div>
-                <div className="p-4">
-                  <div className="h-6 bg-gray-200 rounded-lg mb-2 w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded-lg w-1/2 mb-3"></div>
-                  <div className="h-4 bg-gray-200 rounded-lg w-2/5"></div>
+                <div className="w-full h-32 md:h-40 bg-gray-200"></div>
+                <div className="p-3 md:p-4">
+                  <div className="h-5 md:h-6 bg-gray-200 rounded-lg mb-2 w-3/4"></div>
+                  <div className="h-3 md:h-4 bg-gray-200 rounded-lg w-1/2 mb-3"></div>
+                  <div className="h-3 md:h-4 bg-gray-200 rounded-lg w-2/5"></div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 mb-12">
               {products.map((p) => {
                 const productComments = p.comment || p.comment || [];
                 const isShowingAll = showAllComments[p.id];
@@ -173,10 +173,10 @@ export default function VendorProducts() {
                 return (
                   <div
                     key={p.id}
-                    className="group bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl border border-gray-100 flex flex-col"
+                    className="group bg-white rounded-xl md:rounded-2xl shadow-lg overflow-hidden transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl border border-gray-100 flex flex-col"
                   >
                     <Link href={detailLink} className="flex-grow">
-                      <div className="relative w-full h-40 bg-gray-100 overflow-hidden">
+                      <div className="relative w-full h-32 md:h-40 bg-gray-100 overflow-hidden">
                         <img
                           src={p.imageUrl}
                           alt={p.name}
@@ -184,27 +184,27 @@ export default function VendorProducts() {
                         />
                         {p.quantity <= 0 && (
                           <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-                            <span className="text-white font-extrabold text-base tracking-wider px-2 py-1 bg-red-600 rounded-md">
-                              RUPTURE DE STOCK
+                            <span className="text-white font-extrabold text-xs md:text-base tracking-wider px-2 py-1 bg-red-600 rounded-md text-center">
+                              RUPTURE
                             </span>
                           </div>
                         )}
                       </div>
 
-                      <div className="p-4 flex flex-col justify-between flex-grow">
-                        <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-cyan-600 transition-colors duration-300">
+                      <div className="p-3 md:p-4 flex flex-col justify-between flex-grow">
+                        <h3 className="text-sm md:text-lg font-bold text-gray-900 mb-1 line-clamp-2 group-hover:text-cyan-600 transition-colors duration-300">
                           {p.name}
                         </h3>
 
-                        <div className="flex items-end justify-between mb-3 mt-auto">
-                          <span className="text-xl font-extrabold text-teal-600">
+                        <div className="flex items-end justify-between mb-2 md:mb-3 mt-auto">
+                          <span className="text-base md:text-xl font-extrabold text-teal-600">
                             {p.price.toLocaleString()}{" "}
-                            <span className="text-xs font-semibold text-gray-500">
+                            <span className="text-[10px] md:text-xs font-semibold text-gray-500">
                               FCFA
                             </span>
                           </span>
                           <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                            className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider ${
                               p.quantity > 10
                                 ? "bg-green-100 text-green-700"
                                 : p.quantity > 0
@@ -212,26 +212,24 @@ export default function VendorProducts() {
                                 : "bg-red-100 text-red-700"
                             }`}
                           >
-                            {p.quantity > 0
-                              ? `${p.quantity} en stock`
-                              : "Épuisé"}
+                            {p.quantity > 0 ? `${p.quantity}` : "0"}
                           </span>
                         </div>
                       </div>
                     </Link>
 
-                    <div className="p-4 pt-0">
+                    <div className="p-3 md:p-4 pt-0">
                       <Link
                         href={detailLink}
-                        className="block w-full text-center py-2 text-sm font-semibold rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-100 transition-colors duration-300 mb-4 border border-cyan-200"
+                        className="block w-full text-center py-1.5 md:py-2 text-xs md:text-sm font-semibold rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-100 transition-colors duration-300 mb-3 md:mb-4 border border-cyan-200"
                       >
-                        Voir les détails (voir +)
+                        Voir détails
                       </Link>
 
-                      <div className="border-t border-gray-200 pt-3">
+                      <div className="border-t border-gray-200 pt-2 md:pt-3">
                         <div className="flex items-center gap-1 mb-2">
-                          <MessageCircle className="w-4 h-4 text-cyan-500" />
-                          <span className="text-xs font-semibold text-gray-700">
+                          <MessageCircle className="w-3 h-3 md:w-4 md:h-4 text-cyan-500" />
+                          <span className="text-[10px] md:text-xs font-semibold text-gray-700">
                             Commentaires ({productComments.length})
                           </span>
                         </div>
@@ -247,23 +245,23 @@ export default function VendorProducts() {
                 <button
                   onClick={handlePreviousPage}
                   disabled={pagination.page === 1}
-                  className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  className={`px-3 md:px-4 py-2 rounded-lg font-semibold transition-all duration-200 flex items-center gap-1 md:gap-2 text-sm md:text-base ${
                     pagination.page === 1
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-white text-cyan-600 hover:bg-cyan-50 border border-cyan-200 shadow-sm hover:shadow-md"
                   }`}
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
                   <span className="hidden sm:inline">Précédent</span>
                 </button>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 md:gap-2">
                   {getPageNumbers().map((pageNum, index) => {
                     if (pageNum === "...") {
                       return (
                         <span
                           key={`ellipsis-${index}`}
-                          className="px-3 py-2 text-gray-400"
+                          className="px-2 md:px-3 py-2 text-gray-400 text-sm md:text-base"
                         >
                           ...
                         </span>
@@ -275,7 +273,7 @@ export default function VendorProducts() {
                       <button
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum as number)}
-                        className={`min-w-[2.5rem] h-10 rounded-lg font-semibold transition-all duration-200 ${
+                        className={`min-w-[2rem] md:min-w-[2.5rem] h-8 md:h-10 rounded-lg font-semibold transition-all duration-200 text-sm md:text-base ${
                           isActive
                             ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg scale-110"
                             : "bg-white text-gray-700 hover:bg-cyan-50 border border-gray-200 hover:border-cyan-300 shadow-sm"
@@ -289,20 +287,20 @@ export default function VendorProducts() {
                 <button
                   onClick={handleNextPage}
                   disabled={pagination.page === pagination.totalPages}
-                  className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  className={`px-3 md:px-4 py-2 rounded-lg font-semibold transition-all duration-200 flex items-center gap-1 md:gap-2 text-sm md:text-base ${
                     pagination.page === pagination.totalPages
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-white text-cyan-600 hover:bg-cyan-50 border border-cyan-200 shadow-sm hover:shadow-md"
                   }`}
                 >
                   <span className="hidden sm:inline">Suivant</span>
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
               </div>
             )}
 
             {pagination.totalPages > 1 && (
-              <div className="text-center text-sm text-gray-600 mt-4">
+              <div className="text-center text-xs md:text-sm text-gray-600 mt-4">
                 Page {pagination.page} sur {pagination.totalPages}
               </div>
             )}

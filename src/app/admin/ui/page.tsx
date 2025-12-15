@@ -10,7 +10,7 @@ export default function AdminPage() {
     return <div>Chargement...</div>;
   }
   return (
-    <div className="flex">
+    <div className="flex p-1">
       <NavbarDashbordVendor
         name={user?.name}
         phone={user?.phone}
