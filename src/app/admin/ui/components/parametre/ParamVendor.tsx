@@ -185,40 +185,6 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
               </div>
             </div>
           </div>
-
-          {/* Domaine Personnalisé */}
-          {vendorProfile?.id && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-blue-200">
-              <label className="text-xs font-semibold text-green-600 uppercase tracking-wider mb-2 block flex items-center gap-2">
-                <span className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></span>
-                Domaine personnalisé
-              </label>
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                <input
-                  type="text"
-                  value={shopUrl}
-                  readOnly
-                  className="flex-1 bg-white border border-blue-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-slate-800 font-medium text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-0"
-                />
-                <button
-                  onClick={() => handleCopy(shopUrl, "domain")}
-                  className="px-3 sm:px-4 py-2 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg text-sm"
-                >
-                  {copiedDomain ? (
-                    <>
-                      <Check className="w-4 h-4" />
-                      <span>Copié</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4" />
-                      <span>Copier</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
         </div>
         {/* Section: Options de partage */}
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-slate-200">

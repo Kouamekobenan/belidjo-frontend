@@ -57,16 +57,16 @@ export default function ParamVendorPage() {
     );
   }
   return (
-    <div className="flex ">
+    <div className="flex min-h-screen bg-gray-50">
       <NavbarDashbordVendor
         name={user?.name}
         phone={user?.phone}
         cityName={user?.cityName}
         vendorProfile={user?.vendorProfile}
       />
-      <div className="mt-8 md:mt-auto">
+      <main className="flex-1 w-full pt-14">
         <ParamVendor vendorProfile={user.vendorProfile} />
-      </div>
+      </main>
     </div>
   );
 }

@@ -56,16 +56,16 @@ export default function CustomerPage() {
     );
   }
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-gray-50">
       <NavbarDashbordVendor
         name={user?.name}
         phone={user?.phone}
         cityName={user?.cityName}
         vendorProfile={user?.vendorProfile}
       />
-      <div className="mt-8 md:mt-auto">
+      <main className="flex-1 w-full pt-8">
         <CustomerVendor vendorId={user.vendorProfile.id} />
-      </div>
+      </main>
     </div>
   );
 }
