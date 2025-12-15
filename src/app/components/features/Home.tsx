@@ -449,7 +449,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
       {/* Contenu principal */}
       <main
         id="contenu"
@@ -480,7 +479,6 @@ export default function HomePage() {
                 diversifié.
               </p>
             </div>
-
             {/* Carte 2 */}
             <div className="group p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white">
               <div className="flex justify-center mb-6">
@@ -499,7 +497,6 @@ export default function HomePage() {
                 votre porte.
               </p>
             </div>
-
             {/* Carte 3 */}
             <div className="group p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white sm:col-span-2 lg:col-span-1">
               <div className="flex justify-center mb-6">
@@ -520,7 +517,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
         {/* Section Étapes */}
         <section className="mb-12" id="etapes">
           <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-12 text-center">
@@ -550,7 +546,6 @@ export default function HomePage() {
             />
           </div>
         </section>
-
         <Footer />
       </main>
 
@@ -573,7 +568,6 @@ export default function HomePage() {
           </div>
         </div>
       </Link>
-
       <div className="h-24"></div>
     </div>
   );
