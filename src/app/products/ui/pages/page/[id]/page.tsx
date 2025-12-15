@@ -12,6 +12,8 @@ import {
   Tag,
   Send,
   User,
+  Plus, // Ajout de l'icône Plus
+  Minus, // Ajout de l'icône Minus
 } from "lucide-react";
 import { IProduct } from "@/app/products/domain/entities/product.entity";
 import { FindByIdProductUseCase } from "@/app/products/application/usecases/find-byId.usecase";
@@ -20,9 +22,10 @@ import VendorNavBar from "@/app/components/layout/Vendor-NavBar";
 import { useAuth } from "@/app/context/AuthContext";
 import { IComment } from "@/app/lib/globals.type";
 import { api } from "@/app/lib/api";
+import { ProductMapper } from "@/app/products/domain/mappers/product.mapper";
 
 // --- Configuration de la Logique Métier ---
-const repository = new ProductRepository();
+const repository = new ProductRepository(new ProductMapper());
 const findProductById = new FindByIdProductUseCase(repository);
 
 // Définition de la couleur de base pour la cohérence
@@ -47,6 +50,7 @@ export default function ProductDetail() {
   const [commentContent, setCommentContent] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [commentError, setCommentError] = useState<string | null>(null);
+  const [showCommentForm, setShowCommentForm] = useState(false); // NOUVEL ÉTAT
 
   const handleComment = async () => {
     // Vérifier l'authentification
@@ -93,9 +97,10 @@ export default function ProductDetail() {
         });
       }
 
-      // Réinitialiser le champ de commentaire
+      // Réinitialiser le champ de commentaire et cacher le formulaire
       setCommentContent("");
       setCommentError(null);
+      setShowCommentForm(false); // <--- Masquer le formulaire après l'envoi
     } catch (error: any) {
       console.error("Erreur lors de l'envoi du commentaire:", error);
       setCommentError(
@@ -153,7 +158,7 @@ export default function ProductDetail() {
     window.open(whatsappUrl, "_blank");
   };
 
-  // --- États de Chargement et Erreur ---
+  // --- États de Chargement et Erreur (omis pour la concision) ---
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex justify-center items-center p-4">
@@ -202,7 +207,8 @@ export default function ProductDetail() {
     <div className="min-h-screen bg-gray-50">
       <VendorNavBar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-12">
-        {/* Carte Principale du Produit */}
+        {/* Carte Principale du Produit (omis pour la concision) */}
+        {/* ... (votre code existant pour le produit) ... */}
         <div className="bg-white rounded-2xl lg:rounded-3xl shadow-2xl border border-gray-100 overflow-hidden mb-6 lg:mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* Section Image */}
@@ -308,25 +314,69 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
+
         {/* Section Commentaires */}
         <div className="bg-white rounded-2xl lg:rounded-3xl shadow-xl border border-gray-100 p-4 sm:p-6 lg:p-12">
-          <div className="flex items-center gap-2 sm:gap-3 mb-6 lg:mb-8">
-            <MessageSquare
-              className={`w-6 h-6 sm:w-8 sm:h-8 ${PRIMARY_COLOR}`}
-            />
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-              Commentaires
-              {product?.comment && product.comment.length > 0 && (
-                <span className="ml-2 sm:ml-3 text-base sm:text-lg font-normal text-gray-500">
-                  ({product.comment.length})
-                </span>
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-6 lg:mb-8">
+            {" "}
+            {/* Adjusted for flex layout */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <MessageSquare
+                className={`w-6 h-6 sm:w-8 sm:h-8 ${PRIMARY_COLOR}`}
+              />
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                Commentaires
+                {product?.comment && product.comment.length > 0 && (
+                  <span className="ml-2 sm:ml-3 text-base sm:text-lg font-normal text-gray-500">
+                    ({product.comment.length})
+                  </span>
+                )}
+              </h2>
+            </div>
+            {/* Bouton pour ouvrir/fermer le formulaire */}
+            <button
+              onClick={() => {
+                // Si l'utilisateur n'est pas authentifié, on redirige, sinon on bascule l'affichage
+                if (!isAuthenticated) {
+                  sessionStorage.setItem(
+                    "redirectAfterLogin",
+                    window.location.pathname
+                  );
+                  router.push("/users/ui/login");
+                } else {
+                  setShowCommentForm(!showCommentForm);
+                  // Optionnel : Réinitialiser le contenu du commentaire lorsqu'on le ferme
+                  if (showCommentForm) {
+                    setCommentContent("");
+                    setCommentError(null);
+                  }
+                }
+              }}
+              className={`py-2 px-4 rounded-full text-white font-semibold transition-all duration-300 flex items-center gap-2 text-sm ${
+                showCommentForm
+                  ? "bg-red-500 hover:bg-red-600"
+                  : `${PRIMARY_BG} ${HOVER_BG}`
+              }`}
+            >
+              {showCommentForm ? (
+                <>
+                  <Minus className="w-4 h-4" />
+                  Annuler le Commentaire
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4" />
+                  Ajouter un Commentaire
+                </>
               )}
-            </h2>
+            </button>
           </div>
-          {/* Formulaire d'ajout de commentaire */}
-          <div className="mb-6 lg:mb-8">
-            {isAuthenticated ? (
-              <div className="space-y-3 lg:space-y-4">
+
+          {/* Formulaire d'ajout de commentaire (Conditionnel) */}
+          {showCommentForm && isAuthenticated && (
+            <div className="mb-6 lg:mb-8">
+              <div className="space-y-3 lg:space-y-4 p-4 border border-teal-200 bg-teal-50 rounded-xl shadow-inner">
+                <p className="text-gray-700 font-medium">Votre avis compte :</p>
                 <div className="relative">
                   <textarea
                     value={commentContent}
@@ -342,7 +392,7 @@ export default function ProductDetail() {
                 </div>
 
                 {commentError && (
-                  <div className="flex items-center gap-2 text-red-600 text-xs sm:text-sm bg-red-50 p-2 sm:p-3 rounded-lg">
+                  <div className="flex items-center gap-2 text-red-600 text-xs sm:text-sm bg-red-100 p-2 sm:p-3 rounded-lg border border-red-300">
                     <AlertCircle className="w-4 h-4 flex-shrink-0" />
                     <span>{commentError}</span>
                   </div>
@@ -366,27 +416,30 @@ export default function ProductDetail() {
                   )}
                 </button>
               </div>
-            ) : (
-              <div className="bg-gradient-to-r from-teal-50 to-blue-50 border-2 border-teal-200 rounded-xl p-4 sm:p-6 text-center">
-                <MessageSquare className="w-10 h-10 sm:w-12 sm:h-12 text-teal-600 mx-auto mb-3" />
-                <p className="text-gray-700 text-sm sm:text-base mb-3 sm:mb-4">
-                  Connectez-vous pour laisser un commentaire
-                </p>
-                <button
-                  onClick={() => {
-                    sessionStorage.setItem(
-                      "redirectAfterLogin",
-                      window.location.pathname
-                    );
-                    router.push("/users/ui/login");
-                  }}
-                  className={`${PRIMARY_BG} ${HOVER_BG} text-white font-semibold py-2 sm:py-2.5 px-5 sm:px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 text-sm sm:text-base`}
-                >
-                  Se connecter
-                </button>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* Message de connexion (si non authentifié et formulaire caché) */}
+          {!isAuthenticated && !showCommentForm && (
+            <div className="bg-gradient-to-r from-teal-50 to-blue-50 border-2 border-teal-200 rounded-xl p-4 sm:p-6 text-center mb-6 lg:mb-8">
+              <MessageSquare className="w-10 h-10 sm:w-12 sm:h-12 text-teal-600 mx-auto mb-3" />
+              <p className="text-gray-700 text-sm sm:text-base mb-3 sm:mb-4">
+                Connectez-vous pour laisser un commentaire
+              </p>
+              <button
+                onClick={() => {
+                  sessionStorage.setItem(
+                    "redirectAfterLogin",
+                    window.location.pathname
+                  );
+                  router.push("/users/ui/login");
+                }}
+                className={`${PRIMARY_BG} ${HOVER_BG} text-white font-semibold py-2 sm:py-2.5 px-5 sm:px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 text-sm sm:text-base`}
+              >
+                Se connecter
+              </button>
+            </div>
+          )}
 
           {/* Liste des commentaires */}
           {product?.comment && product.comment.length > 0 ? (
@@ -444,6 +497,7 @@ export default function ProductDetail() {
         <div className="lg:hidden h-20"></div>
       </div>
 
+      {/* Boutons d'Appel (omis pour la concision) */}
       {/* Bouton d'Appel Flottant Mobile */}
       {product.vendor.user?.phone && (
         <a

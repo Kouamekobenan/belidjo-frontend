@@ -87,7 +87,7 @@ export default function CreateProductPage() {
 
       await productCreator.execute(dataWithVendor, file);
       alert("Produit créé avec succès !");
-      router.replace("/dashboard/vendor");
+      router.replace("/admin/products");
     } catch (error: any) {
       console.error("Erreur de création:", error);
       // Si l'erreur vient du backend (ex: 400 validation), on affiche le message
