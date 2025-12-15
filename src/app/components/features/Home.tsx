@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import {
   Backpack,
@@ -10,11 +9,10 @@ import {
   LogIn,
   Menu,
   X,
-  User,
-  Store,
 } from "lucide-react";
 import Link from "next/link";
-import { Footer } from "../layout/Footer";
+import Image from "next/image";
+import { cityName } from "@/app/lib/globals.type";
 
 // ============================================
 // INTERFACES
@@ -33,6 +31,7 @@ interface Items {
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const LOGO_SRC = "/images/bj.png";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,72 +51,79 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
+          <a
+            href="/"
+            className="flex items-center space-x-2 group flex-shrink-0"
+          >
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg opacity-75 blur group-hover:opacity-100 transition-opacity"></div>
-              <div className="flex items-center gap-3">
-                <Image
-                  src="/images/bj.png"
-                  width={60}
-                  height={60}
-                  alt="Logo Belidjo"
-                  className="rounded-lg"
-                />{" "}
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-500 to-green-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                  <Image
+                    src={LOGO_SRC}
+                    width={80}
+                    height={80}
+                    alt="Logo Belidjo - Retour à l'accueil"
+                    className="object-contain"
+                    priority
+                  />
+                </div>
               </div>
             </div>
             <span
-              className={`text-xl sm:text-2xl font-black transition-colors ${
+              className={`text-lg sm:text-xl md:text-2xl font-black transition-colors ${
                 isScrolled ? "text-gray-900" : "text-white"
               }`}
             >
               <span className="bg-gradient-to-r from-teal-500 to-green-500 bg-clip-text text-transparent">
-                Belidjo
+                {cityName}
               </span>
             </span>
-          </Link>
+          </a>
+
           {/* Menu Desktop */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link
+            <a
               href="#contenu"
               className={`font-medium transition-colors hover:text-green-500 ${
                 isScrolled ? "text-gray-700" : "text-white"
               }`}
             >
               Pourquoi nous choisir
-            </Link>
-            <Link
+            </a>
+            <a
               href="#etapes"
               className={`font-medium transition-colors hover:text-green-500 ${
                 isScrolled ? "text-gray-700" : "text-white"
               }`}
             >
               Comment ça marche
-            </Link>
-            <Link
+            </a>
+            <a
               href="/vendor"
               className={`font-medium transition-colors hover:text-orange-500 ${
                 isScrolled ? "text-gray-700" : "text-white"
               }`}
             >
               Nos vendeurs
-            </Link>
+            </a>
           </div>
 
           {/* Boutons d'action Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link
+            <a
               href="/users/ui/login"
-              className="group inline-flex items-center space-x-2 px-5 py-2.5 text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700  rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+              className="group inline-flex items-center space-x-2 px-5 py-2.5 text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
               <LogIn className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               <span>Connexion Vendeur</span>
-            </Link>
+            </a>
           </div>
 
           {/* Bouton Menu Mobile */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg transition-colors hover:bg-gray-100"
+            className="md:hidden p-2 rounded-lg transition-colors hover:bg-gray-100/20 flex-shrink-0"
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
@@ -141,36 +147,36 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 shadow-xl">
           <div className="px-4 py-6 space-y-4">
-            <Link
+            <a
               href="#contenu"
               onClick={() => setIsMobileMenuOpen(false)}
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
             >
               Pourquoi nous choisir
-            </Link>
-            <Link
+            </a>
+            <a
               href="#etapes"
               onClick={() => setIsMobileMenuOpen(false)}
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
             >
               Comment ça marche
-            </Link>
-            <Link
+            </a>
+            <a
               href="/vendor"
               onClick={() => setIsMobileMenuOpen(false)}
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
             >
               Nos vendeurs
-            </Link>
+            </a>
             <div className="pt-4 border-t border-gray-200">
-              <Link
+              <a
                 href="/users/ui/login"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center justify-center space-x-2 w-full px-5 py-3 text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-xl shadow-lg font-semibold transition-all"
               >
                 <LogIn className="w-5 h-5" />
                 <span>Connexion Vendeur</span>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -191,9 +197,9 @@ const AnimatedHeroTitle = () => {
   }, []);
 
   return (
-    <div className="relative">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-tight">
-        {/* Partie 1: "Belidjo!" avec effet de gradient animé */}
+    <div className="relative max-w-full overflow-hidden px-2">
+      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight break-words">
+        {/* Partie 1: "NoBoutik!" avec effet de gradient animé */}
         <span
           className={`
             inline-block
@@ -211,13 +217,13 @@ const AnimatedHeroTitle = () => {
             backgroundSize: "200% auto",
           }}
         >
-          Belidjo!
+          NoBoutik!
         </span>
 
         {/* Élément décoratif - Sparkle */}
         <span className="inline-block ml-2 animate-pulse">
           <svg
-            className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-yellow-400 animate-spin-slow"
+            className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-yellow-400 animate-spin-slow"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -241,7 +247,6 @@ const AnimatedHeroTitle = () => {
           `}
         >
           <span className="relative">
-            {/* Effet de highlight animé */}
             <span className="absolute inset-0 bg-yellow-200/30 transform -skew-x-12 animate-pulse-slow"></span>
             <span className="relative z-10">Fais tes achats </span>
           </span>
@@ -249,15 +254,14 @@ const AnimatedHeroTitle = () => {
             <span className="text-teal-400 font-extrabold animate-bounce-subtle">
               en un clic
             </span>
-            {/* Effet de soulignement animé */}
             <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-purple-600 transform origin-left scale-x-0 animate-underline"></span>
           </span>
         </span>
 
         {/* Icône de clic animée */}
-        <span className="inline-block ml-3 animate-click">
+        <span className="inline-block ml-2 sm:ml-3 animate-click">
           <svg
-            className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-blue-400"
+            className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-blue-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -272,9 +276,9 @@ const AnimatedHeroTitle = () => {
         </span>
       </h1>
 
-      {/* Particules décoratives */}
-      <div className="absolute -top-10 -left-10 w-20 h-20 bg-yellow-300 rounded-full opacity-20 animate-float"></div>
-      <div className="absolute top-0 -right-10 w-16 h-16 bg-pink-300 rounded-full opacity-20 animate-float-delayed"></div>
+      {/* Particules décoratives - cachées sur mobile */}
+      <div className="hidden sm:block absolute -top-10 -left-10 w-20 h-20 bg-yellow-300 rounded-full opacity-20 animate-float"></div>
+      <div className="hidden sm:block absolute top-0 -right-10 w-16 h-16 bg-pink-300 rounded-full opacity-20 animate-float-delayed"></div>
 
       <style jsx>{`
         @keyframes gradient-x {
@@ -398,128 +402,128 @@ const StepCard = ({ number, title, description }: Items) => (
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-gray-50">
-      {/* Navbar */}
-      <Navbar />
+    <div className="relative min-h-screen bg-gray-50 overflow-x-hidden">
+      <div className="flex-1">
+        <Navbar />
+      </div>
 
       {/* Section Héro avec Titre Animé */}
-      <section className="relative h-[480px] sm:h-[480px] md:h-[480px] lg:h-[480px] w-full flex items-center justify-center text-white text-center">
+      <section className="relative h-[480px] sm:h-[480px] md:h-[480px] w-full flex items-center justify-center text-white text-center overflow-hidden">
         {/* Image en arrière-plan */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/img.jpg"
-            alt="Marché en ligne Belidjo"
-            layout="fill"
-            objectFit="cover"
-            quality={90}
-            priority
-          />
+          <div className="w-full h-full bg-gradient-to-br from-teal-600 via-green-600 to-blue-700"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
         </div>
 
         {/* Contenu de la section Héro */}
-        <div className="relative z-10 px-4 sm:px-6 max-w-5xl">
+        <div className="relative z-10 px-4 sm:px-6 w-full max-w-5xl">
           <AnimatedHeroTitle />
 
           {/* Sous-titre avec animation */}
-          <p className="mt-6 text-base sm:text-lg md:text-xl text-white/90 font-medium animate-fade-in-up">
-            <span className="inline-flex items-center space-x-2">
-              <span className="inline-block w-2 h-2 bg-green-400 rounded-full animate-ping"></span>
-              <span className="inline-block w-2 h-2 bg-green-400 rounded-full"></span>
-              <span>Livraison rapide</span>
-              <span className="text-white/60">•</span>
+          <p className="mt-6 text-sm sm:text-base md:text-lg text-white/90 font-medium animate-fade-in-up px-4">
+            <span className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+              <span className="flex items-center space-x-1">
+                <span className="inline-block w-2 h-2 bg-green-400 rounded-full animate-ping"></span>
+                <span className="inline-block w-2 h-2 bg-green-400 rounded-full"></span>
+                <span>Livraison rapide</span>
+              </span>
+              <span className="text-white/60 hidden sm:inline">•</span>
               <span>Paiement sécurisé</span>
-              <span className="text-white/60">•</span>
+              <span className="text-white/60 hidden sm:inline">•</span>
               <span>Prix imbattables</span>
             </span>
           </p>
 
           {/* Boutons CTA */}
-          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
+          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
+            <a
               href="/vendor"
-              className="group inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-gradient-to-r from-teal-500 to-green-600 hover:from-teal-600 hover:to-green-700 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
+              className="group inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-teal-500 to-green-600 hover:from-teal-600 hover:to-green-700 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
               <span className="relative flex items-center">
-               Je faire mes achats 
-                <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+                Faire mes achats
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
               </span>
-            </Link>
+            </a>
           </div>
         </div>
       </section>
+
       {/* Contenu principal */}
       <main
         id="contenu"
         className="relative max-w-7xl mx-auto py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 z-20"
       >
         {/* Section Description et Valeur Ajoutée */}
-        <section className="bg-gradient-to-br from-white to-gray-50 shadow-2xl rounded-3xl p-8 sm:p-12 lg:p-16 mb-16 sm:mb-20">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-12 text-center">
+        <section className="bg-gradient-to-br from-white to-gray-50 shadow-2xl rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 sm:mb-16 lg:mb-20">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-gray-900 mb-8 sm:mb-12 text-center px-2">
             Pourquoi choisir{" "}
             <span className="bg-gradient-to-r from-teal-500 to-green-600 bg-clip-text text-transparent">
-              Belidjo
+              {cityName}
             </span>
             ?
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
             {/* Carte 1 */}
-            <div className="group p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white">
+            <div className="group p-6 sm:p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white">
               <div className="flex justify-center mb-6">
                 <span className="text-5xl p-4 bg-blue-100 rounded-2xl group-hover:scale-110 transition-transform">
-                  <Backpack className="w-12 h-12 text-blue-600" />
+                  <Backpack className="w-10 h-10 sm:w-12 sm:h-12 text-blue-600" />
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 text-center">
                 Sélection de Commerçants
               </h3>
-              <p className="text-base text-gray-600 leading-relaxed text-center">
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-center">
                 Plusieurs vendeurs locaux regroupés pour un choix optimal et
                 diversifié.
               </p>
             </div>
+
             {/* Carte 2 */}
-            <div className="group p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white">
+            <div className="group p-6 sm:p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white">
               <div className="flex justify-center mb-6">
                 <span className="text-5xl p-4 bg-teal-100 rounded-2xl group-hover:scale-110 transition-transform">
                   <Zap
-                    className="w-12 h-12 text-teal-600"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-teal-600"
                     fill="currentColor"
                   />
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 text-center">
                 Livraison Rapide et Fiable
               </h3>
-              <p className="text-base text-gray-600 leading-relaxed text-center">
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-center">
                 Votre commande livrée dans les plus brefs délais, directement à
                 votre porte.
               </p>
             </div>
+
             {/* Carte 3 */}
-            <div className="group p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white sm:col-span-2 lg:col-span-1">
+            <div className="group p-6 sm:p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white sm:col-span-2 lg:col-span-1">
               <div className="flex justify-center mb-6">
                 <span className="text-5xl p-4 bg-red-100 rounded-2xl group-hover:scale-110 transition-transform">
                   <LockKeyhole
-                    className="w-12 h-12 text-red-600"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-red-600"
                     fill="currentColor"
                   />
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 text-center">
                 Processus Sécurisé
               </h3>
-              <p className="text-base text-gray-600 leading-relaxed text-center">
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-center">
                 Vos transactions et communications sont traitées en toute
                 sécurité.
               </p>
             </div>
           </div>
         </section>
+
         {/* Section Étapes */}
         <section className="mb-12" id="etapes">
-          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-12 text-center">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-8 sm:mb-12 text-center px-2">
             Comment ça marche ?
           </h2>
 
@@ -546,19 +550,22 @@ export default function HomePage() {
             />
           </div>
         </section>
-        <Footer />
-      </main>
 
+        {/* Footer */}
+        <footer className="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-600">
+          <p>&copy; 2024 NoBoutik. Tous droits réservés.</p>
+        </footer>
+      </main>
       {/* Bouton flottant */}
-      <Link
+      <a
         href="/vendor"
-        className="fixed bottom-6 right-6 z-50 group"
+        className="fixed bottom-6 right-4 sm:right-6 z-50 group"
         aria-label="Voir les vendeurs"
       >
         <div className="relative">
           <div className="absolute inset-0 bg-teal-600 rounded-full animate-ping opacity-75"></div>
-          <div className="relative w-16 h-16 bg-gradient-to-br from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform group-hover:scale-110">
-            <ShoppingBag className="w-7 h-7" />
+          <div className="relative w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform group-hover:scale-110">
+            <ShoppingBag className="w-6 h-6 sm:w-7 sm:h-7" />
           </div>
           <div className="hidden lg:block absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             <div className="bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-xl whitespace-nowrap">
@@ -567,8 +574,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </Link>
-      <div className="h-24"></div>
+      </a>
     </div>
   );
 }

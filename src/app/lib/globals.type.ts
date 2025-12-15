@@ -51,3 +51,4 @@ export interface ICustomer {
   cityId: string;
   user: User[];
 }
+export const cityName = "NoBoutik";

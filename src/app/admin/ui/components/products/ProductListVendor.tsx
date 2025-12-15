@@ -147,7 +147,7 @@ export default function VendorProductList({ vendorId }: { vendorId: string }) {
           </svg>
         </div>
         <h3 className="text-2xl font-extrabold text-gray-800 mb-2">
-          Aucun produit disponible 😔
+          Aucun produit disponible 
         </h3>
         <p className="text-gray-500 text-base">
           Vous n'avez pas encore ajouté de produits. Commencez par en **créer**
@@ -283,7 +283,7 @@ export default function VendorProductList({ vendorId }: { vendorId: string }) {
           </h1>
           <Link
             href={PRODUCT_CREATE_PATH}
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-lg text-white bg-cyan-600 hover:bg-cyan-700 transition duration-300 transform hover:scale-[1.03]"
+            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-lg text-white bg-teal-600 hover:bg-teal-700 transition duration-300 transform hover:scale-[1.03]"
           >
             <svg
               className="w-6 h-6 mr-2"

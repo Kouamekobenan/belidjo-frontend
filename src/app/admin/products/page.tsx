@@ -65,7 +65,7 @@ export default function ProductListAdmin() {
         cityName={user?.cityName}
         vendorProfile={user?.vendorProfile}
       />
-      <main className="flex-1 w-full pt-9">
+      <main className="flex-1 w-full pt-11 md:pt-2">
         <VendorProductList vendorId={vendorId} />
       </main>
     </div>
