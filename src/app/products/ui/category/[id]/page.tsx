@@ -12,9 +12,10 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { ProductMapper } from "@/app/products/domain/mappers/product.mapper";
 
 // --- Configuration de la Logique Métier ---
-const repo = new ProductRepository();
+const repo = new ProductRepository(new ProductMapper());
 const getProducts = new FindProductByCatIdUseCase(repo);
 const PRODUCT_DETAIL_BASE_PATH = "/products";
 

@@ -13,6 +13,7 @@ import { CustomerRepository } from "@/app/customer/infrastructure/customer-repos
 import { CreateCustomerUseCase } from "@/app/customer/application/usecases/create-customer.usecase";
 import { CreateCustomerDto } from "@/app/customer/application/dtos/create-customer.dto";
 import { useAuth } from "@/app/context/AuthContext";
+import { CustomerMapper } from "@/app/customer/domain/mapper/customer.mapper";
 
 interface Site {
   id: string;
@@ -37,7 +38,7 @@ interface Vendor {
   site: Site;
   user: User;
 }
-const customerRepo = new CustomerRepository();
+const customerRepo = new CustomerRepository(new CustomerMapper());
 const createCustomerUseCase = new CreateCustomerUseCase(customerRepo);
 
 // --- COMPOSANT : Bouton de Copie du Domaine ---

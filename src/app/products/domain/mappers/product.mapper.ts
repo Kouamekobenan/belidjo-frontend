@@ -28,7 +28,7 @@ export class ProductMapper {
       price: create.price,
       quantity: create.quantity,
       imageUrl: create.imageUrl,
-      fileId: create.fileId,
+      // fileId: create.fileId,
       VendorId: create.vendorId,
     };
   }
