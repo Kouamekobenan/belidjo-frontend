@@ -16,7 +16,7 @@ export class CustomerRepository implements ICustomerRepository {
     vendorId: string,
     limit: number,
     page: number
-  ): Promise<IPaginatedResponse<Customer[]>> {
+  ): Promise<IPaginatedResponse<Customer>> {
     const url = `/customer/vendor/${vendorId}`;
     const response = await api.get(url, {
       params: {

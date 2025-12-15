@@ -7,7 +7,7 @@ export class FindAllCustomerUseCase {
     vendorId: string,
     limit: number,
     page: number
-  ): Promise<IPaginatedResponse<Customer[]>> {
+  ): Promise<IPaginatedResponse<Customer>> {
     try {
       return await this.customerRepo.findAll(vendorId, limit, page);
     } catch (error) {
