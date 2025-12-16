@@ -64,7 +64,7 @@ export default function ParamVendorPage() {
         cityName={user?.cityName}
         vendorProfile={user?.vendorProfile}
       />
-      <main className="flex-1 w-full pt-14">
+      <main className="flex-1 w-full pt-20 md:pt-2">
         <ParamVendor vendorProfile={user.vendorProfile} />
       </main>
     </div>

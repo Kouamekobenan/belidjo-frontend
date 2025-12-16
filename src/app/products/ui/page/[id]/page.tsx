@@ -14,6 +14,7 @@ import { CreateCustomerUseCase } from "@/app/customer/application/usecases/creat
 import { CreateCustomerDto } from "@/app/customer/application/dtos/create-customer.dto";
 import { useAuth } from "@/app/context/AuthContext";
 import { CustomerMapper } from "@/app/customer/domain/mapper/customer.mapper";
+import toast from "react-hot-toast";
 
 interface Site {
   id: string;
@@ -124,7 +125,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
       try {
         // Vérifier si la relation client-vendeur existe déjà
         const response = await api.get(`/customer/user/${userId}`);
-        console.log("client ", response.data.data);
         setCustomer(response.data.data);
         setIsSubscribed(response.data.data || false);
       } catch (error) {
@@ -141,7 +141,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
   const handleSubscribe = async () => {
     // Vérifier si l'utilisateur est connecté
     if (!userId) {
-      alert("Veuillez vous connecter pour vous abonner à ce vendeur");
+      toast.success("Veuillez vous connecter pour vous abonner à ce vendeur");
       // Optionnel: rediriger vers la page de connexion
       window.location.href = "/users/ui/login";
       return;
@@ -156,7 +156,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
 
         if (response.status === 200) {
           setIsSubscribed(false);
-          alert("Vous n'êtes plus client de ce vendeur");
+          toast.success("Vous n'êtes plus client de ce vendeur");
         }
       } else {
         // S'abonner (créer la relation client)
@@ -170,17 +170,17 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
 
         if (response.status === 201 || response.status === 200) {
           setIsSubscribed(true);
-          alert("Vous êtes maintenant client de ce vendeur ! 🎉");
+          toast.success("Vous êtes maintenant client de ce vendeur ! 🎉");
         }
       }
     } catch (error: any) {
       console.error("Erreur lors de l'abonnement:", error);
 
       if (error.response?.status === 409) {
-        alert("Vous êtes déjà client de ce vendeur");
+        toast.success("Vous êtes déjà client de ce vendeur");
         setIsSubscribed(true);
       } else {
-        alert("Une erreur est survenue. Veuillez réessayer.");
+        toast.error("Une erreur est survenue. Veuillez réessayer.");
       }
     } finally {
       setIsLoading(false);
@@ -191,7 +191,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
   if (!user) {
     return (
       <button
-        onClick={() => alert("Veuillez vous connecter pour vous abonner")}
+        onClick={() => toast.error("Veuillez vous connecter pour vous abonner")}
         className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 shadow-md hover:shadow-lg group"
       >
         <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors bg-white/20 group-hover:bg-white/30">

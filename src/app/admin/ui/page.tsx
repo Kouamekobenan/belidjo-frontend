@@ -28,7 +28,7 @@ export default function AdminPage() {
       />
 
       {/* Conteneur principal avec gestion du spacing de la navbar */}
-      <main className="flex-1 w-full pt-12 md:pt-2">
+      <main className="flex-1 w-full pt-20 md:pt-2">
         <DashbordVendor />
       </main>
     </div>

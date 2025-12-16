@@ -62,28 +62,17 @@ export default function CategoryPage() {
   }
   // Interface principale avec design moderne
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="sticky top-0 h-screen">
-          <NavbarDashbordVendor
-            name={user?.name}
-            phone={user?.phone}
-            cityName={user?.cityName}
-            vendorProfile={user?.vendorProfile}
-          />
-        </aside>
-        {/* Contenu principal */}
-        <main className="flex-1 p-8 ">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-              <div className="text-center py-12 space-y-4">
-                <CategoriesList vendorId={vendorId} />
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
+    <div className="flex min-h-screen bg-gray-50">
+      <NavbarDashbordVendor
+        name={user?.name}
+        phone={user?.phone}
+        cityName={user?.cityName}
+        vendorProfile={user?.vendorProfile}
+      />
+      {/* Contenu principal */}
+      <main className="flex-1 p-2 pt-20 md-pt-2">
+        <CategoriesList vendorId={vendorId} />
+      </main>
     </div>
   );
 }

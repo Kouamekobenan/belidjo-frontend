@@ -6,6 +6,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { cityName } from "@/app/lib/globals.type";
 
 // Simuler les types et hooks (à remplacer par vos imports réels)
 interface LoginDto {
@@ -126,7 +127,7 @@ export default function LoginUser() {
             Bienvenue sur
           </h1>
           <h2 className="text-2xl font-serif md:text-3xl font-bold bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">
-            Belidjo
+            {cityName}
           </h2>
         </div>
         {/* Card */}

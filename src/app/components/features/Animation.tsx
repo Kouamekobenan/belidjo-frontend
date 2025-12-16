@@ -391,7 +391,7 @@ export function NeonPromoBanner({ user }: AnimatedPromoBannerProps) {
             <br className="sm:hidden" />
             <Link
               href="/users/ui/login"
-              className="ml-2 neon-text-link font-bold hover:scale-110 inline-block transition-transform"
+              className="ml-2 neon-text-link text-green-600 font-bold hover:scale-110 inline-block transition-transform"
             >
               Créez votre compte
             </Link>

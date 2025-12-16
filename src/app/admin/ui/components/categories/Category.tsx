@@ -253,7 +253,7 @@ export default function VendorCategoriesDashboard({
     );
   }
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {/* En-tête avec actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -495,63 +495,66 @@ const CategoryCardList: React.FC<CategoryListProps> = ({
   handleEdit,
   handleDelete,
 }) => (
-  <div className="lg:hidden p-4 space-y-3">
-    {categories.map((cat) => (
-      <div
-        key={cat.id}
-        className="bg-white border-2 border-gray-200 hover:border-teal-300 rounded-xl p-4 transition-all duration-200 shadow-sm"
-      >
-        <div className="flex items-start gap-4">
-          {/* Image */}
-          <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-            {cat.imageUrl ? (
-              <Image
-                src={cat.imageUrl}
-                alt={cat.name}
-                fill
-                sizes="64px"
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex items-center justify-center w-full h-full">
-                <FolderTree className="w-8 h-8 text-gray-400" />
+  <div className="lg:hidden p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {categories.map((cat) => (
+        <div
+          key={cat.id}
+          className="bg-white border-2 border-gray-200 hover:border-teal-300 rounded-xl p-4 transition-all duration-200 shadow-sm"
+        >
+          <div className="flex flex-col items-start gap-3">
+            {/* Image */}
+            <div className="relative w-full h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+              {cat.imageUrl ? (
+                <Image
+                  src={cat.imageUrl}
+                  alt={cat.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full h-full">
+                  <FolderTree className="w-8 h-8 text-gray-400" />
+                </div>
+              )}
+            </div>
+
+            {/* Informations */}
+            <div className="flex-1 min-w-0 w-full">
+              <h3 className="font-bold text-base text-gray-900 truncate">
+                {cat.name}
+              </h3>
+              <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                {cat.description || "Aucune description"}
+              </p>
+
+              {/* Actions */}
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={() => handleEdit(cat)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-medium rounded-lg transition-colors"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Modifier</span>
+                  <span className="sm:hidden">Mod.</span>
+                </button>
+                <button
+                  onClick={() => handleDelete(cat)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Supprimer</span>
+                  <span className="sm:hidden">Supp.</span>
+                </button>
               </div>
-            )}
-          </div>
-
-          {/* Informations */}
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-lg text-gray-900 truncate">
-              {cat.name}
-            </h3>
-            <p className="text-sm text-gray-600 line-clamp-2 mt-1">
-              {cat.description || "Aucune description"}
-            </p>
-
-            {/* Actions */}
-            <div className="flex gap-2 mt-3">
-              <button
-                onClick={() => handleEdit(cat)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-medium rounded-lg transition-colors"
-              >
-                <Pencil className="w-3.5 h-3.5" />
-                Modifier
-              </button>
-              <button
-                onClick={() => handleDelete(cat)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg transition-colors"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                Supprimer
-              </button>
             </div>
           </div>
         </div>
-      </div>
-    ))}
+      ))}
+    </div>
   </div>
 );
-
 // Composant Input File
 interface InputFileButtonProps {
   imageFile: File | null;

@@ -166,7 +166,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
                 <div className="p-4 md:p-6">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     {/* Informations client */}
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="flex-1 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {/* Nom */}
                       <div className="flex items-start gap-3">
                         <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-2 rounded-lg">
@@ -213,19 +213,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
                       </div>
 
                       {/* Ville */}
-                      <div className="flex items-start gap-3">
-                        <div className="bg-gradient-to-br from-orange-100 to-red-100 p-2 rounded-lg">
-                          <MapPin className="text-orange-600" size={20} />
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500 font-medium mb-1">
-                            Ville
-                          </div>
-                          <div className="font-medium text-gray-900">
-                            {customer.user?.cityName || "Non renseigné"}
-                          </div>
-                        </div>
-                      </div>
+                     
                     </div>
 
                     {/* Actions */}
