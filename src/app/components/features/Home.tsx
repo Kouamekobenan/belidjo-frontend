@@ -55,8 +55,8 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
-          <a
-            href="/"
+          <Link
+            href="/page"
             className="flex items-center space-x-2 group flex-shrink-0"
           >
             <div className="relative">
@@ -83,7 +83,7 @@ const Navbar = () => {
                 {cityName}
               </span>
             </span>
-          </a>
+          </Link>
 
           {/* Menu Desktop */}
           <div className="hidden md:flex items-center space-x-6">
@@ -123,13 +123,13 @@ const Navbar = () => {
 
           {/* Boutons d'action Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            <a
+            <Link
               href="/users/ui/login"
               className="group inline-flex items-center space-x-2 px-5 py-2.5 text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
               <LogIn className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               <span>Connexion Vendeur</span>
-            </a>
+            </Link>
           </div>
 
           {/* Bouton Menu Mobile */}
@@ -260,16 +260,16 @@ export default function HomePage() {
 
           {/* Boutons CTA */}
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
-            <a
+            <Link
               href="/vendor"
               className="group inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-teal-500 to-green-600 hover:from-teal-600 hover:to-green-700 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
               <span className="relative flex items-center">
-                Faire mes achats
+                Je Faire mes achats
                 <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
               </span>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -435,7 +435,6 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-
             {/* CTA Button */}
             <div className="flex flex-col items-center gap-4">
               <Link
@@ -457,7 +456,7 @@ export default function HomePage() {
         </footer>
       </main>
       {/* Bouton flottant */}
-      <a
+      <Link
         href="/vendor"
         className="fixed bottom-6 right-4 sm:right-6 z-50 group"
         aria-label="Voir les vendeurs"
@@ -474,7 +473,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </a>
+      </Link>
     </div>
   );
 }

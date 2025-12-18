@@ -100,7 +100,6 @@ const BannerEditButton = ({
     try {
       const formData = new FormData();
       formData.append("logoUrl", file);
-      // Utiliser l'ID du site, pas du vendor !
       const response = await api.patch(`/vendor/site/${siteId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -124,26 +123,37 @@ const BannerEditButton = ({
 
   return (
     <>
-      {/* Bouton flottant sur la bannière */}
+      {/* Bouton adaptatif : cercle sur mobile, rectangulaire sur desktop */}
       <button
         onClick={() => setShowModal(true)}
         disabled={isUploading}
-        className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm px-4 py-3 rounded-full shadow-lg hover:bg-white hover:shadow-xl transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed z-20"
+        className="absolute top-4 right-4 sm:top-6 sm:left-6 
+    bg-white/95 backdrop-blur-sm shadow-md hover:shadow-lg 
+    transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed z-20
+    
+    /* Mobile : Cercle flottant à droite */
+    w-12 h-12 rounded-full flex items-center justify-center
+    
+    /* Desktop : Petit bouton rectangulaire à gauche */
+    sm:w-36 cursor-pointer sm:h-auto sm:px-3 sm:py-2 sm:rounded-lg sm:border sm:border-slate-200/50
+    
+    hover:bg-white hover:scale-105 active:scale-95"
         aria-label="Modifier la bannière"
       >
         <div className="flex items-center gap-2">
           {isUploading ? (
             <>
               <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
-              <span className="text-sm font-semibold text-slate-800">
-                Téléchargement...
+              <span className="hidden sm:inline text-xs font-medium text-slate-700">
+                En cours...
               </span>
             </>
           ) : (
             <>
               <Camera className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-semibold text-slate-800">
-                Modifier la bannière
+              {/* Texte plus petit (text-xs) pour rester discret sur desktop */}
+              <span className="hidden sm:inline text-xs font-medium text-slate-700">
+                Modifier 
               </span>
             </>
           )}
@@ -218,7 +228,6 @@ const BannerEditButton = ({
     </>
   );
 };
-
 // --- COMPOSANT : Bouton de Copie du Domaine ---
 
 interface DomainCopyButtonProps {
@@ -241,7 +250,6 @@ const DomainCopyButton = ({ domain }: DomainCopyButtonProps) => {
       console.error("Erreur lors de la copie: ", err);
     }
   }, [domain]);
-
   return (
     <div
       className="flex items-center gap-2 text-sm cursor-pointer group"
@@ -270,7 +278,6 @@ const DomainCopyButton = ({ domain }: DomainCopyButtonProps) => {
 };
 
 // --- COMPOSANT : Bouton d'Abonnement ---
-
 interface SubscribeButtonProps {
   vendorId: string;
   userId: string | null;
@@ -297,7 +304,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
         setIsLoading(false);
         return;
       }
-
       try {
         const response = await api.get(`/customer/user/${userId}`);
         setCustomer(response.data.data);
@@ -309,7 +315,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
         setIsLoading(false);
       }
     };
-
     checkSubscription();
   }, [userId, vendorId]);
 
@@ -319,13 +324,10 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
       window.location.href = "/users/ui/login";
       return;
     }
-
     setIsLoading(true);
-
     try {
       if (isSubscribed) {
         const response = await api.delete(`/customer/${customerId}`);
-
         if (response.status === 200) {
           setIsSubscribed(false);
           toast.success("Vous n'êtes plus client de ce vendeur");
@@ -336,9 +338,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
           vendorId: vendorId,
           cityId: user.cityId,
         };
-
         const response = await api.post("/customer", clientData);
-
         if (response.status === 201 || response.status === 200) {
           setIsSubscribed(true);
           toast.success("Vous êtes maintenant client de ce vendeur ! 🎉");
@@ -346,7 +346,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
       }
     } catch (error: any) {
       console.error("Erreur lors de l'abonnement:", error);
-
       if (error.response?.status === 409) {
         toast.success("Vous êtes déjà client de ce vendeur");
         setIsSubscribed(true);
@@ -357,7 +356,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
       setIsLoading(false);
     }
   };
-
   if (!user) {
     return (
       <button
@@ -371,7 +369,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
       </button>
     );
   }
-
   return (
     <button
       onClick={handleSubscribe}
@@ -410,9 +407,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
     </button>
   );
 };
-
 // --- Composant Principal de la Page ---
-
 export default function VendorProductsPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
@@ -421,7 +416,6 @@ export default function VendorProductsPage() {
   const { user } = useAuth();
   const currentUserId = user?.id || null;
   const { id } = useParams();
-
   useEffect(() => {
     const fetchVendor = async () => {
       if (!id) return;

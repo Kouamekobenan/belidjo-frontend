@@ -84,7 +84,7 @@ export default function LoginUser() {
           break;
         case "CUSTOMER":
           toast.success("Vous êtes connectez avec succès!");
-          router.push("/");
+          router.push("/page");
           break;
         case "ADMIN":
           toast.success("Vous êtes connectez avec succès!");

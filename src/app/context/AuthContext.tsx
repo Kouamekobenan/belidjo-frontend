@@ -1,7 +1,13 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { User } from "../lib/globals.type";
-import { api } from "../lib/api"; // ✅ importer ton instance axios
+import { api } from "../lib/api";
 
 interface AuthContextType {
   user: User | null;
@@ -18,14 +24,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const isMounted = useRef(true);
 
   const login = async (phone: string, password: string): Promise<User> => {
     try {
       const res = await api.post(`/auth/login`, { phone, password });
       const { access_token, refresh_token, user } = res.data;
 
-      localStorage.setItem("access_token", access_token);
-      localStorage.setItem("refresh_token", refresh_token);
+      // ✅ Vérification que le code s'exécute côté client
+      if (typeof window !== "undefined") {
+        localStorage.setItem("access_token", access_token);
+        localStorage.setItem("refresh_token", refresh_token);
+        localStorage.setItem("user_id", user.id);
+      }
 
       setUser(user);
       setIsAuthenticated(true);
@@ -36,13 +47,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+    if (typeof window !== "undefined") {
+      localStorage.clear();
+    }
     setUser(null);
     setIsAuthenticated(false);
   };
 
   const refreshUser = async () => {
+    // ✅ Protection SSR
+    if (typeof window === "undefined") {
+      setLoading(false);
+      return;
+    }
+
     const token = localStorage.getItem("access_token");
     if (!token) {
       setLoading(false);
@@ -50,38 +68,72 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     try {
-      const res = await api.get(`/auth/me`); // ✅ utilise l’instance api
-      setUser(res.data);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.warn("Erreur lors du rafraîchissement de l'utilisateur :", error);
-      logout();
+      const res = await api.get(`/auth/me`);
+
+      // ✅ Vérification que le composant est toujours monté
+      if (isMounted.current) {
+        setUser(res.data);
+        setIsAuthenticated(true);
+      }
+    } catch (error: any) {
+      console.warn("Session invalide:", error.message);
+
+      // ✅ Si 401, essayer de refresh le token
+      if (error.response?.status === 401) {
+        const refreshToken = localStorage.getItem("refresh_token");
+        if (refreshToken) {
+          try {
+            const res = await api.post(`/auth/refresh`, {
+              refresh_token: refreshToken,
+            });
+            localStorage.setItem("access_token", res.data.access_token);
+            // Retry refreshUser
+            await refreshUser();
+            return;
+          } catch (refreshError) {
+            console.error("Refresh token invalide");
+          }
+        }
+      }
+
+      if (isMounted.current) {
+        logout();
+      }
     } finally {
-      setLoading(false);
+      if (isMounted.current) {
+        setLoading(false);
+      }
     }
   };
 
-  // ✅ Attendre un petit délai avant refreshUser pour éviter le race condition
   useEffect(() => {
-    const timer = setTimeout(() => {
-      refreshUser();
-    }, 100); // léger délai
-    return () => clearTimeout(timer);
+    isMounted.current = true;
+    refreshUser();
+
+    // ✅ Cleanup pour éviter les memory leaks
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
   return (
     <AuthContext.Provider
       value={{ user, isAuthenticated, loading, login, logout, refreshUser }}
     >
-      {children}
+      {!loading ? (
+        children
+      ) : (
+        <div className="flex h-screen items-center justify-center">
+          Chargement...
+        </div>
+      )}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
+  if (!context)
     throw new Error("useAuth doit être utilisé dans un AuthProvider");
-  }
   return context;
 };

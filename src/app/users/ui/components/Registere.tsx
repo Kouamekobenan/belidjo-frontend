@@ -31,7 +31,6 @@ export default function RegisterForm() {
     password: "",
     phone: "",
     role: UserRole.CUSTOMER,
-    refreshToken: "",
     cityId: "",
   });
   // J'ai mis le LOGO_SRC ici pour la clarté, mais il peut rester en dehors.
@@ -153,27 +152,31 @@ export default function RegisterForm() {
         password: formData.password,
         phone: formData.phone?.trim() ?? "",
         role: formData.role,
-        refreshToken: formData.refreshToken,
+        // refreshToken: formData.refreshToken,
         cityId: formData.cityId,
       };
+      const response = await createUserUseCase.execute(dto);
+      if (response.token) {
+        localStorage.setItem("accessToken", response.token.accessToken);
+        localStorage.setItem("refreshToken", response.token.refreshToken);
+      }
 
-      const user = await createUserUseCase.execute(dto);
-      toast.success(`Bienvenue ${user.email} ! Votre compte est créé.`);
+      // ✅ Utiliser formData au lieu de user
+      toast.success(`Bienvenue ${formData.name} ! Votre compte est créé.`);
       setMessageType("success");
 
       setTimeout(() => {
+        setMessage(
+          `Bienvenue ${formData.name} ! Votre compte a été créé avec succès.`
+        );
         setFormData({
           name: "",
           email: "",
           password: "",
           phone: "",
           role: UserRole.CUSTOMER,
-          refreshToken: "",
           cityId: "",
         });
-        setMessage(
-          `Bienvenue ${user.email} ! Votre compte a été créé avec succès.`
-        );
       }, 500);
     } catch (error: unknown) {
       const errorMessage =
@@ -186,7 +189,6 @@ export default function RegisterForm() {
       setLoading(false);
     }
   };
-
   // Classes de style (inchangées)
   const inputClass = (name: keyof RegisterDto) => `
     w-full pl-11 pr-4 text-gray-800 py-3 border rounded-xl 
@@ -232,7 +234,6 @@ export default function RegisterForm() {
                 />
               </div>
             </div>
-
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-1 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-700">
               Inscription
             </h1>
@@ -240,7 +241,6 @@ export default function RegisterForm() {
               Créez votre compte client en quelques secondes
             </p>
           </div>
-
           {/* Formulaire : Réduction de l'espace vertical (space-y-3 au lieu de space-y-6) */}
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Nom complet */}
@@ -310,7 +310,6 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
-
             {/* Mot de passe */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">

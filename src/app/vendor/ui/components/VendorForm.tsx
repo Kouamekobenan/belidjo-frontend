@@ -11,6 +11,7 @@ import { api } from "@/app/lib/api";
 
 // Schéma de validation mis à jour avec la description
 const vendorSchema = z.object({
+  // id: z.string().uuid("ID utilisateur invalide"),
   userId: z.string().uuid("ID utilisateur invalide"),
   name: z
     .string()

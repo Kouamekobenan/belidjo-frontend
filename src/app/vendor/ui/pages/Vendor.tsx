@@ -121,7 +121,7 @@ export default function VendorPage() {
       <header className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-12 border-b border-gray-200 pb-8">
         {/* Conteneur du Logo: Responsive et Visuel */}
         <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 p-2 sm:p-3 bg-white rounded-xl shadow-lg border border-gray-100">
-          <Link href="/">
+          <Link href="/page">
             <Image
               src={LOGO_SRC}
               width={80}
@@ -144,7 +144,6 @@ export default function VendorPage() {
           </p>
         </div>
       </header>
-
       {/* Affichage conditionnel basé sur l'état */}
       <main className="mt-8">{content}</main>
     </div>

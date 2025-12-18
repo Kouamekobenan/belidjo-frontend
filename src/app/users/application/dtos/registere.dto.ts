@@ -6,7 +6,14 @@ export interface RegisterDto {
   password: string;
   phone: string | null;
   role: UserRole;
-  refreshToken: string | null;
   cityId: string | null;
  
+}
+
+export interface RegisterResponse {
+  message: string;
+  token: {
+    accessToken: string;
+    refreshToken: string;
+  };
 }
