@@ -2,13 +2,22 @@
 
 import { useParams } from "next/navigation";
 import VendorProducts from "../../components/GetProduct";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { api } from "@/app/lib/api";
 import VendorNavBar from "@/app/components/layout/Vendor-NavBar";
 import Image from "next/image";
 import CategoriesList from "@/app/categories/ui/components/FindCategory";
 import { VendorFooter } from "@/app/components/layout/Vendor-Footer";
-import { Copy, Check, Bell, BellOff, Loader2 } from "lucide-react";
+import {
+  Copy,
+  Check,
+  Bell,
+  BellOff,
+  Loader2,
+  Camera,
+  Upload,
+  X,
+} from "lucide-react";
 import { CustomerRepository } from "@/app/customer/infrastructure/customer-repository.impl";
 import { CreateCustomerUseCase } from "@/app/customer/application/usecases/create-customer.usecase";
 import { CreateCustomerDto } from "@/app/customer/application/dtos/create-customer.dto";
@@ -41,6 +50,174 @@ interface Vendor {
 }
 const customerRepo = new CustomerRepository(new CustomerMapper());
 const createCustomerUseCase = new CreateCustomerUseCase(customerRepo);
+
+// --- NOUVEAU COMPOSANT : Bouton d'Édition de Bannière ---
+
+interface BannerEditButtonProps {
+  vendorId: string;
+  siteId: string; // ID du site, pas du vendor
+  currentUserId: string | null;
+  vendorOwnerId: string;
+  onImageUpdate: (newImageUrl: string) => void;
+}
+
+const BannerEditButton = ({
+  siteId,
+  currentUserId,
+  vendorOwnerId,
+  onImageUpdate,
+}: BannerEditButtonProps) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Vérifier si l'utilisateur actuel est le propriétaire
+  const isOwner = currentUserId === vendorOwnerId;
+
+  if (!isOwner) return null;
+
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Vérifier le type de fichier
+    if (!file.type.startsWith("image/")) {
+      toast.error("Veuillez sélectionner une image valide");
+      return;
+    }
+
+    // Vérifier la taille (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("L'image ne doit pas dépasser 5MB");
+      return;
+    }
+
+    setIsUploading(true);
+    setShowModal(false);
+
+    try {
+      const formData = new FormData();
+      formData.append("logoUrl", file);
+      // Utiliser l'ID du site, pas du vendor !
+      const response = await api.patch(`/vendor/site/${siteId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.data?.data?.logoUrl) {
+        onImageUpdate(response.data.data.logoUrl);
+        toast.success("Bannière mise à jour avec succès ! 🎉");
+      }
+    } catch (error: any) {
+      console.error("Erreur lors du téléchargement:", error);
+      toast.error("Erreur lors de la mise à jour de la bannière");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  return (
+    <>
+      {/* Bouton flottant sur la bannière */}
+      <button
+        onClick={() => setShowModal(true)}
+        disabled={isUploading}
+        className="absolute top-6 left-6 bg-white/90 backdrop-blur-sm px-4 py-3 rounded-full shadow-lg hover:bg-white hover:shadow-xl transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed z-20"
+        aria-label="Modifier la bannière"
+      >
+        <div className="flex items-center gap-2">
+          {isUploading ? (
+            <>
+              <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
+              <span className="text-sm font-semibold text-slate-800">
+                Téléchargement...
+              </span>
+            </>
+          ) : (
+            <>
+              <Camera className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-semibold text-slate-800">
+                Modifier la bannière
+              </span>
+            </>
+          )}
+        </div>
+      </button>
+
+      {/* Modal de confirmation */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-slate-800">
+                Modifier la bannière
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
+              >
+                <X className="w-5 h-5 text-slate-600" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-slate-600">
+                Choisissez une nouvelle image pour votre bannière de couverture.
+              </p>
+
+              <div className="bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-slate-300">
+                <ul className="text-sm text-slate-600 space-y-2">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-teal-600" />
+                    Format : JPG, PNG, WEBP
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-teal-600" />
+                    Taille max : 5MB
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-teal-600" />
+                    Ratio recommandé : 16:9
+                  </li>
+                </ul>
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 px-6 py-3 rounded-xl font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <Upload className="w-5 h-5" />
+                  Choisir une image
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 // --- COMPOSANT : Bouton de Copie du Domaine ---
 
@@ -96,13 +273,13 @@ const DomainCopyButton = ({ domain }: DomainCopyButtonProps) => {
 
 interface SubscribeButtonProps {
   vendorId: string;
-  userId: string | null; // ID de l'utilisateur connecté
-  cityId: string; // ID de la ville du vendeur
+  userId: string | null;
+  cityId: string;
 }
 interface CustomerType {
   id: string;
   vendorId: string;
-  userId: string | null; // ID de l'utilisateur connecté
+  userId: string | null;
   cityId: string;
 }
 
@@ -113,7 +290,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
   const { user } = useAuth();
   const userId = user?.id;
   const customerId = customer?.id;
-  // Vérifier si l'utilisateur est déjà client de ce vendeur
 
   useEffect(() => {
     const checkSubscription = async () => {
@@ -123,7 +299,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
       }
 
       try {
-        // Vérifier si la relation client-vendeur existe déjà
         const response = await api.get(`/customer/user/${userId}`);
         setCustomer(response.data.data);
         setIsSubscribed(response.data.data || false);
@@ -139,10 +314,8 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
   }, [userId, vendorId]);
 
   const handleSubscribe = async () => {
-    // Vérifier si l'utilisateur est connecté
     if (!userId) {
       toast.success("Veuillez vous connecter pour vous abonner à ce vendeur");
-      // Optionnel: rediriger vers la page de connexion
       window.location.href = "/users/ui/login";
       return;
     }
@@ -151,7 +324,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
 
     try {
       if (isSubscribed) {
-        // Se désabonner (supprimer la relation client)
         const response = await api.delete(`/customer/${customerId}`);
 
         if (response.status === 200) {
@@ -159,7 +331,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
           toast.success("Vous n'êtes plus client de ce vendeur");
         }
       } else {
-        // S'abonner (créer la relation client)
         const clientData = {
           userId: userId,
           vendorId: vendorId,
@@ -187,7 +358,6 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
     }
   };
 
-  // Si pas connecté, afficher un bouton différent
   if (!user) {
     return (
       <button
@@ -247,7 +417,9 @@ export default function VendorProductsPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [bannerUrl, setBannerUrl] = useState<string>("");
+  const { user } = useAuth();
+  const currentUserId = user?.id || null;
   const { id } = useParams();
 
   useEffect(() => {
@@ -259,6 +431,7 @@ export default function VendorProductsPage() {
         setError(null);
         const res = await api.get(`/vendor/${id}`);
         setVendor(res.data.data);
+        setBannerUrl(res.data.data.site?.logoUrl || "/images/img.jpg");
       } catch (err) {
         setError("Impossible de charger les informations du vendeur");
       } finally {
@@ -266,20 +439,28 @@ export default function VendorProductsPage() {
       }
     };
     fetchVendor();
-    // getUserFromContext();
   }, [id]);
 
-  // Loading State
+  const handleBannerUpdate = (newImageUrl: string) => {
+    setBannerUrl(newImageUrl);
+    if (vendor) {
+      setVendor({
+        ...vendor,
+        site: {
+          ...vendor.site,
+          logoUrl: newImageUrl,
+        },
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <VendorNavBar />
-
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden animate-pulse">
-            {/* Banner Skeleton */}
             <div className="h-80 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"></div>
-            {/* Content Skeleton */}
             <div className="p-8 space-y-6">
               <div className="flex items-center gap-6">
                 <div className="w-32 h-32 bg-slate-200 rounded-2xl"></div>
@@ -296,7 +477,6 @@ export default function VendorProductsPage() {
     );
   }
 
-  // Error State
   if (error || !vendor) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -336,28 +516,34 @@ export default function VendorProductsPage() {
     );
   }
 
-  // Destruction pour des variables plus propres
   const { name, id: vendorId, site } = vendor;
-  const bannerImageUrl = site?.logoUrl || "/images/img.jpg";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-blue-50">
       <VendorNavBar />
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Vendor Header Card avec Design Premium */}
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transform transition-all duration-300 hover:shadow-3xl">
           {/* BANNIÈRE DE COUVERTURE */}
           <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
             <Image
-              src={bannerImageUrl}
+              src={bannerUrl}
               alt={`Bannière ${name}`}
               fill
               className="object-cover transition-transform duration-700 hover:scale-105"
               priority
               sizes="(max-width: 1280px) 100vw, 1280px"
             />
-            {/* Overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+
+            {/* NOUVEAU : Bouton d'édition de bannière */}
+            <BannerEditButton
+              vendorId={vendorId}
+              siteId={site.id} // Passer l'ID du site
+              currentUserId={currentUserId}
+              vendorOwnerId={vendor.userId}
+              onImageUpdate={handleBannerUpdate}
+            />
+
             {/* Badge Premium */}
             <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
               <div className="flex items-center gap-2">
@@ -378,12 +564,11 @@ export default function VendorProductsPage() {
           {/* Contenu Principal */}
           <div className="relative px-4 sm:px-8 pb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-16 relative z-10">
-              {/* Logo Container */}
               <div className="flex-shrink-0 bg-white p-2 rounded-3xl shadow-sm ring-4 ring-white">
                 {site?.logoUrl ? (
                   <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden">
                     <Image
-                      src={bannerImageUrl}
+                      src={bannerUrl}
                       fill
                       alt={`Logo ${name}`}
                       className="object-cover"
@@ -409,7 +594,6 @@ export default function VendorProductsPage() {
                 )}
               </div>
 
-              {/* Informations du vendeur */}
               <div className="flex-1 pt-12">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-700">
@@ -426,11 +610,8 @@ export default function VendorProductsPage() {
                   {name}
                 </h1>
 
-                {/* Informations supplémentaires avec bouton d'abonnement */}
                 <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-slate-600">
-                  {/* Bouton de copie du domaine */}
                   {site?.domain && <DomainCopyButton domain={site.domain} />}
-                  {/* NOUVEAU : Bouton d'abonnement */}
                   <SubscribeButton
                     vendorId={vendorId}
                     userId={currentUserId}
@@ -438,7 +619,6 @@ export default function VendorProductsPage() {
                   />
                 </div>
 
-                {/* Description */}
                 {site?.description && (
                   <div className="mt-6 p-5 bg-slate-50 rounded-2xl border border-slate-200">
                     <p className="text-slate-700 leading-relaxed">
@@ -451,7 +631,6 @@ export default function VendorProductsPage() {
           </div>
         </div>
 
-        {/* Products Section */}
         <CategoriesList vendorId={vendorId} />
         <VendorProducts vendorId={id as string} />
         <VendorFooter

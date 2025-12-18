@@ -4,6 +4,9 @@ export class Vendor {
     public name: string,
     public readonly userId: string,
     public readonly cityId: string,
+    public isApproved: boolean,
+    public approvedById: string,
+    public approvedAt: Date,
     public readonly user: {
       id: string;
       name: string;

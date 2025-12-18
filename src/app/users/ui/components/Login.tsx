@@ -84,10 +84,14 @@ export default function LoginUser() {
           break;
         case "CUSTOMER":
           toast.success("Vous êtes connectez avec succès!");
-          router.push("/vendor");
+          router.push("/");
+          break;
+        case "ADMIN":
+          toast.success("Vous êtes connectez avec succès!");
+          router.push("/super-admin");
           break;
         default:
-          router.push("/dashbord");
+          router.push("/vendor");
       }
     } catch (err) {
       console.error("Erreur de connexion:", err);

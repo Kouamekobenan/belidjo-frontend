@@ -5,6 +5,17 @@ export async function getVendorsUseCase(): Promise<Vendor[]> {
   const vendors = await VendorApi.getAll();
   return vendors.map(
     (v: any) =>
-      new Vendor(v.id, v.name, v.userId, v.cityId, v.user, v.site, v.city)
+      new Vendor(
+        v.id,
+        v.name,
+        v.userId,
+        v.cityId,
+        v.isApproved,
+        v.approvedById,
+        v.approvedAt,
+        v.user,
+        v.site,
+        v.city
+      )
   );
 }

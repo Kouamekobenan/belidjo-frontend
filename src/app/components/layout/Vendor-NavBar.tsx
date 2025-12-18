@@ -16,7 +16,6 @@ import { useAuth } from "@/app/context/AuthContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import AnimatedPromoBanner, {
-  MinimalPromoBanner,
   NeonPromoBanner,
 } from "../features/Animation";
 

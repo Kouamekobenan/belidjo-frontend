@@ -52,3 +52,4 @@ export interface ICustomer {
   user: User[];
 }
 export const cityName = "NoBoutik";
+export const logoNoBoutik = "/images/bj.png";

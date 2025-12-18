@@ -137,7 +137,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
           </svg>
         </div>
         <h3 className="text-2xl font-extrabold text-gray-800 mb-2">
-          Aucun produit disponible 😔
+          Aucun produit disponible 
         </h3>
         <p className="text-gray-500 text-base">
           Ce vendeur n'a pas encore ajouté de produits.
