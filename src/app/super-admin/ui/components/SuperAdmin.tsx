@@ -22,10 +22,15 @@ import {
 } from "lucide-react";
 import { ApproveVendorUseCase } from "@/app/vendor/application/usecases/approve-vendor.usecase";
 import toast from "react-hot-toast";
+import { UserRepository } from "@/app/users/infrastructure/user-repository.impl";
+import { UserMapper } from "@/app/users/domain/mappers/user.mapper";
+import { UpdateRoleUserUseCase } from "@/app/users/application/usecases/update-role-user.usecase";
 
 const repoVendor = new VendorRepository();
 const findAllVendorUseCase = new FindAllVendorUseCase(repoVendor);
 const approveVendorUseCase = new ApproveVendorUseCase(repoVendor);
+const userRepo = new UserRepository(new UserMapper());
+const updateRoleUserUseCase = new UpdateRoleUserUseCase(userRepo);
 
 export default function SuperAdmin() {
   const { user } = useAuth();
@@ -46,25 +51,43 @@ export default function SuperAdmin() {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchVendors();
   }, []);
 
-  const handleToggleStatus = async (vendorId: string) => {
+  const handleToggleStatus = async (vendorId: string, userId: string) => {
     const loadingToast = toast.loading("Mise à jour du statut...");
 
     try {
-      await approveVendorUseCase.execute(vendorId);
+      if (!userId) {
+        toast.error("Utilisateur non identifié", { id: loadingToast });
+        return;
+      }
+
+      // OU exécution parallèle (si l'ordre n'a pas d'importance)
+      await Promise.all([
+        updateRoleUserUseCase.execute(userId),
+        approveVendorUseCase.execute(vendorId),
+      ]);
+
       toast.success("Le statut a été mis à jour avec succès !", {
-        id: loadingToast, // On remplace le toast de chargement par celui de succès
+        id: loadingToast,
       });
-      fetchVendors();
+
+      await fetchVendors();
     } catch (error) {
-      alert("Erreur lors de la modification du statut");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Erreur lors de la modification du statut";
+
+      toast.error(message, {
+        id: loadingToast,
+      });
+
+      console.error("Erreur handleToggleStatus:", error);
     }
   };
-
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
@@ -87,7 +110,6 @@ export default function SuperAdmin() {
                 Veuillez vous connecter pour gerer votre espace admin.
               </p>
             </div>
-
             {/* Bouton de connexion */}
             <Link
               href="/users/ui/login"
@@ -97,7 +119,6 @@ export default function SuperAdmin() {
               <LogIn className="w-5 h-5 relative z-10" />
               <span className="relative z-10">Se connecter</span>
             </Link>
-
             {/* Lien secondaire */}
             <p className="text-sm text-gray-500">
               Pas encore de compte ?{" "}
@@ -118,13 +139,15 @@ export default function SuperAdmin() {
     <div className="min-h-screen bg-[#f8fafc] pb-12">
       {/* Header */}
       <nav className="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center sticky top-0 z-10">
-        <Image
-          src={logoNoBoutik}
-          width={100}
-          height={40}
-          alt="Logo"
-          className="object-contain"
-        />
+        <Link href="/page">
+          <Image
+            src={logoNoBoutik}
+            width={100}
+            height={40}
+            alt="Logo"
+            className="object-contain"
+          />
+        </Link>
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
             <p className="text-xs font-bold text-slate-400 uppercase">
@@ -132,12 +155,11 @@ export default function SuperAdmin() {
             </p>
             <p className="text-sm font-semibold text-slate-700">{user?.name}</p>
           </div>
-          <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold border border-indigo-200">
+          <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-green-700 font-bold border border-green-200">
             {user?.name?.charAt(0)}
           </div>
         </div>
       </nav>
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         {/* Stats Card */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-5 mb-10 w-full md:w-72">
@@ -149,7 +171,6 @@ export default function SuperAdmin() {
             <h2 className="text-3xl font-extrabold text-slate-900">{total}</h2>
           </div>
         </div>
-
         {/* Table Container */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="px-8 py-5 border-b border-slate-100 bg-slate-50/50">
@@ -157,14 +178,12 @@ export default function SuperAdmin() {
               Liste des boutiques partenaires
             </h3>
           </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
                 <tr className="text-slate-400 text-xs uppercase tracking-wider font-bold border-b border-slate-100">
                   <th className="px-8 py-4">Boutique</th>
                   <th className="px-8 py-4">Contact</th>
-                  <th className="px-8 py-4">Ville</th>
                   <th className="px-8 py-4">Statut</th>
                   <th className="px-8 py-4 text-right">Actions</th>
                 </tr>
@@ -206,9 +225,6 @@ export default function SuperAdmin() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-5 text-sm text-slate-600 font-medium">
-                        {v.user.cityName}
-                      </td>
                       <td className="px-8 py-5">
                         {v.isApproved ? (
                           <span className="flex items-center w-fit gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 uppercase">
@@ -222,7 +238,7 @@ export default function SuperAdmin() {
                       </td>
                       <td className="px-8 py-5 text-right">
                         <button
-                          onClick={() => handleToggleStatus(v.id)}
+                          onClick={() => handleToggleStatus(v.id, v.userId)}
                           className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm border
                             ${
                               v.isApproved

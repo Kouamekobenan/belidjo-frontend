@@ -24,7 +24,6 @@ interface NavbarDashbordVendorProps {
   cityName?: string;
   vendorProfile?: IvendorProfile;
 }
-
 export default function NavbarDashbordVendor({
   name,
   phone,
@@ -227,7 +226,7 @@ export default function NavbarDashbordVendor({
                 <div className="flex items-center gap-2 text-sm">
                   <MapPin className="w-4 h-4 text-teal-400 flex-shrink-0" />
                   <span className="text-gray-300">
-                    {cityName},Côte d&pos;Ivoire
+                    {cityName},Côte d&apos;Ivoire
                   </span>
                 </div>
               </div>

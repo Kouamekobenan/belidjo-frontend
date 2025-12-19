@@ -19,4 +19,8 @@ export class UserRepository implements IUserRepository {
       },
     };
   }
+  async updateRole(id: string): Promise<void> {
+    const url = `users/role/${id}`;
+    await api.patch(url);
+  }
 }
