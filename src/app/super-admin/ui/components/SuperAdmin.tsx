@@ -22,15 +22,11 @@ import {
 } from "lucide-react";
 import { ApproveVendorUseCase } from "@/app/vendor/application/usecases/approve-vendor.usecase";
 import toast from "react-hot-toast";
-import { UserRepository } from "@/app/users/infrastructure/user-repository.impl";
-import { UserMapper } from "@/app/users/domain/mappers/user.mapper";
-import { UpdateRoleUserUseCase } from "@/app/users/application/usecases/update-role-user.usecase";
+import { GetAllVendorUseCase } from "@/app/vendor/application/usecases/getAll-vendor.usecase";
 
 const repoVendor = new VendorRepository();
-const findAllVendorUseCase = new FindAllVendorUseCase(repoVendor);
+const findAllVendorUseCase = new GetAllVendorUseCase(repoVendor);
 const approveVendorUseCase = new ApproveVendorUseCase(repoVendor);
-const userRepo = new UserRepository(new UserMapper());
-const updateRoleUserUseCase = new UpdateRoleUserUseCase(userRepo);
 
 export default function SuperAdmin() {
   const { user } = useAuth();
@@ -38,7 +34,6 @@ export default function SuperAdmin() {
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const VENDOR_PER_PAGE = 50;
-
   const fetchVendors = async () => {
     try {
       setLoading(true);
@@ -55,24 +50,18 @@ export default function SuperAdmin() {
     fetchVendors();
   }, []);
 
-  const handleToggleStatus = async (vendorId: string, userId: string) => {
+  const handleToggleStatus = async (vendorId: string) => {
     const loadingToast = toast.loading("Mise à jour du statut...");
 
     try {
-      if (!userId) {
+      if (!vendorId) {
         toast.error("Utilisateur non identifié", { id: loadingToast });
         return;
       }
-
-      // OU exécution parallèle (si l'ordre n'a pas d'importance)
-      await Promise.all([
-        updateRoleUserUseCase.execute(userId),
-        approveVendorUseCase.execute(vendorId),
-      ]);
-
-      toast.success("Le statut a été mis à jour avec succès !", {
-        id: loadingToast,
-      });
+      approveVendorUseCase.execute(vendorId),
+        toast.success("Le statut a été mis à jour avec succès !", {
+          id: loadingToast,
+        });
 
       await fetchVendors();
     } catch (error) {
@@ -100,7 +89,6 @@ export default function SuperAdmin() {
               </div>
               <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
             </div>
-
             {/* Titre et message */}
             <div className="space-y-3">
               <h1 className="text-2xl font-bold text-gray-900">
@@ -134,7 +122,6 @@ export default function SuperAdmin() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-12">
       {/* Header */}
@@ -238,7 +225,7 @@ export default function SuperAdmin() {
                       </td>
                       <td className="px-8 py-5 text-right">
                         <button
-                          onClick={() => handleToggleStatus(v.id, v.userId)}
+                          onClick={() => handleToggleStatus(v.id)}
                           className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm border
                             ${
                               v.isApproved

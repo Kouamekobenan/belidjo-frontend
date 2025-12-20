@@ -8,6 +8,10 @@ import { Store, Globe, MapPin, Send, Loader2, FileText } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import { ICity } from "@/app/city/domain/interface/city";
 import { api } from "@/app/lib/api";
+import { UserRepository } from "@/app/users/infrastructure/user-repository.impl";
+import { UserMapper } from "@/app/users/domain/mappers/user.mapper";
+import { UpdateRoleUserUseCase } from "@/app/users/application/usecases/update-role-user.usecase";
+import { useRouter } from "next/navigation";
 
 // Schéma de validation mis à jour avec la description
 const vendorSchema = z.object({
@@ -30,12 +34,16 @@ const vendorSchema = z.object({
 
 type VendorFormValues = z.infer<typeof vendorSchema>;
 
+const userRepo = new UserRepository(new UserMapper());
+const updateRoleUserUseCase = new UpdateRoleUserUseCase(userRepo);
+
 // ... (tes imports et ton schéma restent identiques)
 
 export default function CreateVendorForm() {
   const { user } = useAuth();
   const [city, setCity] = useState<ICity[]>([]);
   const [loadingCities, setLoadingCities] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCity = async () => {
@@ -65,14 +73,20 @@ export default function CreateVendorForm() {
       site: { description: "" },
     },
   });
-
   const onSubmit = async (data: VendorFormValues) => {
     const loadingToast = toast.loading("Envoi de votre dossier...");
     try {
-      await api.post("/vendor", data);
+      if (!user?.id) {
+        return;
+      }
+      Promise.all([
+        await api.post("/vendor", data),
+        await updateRoleUserUseCase.execute(user?.id),
+      ]);
       toast.success("Demande envoyée ! Réponse sous 24h.", {
         id: loadingToast,
       });
+      router.push("/admin/ui");
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Échec de l'envoi.", {
         id: loadingToast,

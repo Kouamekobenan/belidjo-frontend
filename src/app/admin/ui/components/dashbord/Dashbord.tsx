@@ -13,6 +13,9 @@ import {
   Eye,
   BarChart3,
   Calendar,
+  CheckCircle,
+  Clock,
+  Mail,
 } from "lucide-react";
 import {
   AreaChart,
@@ -176,19 +179,7 @@ export default function DashbordVendor() {
       </div>
     );
   }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-600 mb-4"></div>
-          <p className="text-lg text-gray-700 font-medium">
-            Chargement du tableau de bord...
-          </p>
-        </div>
-      </div>
-    );
-  }
+ 
 
   if (error) {
     return (

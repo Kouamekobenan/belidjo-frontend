@@ -53,4 +53,20 @@ export class VendorRepository implements IVendorRepository {
       response = await api.patch(url, update);
     }
   }
+
+  async findAll(
+    limit: number,
+    page: number
+  ): Promise<IPaginatedResponse<Vendor>> {
+    const response = await api.get(`/vendor`, {
+      params: { limit, page },
+    });
+    return {
+      data: response.data.data,
+      total: response.data.total,
+      totalPages: response.data.totalPages,
+      limit: response.data.limit,
+      page: response.data.page,
+    };
+  }
 }

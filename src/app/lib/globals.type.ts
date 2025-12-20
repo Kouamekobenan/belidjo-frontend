@@ -11,6 +11,7 @@ export interface IvendorProfile {
   description: string;
   logoUrl: string;
   cityId: string;
+  isApproved: boolean;
 }
 
 export interface User {
