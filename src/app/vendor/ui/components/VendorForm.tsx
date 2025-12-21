@@ -86,7 +86,7 @@ export default function CreateVendorForm() {
       toast.success("Demande envoyée ! Réponse sous 24h.", {
         id: loadingToast,
       });
-      router.push("/admin/ui");
+      router.push("/users/ui/login");
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Échec de l'envoi.", {
         id: loadingToast,
