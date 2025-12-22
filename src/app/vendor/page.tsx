@@ -14,7 +14,7 @@ const LOGO_SRC = "/images/bj.png";
 const SCROLL_THRESHOLD = 20;
 
 // Composant Navbar séparé et optimisé
-export const Navbar = () => {
+ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 

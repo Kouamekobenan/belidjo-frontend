@@ -32,7 +32,7 @@ interface Items {
 // COMPOSANT NAVBAR
 // ============================================
 
-export const Navbar = () => {
+const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const LOGO_SRC = "/images/bj.png";
@@ -265,9 +265,11 @@ export default function HomePage() {
               className="group inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-teal-500 to-green-600 hover:from-teal-600 hover:to-green-700 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-              <span className="relative flex
+              <span
+                className="relative flex
               
-               items-center">
+               items-center"
+              >
                 Je faire mes achats
                 <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
               </span>
