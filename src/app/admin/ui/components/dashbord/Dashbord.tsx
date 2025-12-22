@@ -137,8 +137,8 @@ export default function DashbordVendor() {
       bgColor: "bg-blue-50",
     },
     {
-      title: "Valeur Stock",
-      value: `${stats.totalValue.toLocaleString()} FCFA`,
+      title: "Valeur Stock EN FCFA",
+      value: `${stats.totalValue.toLocaleString()}`,
       icon: DollarSign,
       trend: "+8%",
       trendUp: true,
@@ -203,7 +203,7 @@ export default function DashbordVendor() {
             <div>
               {/* MODIFICATION: Ajustement des tailles de police */}
               <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">
-                Tableau de bord
+                Tableau de bord vendeur
               </h1>
               <p className="text-sm sm:text-base text-gray-600 flex items-center gap-2">
                 <Calendar className="w-4 h-4" />

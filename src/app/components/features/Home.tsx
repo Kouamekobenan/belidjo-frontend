@@ -32,7 +32,7 @@ interface Items {
 // COMPOSANT NAVBAR
 // ============================================
 
-const Navbar = () => {
+export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const LOGO_SRC = "/images/bj.png";

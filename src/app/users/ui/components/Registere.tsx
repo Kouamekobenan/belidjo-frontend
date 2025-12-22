@@ -223,15 +223,13 @@ export default function RegisterForm() {
           <div className="text-center mb-4">
             {/* LOGO AMÉLIORÉ et OPTIMISÉ pour le responsive */}
             <div className="inline-block mb-3">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 p-2 bg-white rounded-xl shadow-lg border border-gray-100 transition-transform duration-300 hover:rotate-2">
-                <Image
-                  src={LOGO_SRC}
-                  width={80} // Taille maximale pour le conteneur w-20
-                  height={80}
-                  alt="Logo Belidjo - Retour à l'accueil"
-                  className="object-contain w-full h-full"
-                  priority
-                />
+              <div className="flex justify-center items-center pb-6">
+                <Link
+                  href="/vendor"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-100 hover:to-cyan-700 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <span>Accueil</span>
+                </Link>
               </div>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-1 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-700">
@@ -265,7 +263,6 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
-
             {/* Email */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -288,7 +285,6 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
-
             {/* Téléphone */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -348,7 +344,6 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
-
             {/* Ville */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">

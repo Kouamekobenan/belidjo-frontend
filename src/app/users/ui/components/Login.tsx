@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Eye, EyeOff, Phone, Lock, ArrowRight, UserPlus } from "lucide-react";
+import { Eye, EyeOff, Phone, Lock, ArrowRight, UserPlus, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -79,15 +79,17 @@ export default function LoginUser() {
       const loggedUser = await login(formData.phone, formData.password);
       switch (loggedUser.role) {
         case "VENDEUR":
-          toast.success("Vous êtes connectez avec succès! en tant que admin");
+          toast.success("Vous êtes connectez avec succès! en tant que vendeur");
           router.push("/admin/ui");
           break;
         case "CUSTOMER":
           toast.success("Vous êtes connectez avec succès!");
-          router.push("/page");
+          router.push("/vendor");
           break;
         case "ADMIN":
-          toast.success("Vous êtes connectez avec succès!");
+          toast.success(
+            "Vous êtes connectez avec succès! en tant qu'administrateur"
+          );
           router.push("/super-admin");
           break;
         default:
@@ -113,35 +115,26 @@ export default function LoginUser() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-4">
-          <div className="inline-block mb-3">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 p-2 bg-white rounded-xl shadow-lg border border-gray-100 transition-transform duration-300 hover:rotate-2">
-              <Image
-                src={LOGO_SRC}
-                width={80}
-                height={80}
-                alt="Logo Belidjo - Retour à l'accueil"
-                className="object-contain w-full h-full"
-                priority
-              />
-            </div>
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-2">
-            Bienvenue sur
-          </h1>
-          <h2 className="text-2xl font-serif md:text-3xl font-bold bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">
-            {cityName}
-          </h2>
+        <div className="flex justify-center items-center pb-6">
+          <Link
+            href="/vendor"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-50 hover:to-cyan-700 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            <span>Accueil</span>
+          </Link>
         </div>
+        {/* Header */}
         {/* Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 backdrop-blur-lg border border-gray-200 dark:border-gray-700">
-          <div className="mb-6 text-center">
+           <div className="mb-6 text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-full mb-3">
+              <ShieldCheck className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            </div>
             <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
-              Connectez-vous
+              Connexion sécurisée
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Accédez à votre compte
+              Accédez à votre espace personnel
             </p>
           </div>
           {/* Error général */}

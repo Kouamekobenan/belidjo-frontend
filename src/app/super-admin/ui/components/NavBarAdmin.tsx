@@ -9,7 +9,6 @@ import {
   X,
   User as UserIcon,
   Phone,
-  Calendar,
 } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
@@ -58,13 +57,13 @@ export default function NavBarAdmin() {
       >
         <div className="flex flex-col h-full p-6">
           {/* LOGO / TITRE */}
-          <Link href="/page">
+          <Link href="/vendor">
             <div className="mb-10 px-4">
               <h2 className="text-xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
                 Admin Panel
               </h2>
               <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mt-1">
-                Gestion de la ville
+                Gestion de NoBoutik
               </p>
             </div>
           </Link>

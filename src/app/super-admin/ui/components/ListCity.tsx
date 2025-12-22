@@ -64,7 +64,7 @@ export default function ListCity() {
       if (modalMode === "create") {
         await api.post("/city", { name: cityName });
       } else if (currentCity) {
-        await api.put(`/city/${currentCity.id}`, { name: cityName });
+        await api.patch(`/city/${currentCity.id}`, { name: cityName });
       }
       await fetchCities();
       setIsModalOpen(false);
@@ -265,7 +265,7 @@ export default function ListCity() {
                 <button
                   onClick={handleSubmit}
                   disabled={!cityName.trim() || isSubmitting}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-md"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-md"
                 >
                   {isSubmitting ? (
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

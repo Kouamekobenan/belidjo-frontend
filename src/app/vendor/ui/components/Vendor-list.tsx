@@ -170,14 +170,6 @@ const VendorFilters = ({
         </svg>
       </div>
     </div>
-
-    {/* Compteur de résultats */}
-    <p className="text-base text-gray-700 pt-3 border-t border-teal-100">
-      <span className="font-extrabold text-xl text-teal-700 mr-1">
-        {resultCount}
-      </span>
-      vendeur{resultCount > 1 ? "s" : ""} trouvé{resultCount > 1 ? "s" : ""}.
-    </p>
   </div>
 );
 
@@ -185,10 +177,6 @@ const VendorFilters = ({
 
 export function VendorList({ data, onVendorClick }: VendorListProps) {
   const [selectedCity, setSelectedCity] = useState<string>("all");
-
-  // La variable searchQuery n'est plus nécessaire mais on la laisse en commentaire si besoin futur
-  // const [searchQuery, setSearchQuery] = useState("");
-
   // Extraction des options de ville
   const cityOptions = useMemo(() => {
     const cityMap = new Map<string, City>();

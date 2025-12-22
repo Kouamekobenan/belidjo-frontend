@@ -12,6 +12,7 @@ import { UserRepository } from "@/app/users/infrastructure/user-repository.impl"
 import { UserMapper } from "@/app/users/domain/mappers/user.mapper";
 import { UpdateRoleUserUseCase } from "@/app/users/application/usecases/update-role-user.usecase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // Schéma de validation mis à jour avec la description
 const vendorSchema = z.object({
@@ -96,7 +97,16 @@ export default function CreateVendorForm() {
   return (
     <div className="max-w-2xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-100 my-10">
       {/* Header */}
+
       <div className="bg-gradient-to-r from-teal-600 to-emerald-600 p-8 text-white text-center">
+        <div className="flex  items-center ">
+          <Link
+            href="/vendor"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-100 hover:to-cyan-700 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            <span>Accueil</span>
+          </Link>
+        </div>
         <div className="bg-white/20 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
           <Store size={32} />
         </div>

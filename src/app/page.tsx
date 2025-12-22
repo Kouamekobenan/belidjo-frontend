@@ -7,7 +7,7 @@ export default function Home() {
 
   useEffect(() => {
     // Redirection immédiate vers /page
-    router.push("/page");
+    router.push("/vendor");
   }, [router]);
 
   return (
