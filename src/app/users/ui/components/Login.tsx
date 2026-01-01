@@ -2,11 +2,9 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Phone, Lock, ArrowRight, UserPlus, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
-import Image from "next/image";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { cityName } from "@/app/lib/globals.type";
 
 // Simuler les types et hooks (à remplacer par vos imports réels)
 interface LoginDto {

@@ -147,7 +147,7 @@ export default function VendorProductList({ vendorId }: { vendorId: string }) {
           </svg>
         </div>
         <h3 className="text-2xl font-extrabold text-gray-800 mb-2">
-          Aucun produit disponible 
+          Aucun produit disponible
         </h3>
         <p className="text-gray-500 text-base">
           Vous n'avez pas encore ajouté de produits. Commencez par en **créer**
@@ -393,56 +393,58 @@ export default function VendorProductList({ vendorId }: { vendorId: string }) {
             </div>
 
             {/* --- Vue Cartes (Écrans Small/Medium - < lg) --- */}
-            <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
+            {/* --- Vue Cartes (Écrans Small/Medium - < lg) --- */}
+            <div className="lg:hidden grid grid-cols-2 gap-3 sm:gap-6 mb-12">
               {products.map((p) => {
                 const detailLink = `${PRODUCT_DETAIL_BASE_PATH}/ui/pages/page/${p.id}`;
                 return (
                   <div
                     key={p.id}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col"
+                    className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col"
                   >
                     <Link href={detailLink} className="flex-grow">
-                      <div className="relative w-full h-40 bg-gray-100 overflow-hidden">
+                      {/* Hauteur réduite (h-32) pour mobile pour garder un bon ratio */}
+                      <div className="relative w-full h-32 sm:h-40 bg-gray-100 overflow-hidden">
                         <img
                           src={p.imageUrl}
                           alt={p.name}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="p-4 flex flex-col justify-between flex-grow">
-                        <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                      <div className="p-3 sm:p-4 flex flex-col justify-between flex-grow">
+                        {/* Texte plus petit (text-sm) sur mobile */}
+                        <h3 className="text-sm sm:text-lg font-bold text-gray-900 mb-1 sm:mb-2 line-clamp-2">
                           {p.name}
                         </h3>
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-xl font-extrabold text-teal-600">
-                            {p.price.toLocaleString()} FCFA
+                        <div className="flex flex-col mb-2">
+                          <span className="text-sm sm:text-xl font-extrabold text-teal-600">
+                            {p.price.toLocaleString()} F
                           </span>
-                        </div>
-                        <div className="mt-2">
-                          <StockStatus quantity={p.quantity} />
+                          <div className="mt-1 scale-90 origin-left">
+                            <StockStatus quantity={p.quantity} />
+                          </div>
                         </div>
                       </div>
                     </Link>
-
-                    {/* Boutons d'action dans la vue carte */}
-                    <div className="p-4 pt-0 border-t border-gray-100 flex justify-between gap-3">
+                    {/* Boutons d'action : Passage en colonne sur mobile si trop serré */}
+                    <div className="p-2 sm:p-4 pt-0 border-t border-gray-100 flex flex-col sm:flex-row gap-2 sm:gap-3">
                       <button
                         onClick={() => handleEditProduct(p.id)}
-                        className="flex-1 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 transition"
+                        className="flex-1 inline-flex justify-center items-center px-2 py-1.5 text-xs sm:text-sm font-medium rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 transition"
                         disabled={deletingId === p.id}
                       >
                         Modifier
                       </button>
                       <button
                         onClick={() => handleDeleteProduct(p.id)}
-                        className={`flex-1 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg text-white ${
+                        className={`flex-1 inline-flex justify-center items-center px-2 py-1.5 text-xs sm:text-sm font-medium rounded-lg text-white ${
                           deletingId === p.id
                             ? "bg-red-400"
                             : "bg-red-600 hover:bg-red-700"
                         } transition`}
                         disabled={deletingId === p.id}
                       >
-                        {deletingId === p.id ? "Suppr..." : "Supprimer"}
+                        {deletingId === p.id ? "..." : "Suppr."}
                       </button>
                     </div>
                   </div>

@@ -1,7 +1,6 @@
 // infrastructure/api/vendor.api.ts
 import { api } from "@/app/lib/api";
 import { IVendorRepository } from "../../domain/interface/vendor-repository";
-import { VendorMapper } from "../../domain/mappers/vendor.mapper";
 import { IPaginatedResponse } from "@/app/lib/globals.type";
 import { Vendor } from "../../domain/entities/vendor.entity";
 import { UpdateDto } from "../../application/dtos/update-site-dto";
