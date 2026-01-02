@@ -1,7 +1,7 @@
 // src/app/vendors/page.tsx
 "use client";
 
-import { ArrowRight, LogIn, Menu, X, HelpCircle } from "lucide-react";
+import { ArrowRight, LogIn, Menu, X, Home, Info, Phone } from "lucide-react";
 import { AnimatedHeroTitle } from "../components/features/AnimationHome";
 import VendorPage from "./ui/pages/Vendor";
 import Link from "next/link";
@@ -13,8 +13,10 @@ import { useEffect, useState } from "react";
 const LOGO_SRC = "/images/bj.png";
 const SCROLL_THRESHOLD = 20;
 
-// Composant Navbar séparé et optimisé
- const Navbar = () => {
+// const SCROLL_THRESHOLD = 50;
+// const cityName = "Votreville"; // Remplacez par le nom de votre ville
+
+const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -42,24 +44,85 @@ const SCROLL_THRESHOLD = 20;
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/95 backdrop-blur-lg shadow-lg" : "bg-transparent"
-      }`}
-      role="navigation"
-      aria-label="Navigation principale"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Logo */}
+    <>
+      {/* Navbar Desktop */}
+      <nav
+        className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? "bg-white/95 backdrop-blur-lg shadow-lg"
+            : "bg-transparent"
+        }`}
+        role="navigation"
+        aria-label="Navigation principale"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <Link
+              href="/page"
+              className="flex items-center space-x-2 group flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-teal-500 rounded-lg transition-all"
+              aria-label={`Retour à l'accueil de ${cityName}`}
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg opacity-0 blur group-hover:opacity-75 transition-opacity duration-300"></div>
+                <div className="relative w-12 h-12 bg-gradient-to-br from-teal-500 to-green-500 rounded-lg flex items-center justify-center overflow-hidden">
+                  <Image
+                    src={LOGO_SRC}
+                    width={80}
+                    height={80}
+                    alt={`Logo ${cityName}`}
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              </div>
+              <span
+                className={`text-2xl font-black transition-colors duration-300 ${
+                  isScrolled ? "text-gray-900" : "text-white"
+                }`}
+              >
+                <span className="bg-gradient-to-r from-teal-500 to-green-500 bg-clip-text text-transparent">
+                  {cityName}
+                </span>
+              </span>
+            </Link>
+            {/* Menu Desktop - Placeholder pour navigation future */}
+            <div
+              className="flex items-center space-x-6"
+              aria-label="Menu principal"
+            ></div>
+
+            {/* Bouton Connexion Desktop */}
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/users/ui/login"
+                className="group inline-flex items-center space-x-2 px-5 py-2.5 text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+              >
+                <LogIn className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                <span>Connexion Vendeur</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Header Mobile - En haut (simplifié) */}
+      <header
+        className={`md:hidden fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? "bg-white/95 backdrop-blur-lg shadow-lg"
+            : "bg-white/80 backdrop-blur-md"
+        }`}
+      >
+        <div className="px-4 py-3">
           <Link
             href="/page"
-            className="flex items-center space-x-2 group flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-teal-500 rounded-lg transition-all"
+            className="flex items-center justify-center space-x-2 group"
             aria-label={`Retour à l'accueil de ${cityName}`}
           >
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg opacity-0 blur group-hover:opacity-75 transition-opacity duration-300"></div>
-              <div className="relative w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-500 to-green-500 rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="relative w-10 h-10 bg-gradient-to-br from-teal-500 to-green-500 rounded-lg flex items-center justify-center overflow-hidden shadow-md">
                 <Image
                   src={LOGO_SRC}
                   width={80}
@@ -70,129 +133,139 @@ const SCROLL_THRESHOLD = 20;
                 />
               </div>
             </div>
-            <span
-              className={`text-lg sm:text-xl md:text-2xl font-black transition-colors duration-300 ${
-                isScrolled ? "text-gray-900" : "text-white"
-              }`}
-            >
+            <span className="text-xl font-black">
               <span className="bg-gradient-to-r from-teal-500 to-green-500 bg-clip-text text-transparent">
                 {cityName}
               </span>
             </span>
           </Link>
+        </div>
+      </header>
 
-          {/* Menu Desktop - Placeholder pour navigation future */}
-          <div
-            className="hidden md:flex items-center space-x-6"
-            aria-label="Menu principal"
-          ></div>
+      {/* Navigation Mobile Bottom - Style App */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-2xl">
+        <div className="grid grid-cols-3 h-16">
+          {/* Accueil */}
+          <Link
+            href="/page"
+            className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
+          >
+            <Home className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-medium">Accueil</span>
+          </Link>
 
-          {/* Bouton Connexion Desktop */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link
-              href="/users/ui/login"
-              className="group inline-flex items-center space-x-2 px-5 py-2.5 text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-            >
-              <LogIn className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-              <span>Connexion Vendeur</span>
-            </Link>
-          </div>
-
-          {/* Bouton Menu Mobile */}
+          {/* Contact (placeholder) */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden p-2 rounded-lg transition-colors hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-teal-500 flex-shrink-0"
-            aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-            aria-expanded={isMobileMenuOpen}
+            className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
           >
-            {isMobileMenuOpen ? (
-              <X
-                className={`w-6 h-6 transition-colors ${
-                  isScrolled ? "text-gray-900" : "text-white"
-                }`}
-              />
-            ) : (
-              <Menu
-                className={`w-6 h-6 transition-colors ${
-                  isScrolled ? "text-gray-900" : "text-white"
-                }`}
-              />
-            )}
+            <Menu className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-medium">Menu</span>
           </button>
-        </div>
-      </div>
 
-      {/* Menu Mobile avec animation */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="bg-white border-t border-gray-200 shadow-xl">
-          <div className="px-4 py-6 space-y-4">
-            <div className="pt-4 border-t border-gray-200">
-              <Link
-                href="/users/ui/login"
+          {/* Connexion */}
+          <Link
+            href="/users/ui/login"
+            className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
+          >
+            <div className="relative">
+              <LogIn className="w-6 h-6 group-hover:scale-110 transition-transform" />
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
+            </div>
+            <span className="text-xs font-medium">Connexion</span>
+          </Link>
+        </div>
+      </nav>
+
+      {/* Modal Menu Mobile */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-50 bg-black/50 animate-in fade-in duration-200">
+          <div className="absolute bottom-16 left-0 right-0 bg-white rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-300 max-h-[70vh] overflow-y-auto">
+            {/* Header du modal */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between rounded-t-3xl z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br bg-teal-500 rounded-lg flex items-center justify-center shadow-md">
+                  <Menu className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900">Menu</h3>
+              </div>
+              <button
                 onClick={toggleMobileMenu}
-                className="flex items-center justify-center space-x-2 w-full px-5 py-3 text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-lg font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Fermer le menu"
               >
-                <LogIn className="w-5 h-5" />
-                <span>Connexion Vendeur</span>
-              </Link>
+                <X className="w-6 h-6 text-gray-600" />
+              </button>
+            </div>
+
+            <div className="px-4 py-6 space-y-4">
+              {/* Section Information */}
+              <div>
+                <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">
+                  Information
+                </p>
+                <div className="space-y-2">
+                  <Link
+                    href="/page"
+                    onClick={toggleMobileMenu}
+                    className="flex items-center gap-3 px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                  >
+                    <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                      <Info className="w-5 h-5 text-teal-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        À propos
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Découvrez notre plateforme
+                      </p>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/page"
+                    onClick={toggleMobileMenu}
+                    className="flex items-center gap-3 px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                  >
+                    <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-teal-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        Contact
+                      </p>
+                      <p className="text-xs text-gray-500">Besoin d'aide ?</p>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Bouton Connexion Vendeur */}
+              <div className="pt-4 border-t border-gray-200">
+                <Link
+                  href="/users/ui/login"
+                  onClick={toggleMobileMenu}
+                  className="flex items-center justify-center gap-2 w-full px-5 py-4 text-white bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 rounded-xl shadow-lg font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 group"
+                >
+                  <LogIn className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+                  <span>Connexion Vendeur</span>
+                </Link>
+              </div>
+              {/* Section Suivez-nous (placeholder) */}
             </div>
           </div>
         </div>
-      </div>
-    </nav>
+      )}
+
+      {/* Spacer pour le contenu (mobile) */}
+      <div className="md:hidden h-[60px]" />
+      <div className="md:hidden h-16" />
+    </>
   );
 };
 
 // Composant Bouton d'aide flottant
-const FloatingHelpButton = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Afficher le bouton après un court délai
-    const timer = setTimeout(() => setIsVisible(true), 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <Link
-      href="/page"
-      className={`fixed left-6 bottom-6 z-40 group transition-all duration-500 ${
-        isVisible ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0"
-      }`}
-      aria-label="Besoin d'aide ?"
-    >
-      <div className="relative">
-        {/* Effet de pulsation */}
-        <div className="absolute inset-0 bg-teal-500 rounded-full animate-ping opacity-75"></div>
-
-        {/* Bouton principal */}
-        <div className="relative flex items-center bg-gradient-to-r from-teal-600 to-teal-600 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 group-hover:from-teal-700 group-hover:to-green-700">
-          {/* Icône seule sur mobile */}
-          <div className="flex items-center justify-center w-14 h-14 sm:hidden">
-            <HelpCircle className="w-6 h-6" />
-          </div>
-          {/* Bouton complet sur desktop */}
-          <div className="hidden sm:flex items-center space-x-2 px-5 py-3">
-            <HelpCircle className="w-5 h-5 transition-transform group-hover:rotate-12" />
-            <span className="font-semibold text-sm whitespace-nowrap">
-              Besoin d'aide ?
-            </span>
-          </div>
-        </div>
-
-        {/* Tooltip pour mobile */}
-        <div className="sm:hidden absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
-          Besoin d'aide ?
-          <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900"></div>
-        </div>
-      </div>
-    </Link>
-  );
-};
 
 // Composant Section Héro
 const HeroSection = () => {
@@ -232,9 +305,7 @@ const HeroSection = () => {
                 <span>Livraison rapide</span>
               </span>
               <span className="text-white/60 hidden sm:inline">•</span>
-              <span>Paiement sécurisé</span>
-              <span className="text-white/60 hidden sm:inline">•</span>
-              <span>Prix imbattables</span>
+              <span>Vendeurs specialiser</span>
             </span>
           </p>
         </div>
@@ -273,9 +344,6 @@ export default function Vendors() {
       <main className="relative z-0">
         <VendorPage />
       </main>
-
-      {/* Bouton d'aide flottant */}
-      <FloatingHelpButton />
     </div>
   );
 }
