@@ -279,7 +279,6 @@ function VendorNavBar() {
         <AnimatedPromoBanner user={user} />
         <NeonPromoBanner user={user} />
       </nav>
-
       {/* Overlay pour fermer les menus */}
       {(isDropdownOpen || isMobileMenuOpen) && (
         <div
@@ -293,5 +292,4 @@ function VendorNavBar() {
     </>
   );
 }
-
 export default VendorNavBar;

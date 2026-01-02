@@ -251,8 +251,8 @@ export default function HomePage() {
                 <span className="inline-block w-2 h-2 bg-green-400 rounded-full"></span>
                 <span>Livraison rapide</span>
               </span>
-              <span className="text-white/60 hidden sm:inline">•</span>
-              <span>Paiement sécurisé</span>
+              {/* <span className="text-white/60 hidden sm:inline">•</span>
+              <span>Paiement sécurisé</span> */}
               <span className="text-white/60 hidden sm:inline">•</span>
               <span>Prix imbattables</span>
             </span>
