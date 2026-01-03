@@ -207,8 +207,7 @@ export default function ProductDetail() {
     <div className="min-h-screen bg-gray-50">
       <VendorNavBar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-12">
-        {/* Carte Principale du Produit (omis pour la concision) */}
-        {/* ... (votre code existant pour le produit) ... */}
+
         <div className="bg-white rounded-2xl lg:rounded-3xl shadow-2xl border border-gray-100 overflow-hidden mb-6 lg:mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* Section Image */}

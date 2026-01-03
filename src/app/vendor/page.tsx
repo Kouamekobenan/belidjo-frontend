@@ -1,7 +1,7 @@
 // src/app/vendors/page.tsx
 "use client";
 
-import { ArrowRight, LogIn, Menu, X, Home, Info, Phone } from "lucide-react";
+import { ArrowRight, LogIn, X, Home, Info, Phone, Store } from "lucide-react";
 import { AnimatedHeroTitle } from "../components/features/AnimationHome";
 import VendorPage from "./ui/pages/Vendor";
 import Link from "next/link";
@@ -91,7 +91,6 @@ const Navbar = () => {
               className="flex items-center space-x-6"
               aria-label="Menu principal"
             ></div>
-
             {/* Bouton Connexion Desktop */}
             <div className="flex items-center space-x-4">
               <Link
@@ -159,7 +158,7 @@ const Navbar = () => {
             onClick={toggleMobileMenu}
             className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
           >
-            <Menu className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            <Store className="w-6 h-6 group-hover:scale-110 transition-transform" />
             <span className="text-xs font-medium">Menu</span>
           </button>
 
@@ -185,7 +184,7 @@ const Navbar = () => {
             <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between rounded-t-3xl z-10">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br bg-teal-500 rounded-lg flex items-center justify-center shadow-md">
-                  <Menu className="w-5 h-5 text-white" />
+                  <Store className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900">Menu</h3>
               </div>
@@ -290,11 +289,9 @@ const HeroSection = () => {
           ></div>
         </div>
       </div>
-
       {/* Contenu principal */}
       <div className="relative z-10 px-4 sm:px-6 w-full max-w-5xl">
         <AnimatedHeroTitle />
-
         {/* Caractéristiques */}
         <div className="mt-6 animate-fade-in-up">
           <p className="text-sm sm:text-base md:text-lg text-white/90 font-medium px-4">
@@ -309,7 +306,6 @@ const HeroSection = () => {
             </span>
           </p>
         </div>
-
         {/* Bouton CTA */}
         <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
           <Link
@@ -318,7 +314,6 @@ const HeroSection = () => {
           >
             {/* Effet de brillance au survol */}
             <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-
             <span className="relative flex items-center">
               Créer ma boutique
               <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
@@ -329,19 +324,16 @@ const HeroSection = () => {
     </section>
   );
 };
-
 // Composant principal de la page
 export default function Vendors() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
       <Navbar />
-
       {/* Section Héro */}
       <HeroSection />
-
       {/* Contenu principal */}
-      <main className="relative z-0">
+      <main className="relative z-0 mb-20 md:mb-1" >
         <VendorPage />
       </main>
     </div>

@@ -12,16 +12,13 @@ export default function AnimatedPromoBanner({
 }: AnimatedPromoBannerProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
-
   useEffect(() => {
     // Animation d'entrée
     const timer = setTimeout(() => {
       setIsAnimating(true);
     }, 100);
-
     return () => clearTimeout(timer);
   }, []);
-
   const handleClose = () => {
     setIsAnimating(false);
     setTimeout(() => {
@@ -49,7 +46,6 @@ export default function AnimatedPromoBanner({
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -inset-full animate-shine bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"></div>
         </div>
-
         {/* Particules décoratives animées */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-teal-400 rounded-full animate-float-1"></div>
@@ -87,7 +83,7 @@ export default function AnimatedPromoBanner({
                     className="group relative inline-flex items-center font-bold text-transparent bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 bg-clip-text animate-gradient-x hover:scale-105 transition-transform duration-300"
                   >
                     <span className="relative text-green-600">
-                      avec Belidjo
+                      avec NoBoutik
                       {/* Effet de soulignement animé */}
                       <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-teal-600 to-purple-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
                     </span>

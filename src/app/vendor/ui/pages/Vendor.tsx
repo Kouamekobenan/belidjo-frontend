@@ -217,7 +217,7 @@ export default function VendorPage() {
       <VendorList
         data={vendors}
         onVendorClick={(id) => {
-          console.log(`Vendeur sélectionné: ${id}`);
+          // console.log(`Vendeur sélectionné: ${id}`);
           return id;
         }}
       />

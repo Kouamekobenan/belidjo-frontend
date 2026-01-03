@@ -145,7 +145,7 @@ const VendorFilters = ({
         aria-label="Filtre par ville"
       >
         <option value="all" className="text-gray-500">
-          📍 Toutes les villes
+         Toutes les villes
         </option>
         {cityOptions.map((city) => (
           <option key={city.id} value={city.id}>

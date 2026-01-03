@@ -58,7 +58,7 @@ export default function AdminPage() {
                   Notification par email ou WhatSapp
                 </h3>
                 <p className="text-gray-600">
-                  Vous recevrez un message wathSapp de confirmation à 
+                  Vous recevrez un message wathSapp de confirmation à
                   <span className="font-medium text-teal-600">
                     {user.phone || "votre adresse"}
                   </span>
@@ -131,7 +131,7 @@ export default function AdminPage() {
       />
 
       {/* Conteneur principal avec gestion du spacing de la navbar */}
-      <main className="flex-1 w-full pt-20 md:pt-2">
+      <main className="flex-1 w-full pt-20 md:pt-2 mb-20 md:mb-1">
         <DashbordVendor />
       </main>
     </div>
