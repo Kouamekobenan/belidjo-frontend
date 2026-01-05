@@ -54,3 +54,4 @@ export interface ICustomer {
 }
 export const cityName = "NoBoutik";
 export const logoNoBoutik = "/images/bj.png";
+export const photoCouv = "/images/photo.jpg";

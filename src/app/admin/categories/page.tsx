@@ -70,7 +70,7 @@ export default function CategoryPage() {
         vendorProfile={user?.vendorProfile}
       />
       {/* Contenu principal */}
-      <main className="flex-1 p-2 pt-20 md-pt-2">
+      <main className="flex-1 p-2 pt-20 md-pt-2 mb-20 md:mb-1">
         <CategoriesList vendorId={vendorId} />
       </main>
     </div>

@@ -183,7 +183,7 @@ export default function CategoriesList({ vendorId }: { vendorId: string }) {
                   {/* Image de Catégorie */}
                   <div className="w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-3 relative overflow-hidden rounded-full">
                     <Image
-                      src={cat.imageUrl}
+                      src={cat.imageUrl ?? "/images/cat.jpg"}
                       alt={cat.name}
                       fill
                       sizes="(max-width: 640px) 64px, 80px"

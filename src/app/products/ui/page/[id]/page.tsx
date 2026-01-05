@@ -153,13 +153,12 @@ const BannerEditButton = ({
               <Camera className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
               {/* Texte plus petit (text-xs) pour rester discret sur desktop */}
               <span className="hidden sm:inline text-xs font-medium text-slate-700">
-                Modifier 
+                Modifier
               </span>
             </>
           )}
         </div>
       </button>
-
       {/* Modal de confirmation */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -175,12 +174,10 @@ const BannerEditButton = ({
                 <X className="w-5 h-5 text-slate-600" />
               </button>
             </div>
-
             <div className="space-y-4">
               <p className="text-slate-600">
                 Choisissez une nouvelle image pour votre bannière de couverture.
               </p>
-
               <div className="bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-slate-300">
                 <ul className="text-sm text-slate-600 space-y-2">
                   <li className="flex items-center gap-2">
@@ -197,7 +194,6 @@ const BannerEditButton = ({
                   </li>
                 </ul>
               </div>
-
               <input
                 ref={fileInputRef}
                 type="file"
@@ -300,11 +296,11 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
 
   useEffect(() => {
     const checkSubscription = async () => {
-      if (!userId) {
-        setIsLoading(false);
-        return;
-      }
       try {
+        if (!userId) {
+          setIsLoading(false);
+          return;
+        }
         const response = await api.get(`/customer/user/${userId}`);
         setCustomer(response.data.data);
         setIsSubscribed(response.data.data || false);
@@ -425,7 +421,7 @@ export default function VendorProductsPage() {
         setError(null);
         const res = await api.get(`/vendor/${id}`);
         setVendor(res.data.data);
-        setBannerUrl(res.data.data.site?.logoUrl || "/images/img.jpg");
+        setBannerUrl(res.data.data.site?.logoUrl || "/images/photo.jpg");
       } catch (err) {
         setError("Impossible de charger les informations du vendeur");
       } finally {
@@ -528,7 +524,6 @@ export default function VendorProductsPage() {
               sizes="(max-width: 1280px) 100vw, 1280px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-
             {/* NOUVEAU : Bouton d'édition de bannière */}
             <BannerEditButton
               vendorId={vendorId}
@@ -537,7 +532,6 @@ export default function VendorProductsPage() {
               vendorOwnerId={vendor.userId}
               onImageUpdate={handleBannerUpdate}
             />
-
             {/* Badge Premium */}
             <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
               <div className="flex items-center gap-2">
@@ -559,33 +553,15 @@ export default function VendorProductsPage() {
           <div className="relative px-4 sm:px-8 pb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-16 relative z-10">
               <div className="flex-shrink-0 bg-white p-2 rounded-3xl shadow-sm ring-4 ring-white">
-                {site?.logoUrl ? (
-                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden">
-                    <Image
-                      src={bannerUrl}
-                      fill
-                      alt={`Logo ${name}`}
-                      className="object-cover"
-                      sizes="160px"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 rounded-2xl flex items-center justify-center">
-                    <svg
-                      className="w-10 h-10 sm:w-12 sm:h-12 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                      />
-                    </svg>
-                  </div>
-                )}
+                <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden">
+                  <Image
+                    src={bannerUrl}
+                    fill
+                    alt={`Logo ${name}`}
+                    className="object-cover"
+                    sizes="160px"
+                  />
+                </div>
               </div>
 
               <div className="flex-1 pt-12">

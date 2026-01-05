@@ -63,7 +63,7 @@ export default function CustomerPage() {
         cityName={user?.cityName}
         vendorProfile={user?.vendorProfile}
       />
-      <main className="flex-1 w-full pt-20 md:pt-2">
+      <main className="flex-1 w-full pt-20 md:pt-2  mb-20 md:mb-1">
         <CustomerVendor vendorId={user.vendorProfile.id} />
       </main>
     </div>

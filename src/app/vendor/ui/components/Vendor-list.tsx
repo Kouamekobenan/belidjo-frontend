@@ -2,6 +2,7 @@ import { MapPin, Store } from "lucide-react"; // Search a été retiré car le f
 import { useCallback, useMemo, useState } from "react";
 import { Vendor } from "../../domain/entities/vendor.entity";
 import Link from "next/link";
+import { photoCouv } from "@/app/lib/globals.type";
 
 // --- Interfaces de Données ---
 /**
@@ -69,17 +70,11 @@ const VendorListItem = ({ vendor, onClick }: VendorListItemProps) => {
       >
         {/* Responsive Logo : plus petit sur mobile, taille standard sur sm+ */}
         <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-gray-100 border border-gray-100 rounded-xl overflow-hidden shadow-inner">
-          {isValidLogoUrl ? (
-            <img
-              src={site.logoUrl!}
-              alt={`Logo de ${name}`}
-              className="w-full h-full object-contain p-1" // 'object-contain' pour éviter la déformation
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Store className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400" />
-            </div>
-          )}
+          <img
+            src={site.logoUrl ?? photoCouv}
+            alt={`Logo de ${name}`}
+            className="w-full h-full object-contain p-1" // 'object-contain' pour éviter la déformation
+          />
         </div>
         <div className="flex-1 min-w-0">
           {/* Texte responsive : font-size ajusté sur les petites tailles */}
@@ -145,7 +140,7 @@ const VendorFilters = ({
         aria-label="Filtre par ville"
       >
         <option value="all" className="text-gray-500">
-         Toutes les villes
+          Toutes les villes
         </option>
         {cityOptions.map((city) => (
           <option key={city.id} value={city.id}>
