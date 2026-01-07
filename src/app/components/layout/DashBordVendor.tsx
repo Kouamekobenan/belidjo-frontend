@@ -158,7 +158,6 @@ export default function NavbarDashbordVendor({
             </button>
           </div>
         </div>
-
         {/* Badge essai gratuit dans sidebar (version collapsed) */}
         {!isCollapsed && (
           <div className="mx-3 mt-4 mb-2 bg-gradient-to-r from-amber-600/20 to-orange-600/20 border border-amber-500/30 rounded-lg p-3">
@@ -212,7 +211,6 @@ export default function NavbarDashbordVendor({
             </Link>
           </div>
         </nav>
-
         {/* Informations du vendeur */}
         <div className="p-4 border-t border-gray-700 bg-gray-800/50">
           {!isCollapsed ? (

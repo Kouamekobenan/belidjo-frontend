@@ -134,6 +134,8 @@ export default function ProductDetail() {
   }, [id]);
 
   // Fonction pour vérifier l'authentification et commander via WhatsApp
+  // Remplacez la fonction handleWhatsAppOrder par celle-ci :
+
   const handleWhatsAppOrder = () => {
     if (!isAuthenticated) {
       sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
@@ -141,23 +143,44 @@ export default function ProductDetail() {
       return;
     }
     if (!product) return;
+
+    // Construction du message avec l'image
+    const productUrl = window.location.href; // URL de la page du produit
+    const imageUrl = product.imageUrl || ""; // URL de l'image du produit
+
     const message = encodeURIComponent(
       `Bonjour, je suis intéressé(e) par ce produit :\n\n` +
         `📦 *${product.name}*\n` +
         `💰 Prix : ${product.price.toLocaleString()} FCFA\n` +
-        `📝 Description : ${product.description || "Non spécifiée"}\n\n` +
+        `📝 Description : ${product.description || "Non spécifiée"}\n` +
+        `🔗 Lien du produit : ${productUrl}\n\n` +
         `Je souhaite passer une commande.`
     );
+
     const phoneNumber = "225" + product.vendor.user?.phone;
     if (!phoneNumber) {
       alert("Numéro de téléphone du vendeur non disponible.");
       return;
     }
     const cleanPhone = phoneNumber.replace(/[\s\-\(\)]/g, "");
-    const whatsappUrl = `https://wa.me/${cleanPhone}?text=${message}`;
+    // Si une image existe, on l'inclut dans l'URL WhatsApp
+    let whatsappUrl = `https://wa.me/${cleanPhone}?text=${message}`;
+
+    if (imageUrl) {
+      const messageWithImage = encodeURIComponent(
+        `Bonjour, je suis intéressé(e) par ce produit :\n\n` +
+          `📦 *${product.name}*\n` +
+          `💰 Prix : ${product.price.toLocaleString()} FCFA\n` +
+          `📝 Description : ${product.description || "Non spécifiée"}\n` +
+          `🖼️ Image : ${imageUrl}\n` +
+          `🔗 Lien du produit : ${productUrl}\n\n` +
+          `Je souhaite passer une commande.`
+      );
+      whatsappUrl = `https://wa.me/${cleanPhone}?text=${messageWithImage}`;
+    }
+
     window.open(whatsappUrl, "_blank");
   };
-
   // --- États de Chargement et Erreur (omis pour la concision) ---
   if (loading) {
     return (
@@ -207,7 +230,6 @@ export default function ProductDetail() {
     <div className="min-h-screen bg-gray-50">
       <VendorNavBar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-12">
-
         <div className="bg-white rounded-2xl lg:rounded-3xl shadow-2xl border border-gray-100 overflow-hidden mb-6 lg:mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* Section Image */}

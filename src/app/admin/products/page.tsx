@@ -21,7 +21,6 @@ export default function ProductListAdmin() {
               </div>
               <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
             </div>
-
             {/* Titre et message */}
             <div className="space-y-3">
               <h1 className="text-2xl font-bold text-gray-900">

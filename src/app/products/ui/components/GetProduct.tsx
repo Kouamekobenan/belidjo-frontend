@@ -84,11 +84,9 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
     } else {
       // Toujours afficher la première page
       pages.push(1);
-
       if (page > 3) {
         pages.push("...");
       }
-
       // Pages autour de la page actuelle
       const start = Math.max(2, page - 1);
       const end = Math.min(totalPages - 1, page + 1);
@@ -107,7 +105,6 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
 
     return pages;
   };
-
   // --- Rendu des États (Chargement/Erreur/Vide) ---
 
   if (error) {

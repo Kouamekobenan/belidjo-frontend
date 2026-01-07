@@ -154,7 +154,7 @@ function VendorNavBar() {
         </div>
         {/* Bannière d'invitation */}
         <AnimatedPromoBanner user={user} />
-        <NeonPromoBanner user={user} />
+        {/* <NeonPromoBanner user={user} /> */}
       </nav>
 
       {/* Header Mobile - En haut (simplifié) */}
@@ -174,7 +174,7 @@ function VendorNavBar() {
         </div>
         {/* Bannière d'invitation Mobile */}
         <AnimatedPromoBanner user={user} />
-        <NeonPromoBanner user={user} />
+        {/* <NeonPromoBanner user={user} /> */}
       </header>
 
       {/* Navigation Mobile - En bas (Style App) */}
@@ -197,9 +197,8 @@ function VendorNavBar() {
             <Share2 className="w-6 h-6 group-hover:scale-110 transition-transform" />
             <span className="text-xs font-medium">Partager</span>
           </button>
-
           {/* Espace Vendeur (si vendeur) / Store */}
-          {user?.role === "VENDEUR" ? (
+          {user?.role === "VENDEUR" && (
             <button
               onClick={() => router.push("/admin/ui")}
               className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
@@ -210,16 +209,7 @@ function VendorNavBar() {
               </div>
               <span className="text-xs font-medium">Vendeur</span>
             </button>
-          ) : (
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
-            >
-              <Menu className="w-6 h-6 group-hover:scale-110 transition-transform" />
-              <span className="text-xs font-medium">Menu</span>
-            </button>
           )}
-
           {/* Profile / Login */}
           {user ? (
             <button
@@ -241,7 +231,6 @@ function VendorNavBar() {
           )}
         </div>
       </nav>
-
       {/* Menu Modal Mobile (pour options supplémentaires) */}
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/50 animate-in fade-in duration-200">
@@ -255,7 +244,6 @@ function VendorNavBar() {
                 <X className="w-6 h-6 text-gray-600" />
               </button>
             </div>
-
             <div className="px-4 py-6 space-y-3">
               {/* Espace Vendeur - Mobile */}
               {user?.role === "VENDEUR" && (
@@ -273,7 +261,6 @@ function VendorNavBar() {
                   <ArrowRight className="w-5 h-5" />
                 </button>
               )}
-
               {/* Info User */}
               {user && (
                 <div className="bg-teal-50 rounded-xl p-4 border border-teal-200">
@@ -292,7 +279,6 @@ function VendorNavBar() {
                   </div>
                 </div>
               )}
-
               {/* Déconnexion */}
               {user && (
                 <button
@@ -317,7 +303,6 @@ function VendorNavBar() {
           />
         </>
       )}
-
       {/* Dropdown Mobile (depuis icône profil) */}
       {isDropdownOpen && user && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/50 animate-in fade-in duration-200">
@@ -354,7 +339,8 @@ function VendorNavBar() {
       )}
 
       {/* Spacer pour le contenu (évite que le bottom nav cache le contenu) */}
-      <div className="lg:hidden h-16" />
+      {/* <div className="lg:hidden h-16" /> */}
+      <div className="lg:hidden " />
     </>
   );
 }

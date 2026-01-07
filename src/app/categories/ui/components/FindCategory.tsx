@@ -124,7 +124,6 @@ export default function CategoriesList({ vendorId }: { vendorId: string }) {
       </div>
     );
   }
-
   // Si aucune catégorie
   if (categories.length === 0) {
     return (
@@ -135,7 +134,6 @@ export default function CategoriesList({ vendorId }: { vendorId: string }) {
       </div>
     );
   }
-
   // --- RENDU PRINCIPAL (SCROLL HORIZONTAL) ---
   return (
     <div className="py-4 sm:py-6 bg-white border-y border-gray-200">
@@ -149,7 +147,6 @@ export default function CategoriesList({ vendorId }: { vendorId: string }) {
             {totalCategories} catégorie{totalCategories > 1 ? "s" : ""}
           </p>
         </div>
-
         {/* Conteneur avec boutons de navigation */}
         <div className="relative group">
           {/* Bouton Scroll Gauche - Desktop */}
@@ -191,7 +188,7 @@ export default function CategoriesList({ vendorId }: { vendorId: string }) {
                     />
                   </div>
                   {/* Nom de Catégorie */}
-                  <p className="text-xs sm:text-sm font-medium text-gray-700 text-center line-clamp-2 w-full">
+                  <p className="text-xs sm:text-sm font-medium text-gray-700 text-center line-clamp-1 w-full">
                     {cat.name}
                   </p>
                 </div>
