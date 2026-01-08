@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { CustomerRepository } from "@/app/customer/infrastructure/customer-repository.impl";
 import { CreateCustomerUseCase } from "@/app/customer/application/usecases/create-customer.usecase";
-import { CreateCustomerDto } from "@/app/customer/application/dtos/create-customer.dto";
+// import { CreateCustomerDto } from "@/app/customer/application/dtos/create-customer.dto";
 import { useAuth } from "@/app/context/AuthContext";
 import { CustomerMapper } from "@/app/customer/domain/mapper/customer.mapper";
 import toast from "react-hot-toast";

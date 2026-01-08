@@ -8,34 +8,58 @@ import {
   LogOut,
   User,
   ArrowRight,
-  Menu,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import AnimatedPromoBanner, { NeonPromoBanner } from "../features/Animation";
+import AnimatedPromoBanner from "../features/Animation";
 
-function VendorNavBar() {
+// Props pour recevoir les informations du vendeur
+interface VendorNavBarProps {
+  vendorName?: string;
+  vendorDescription?: string;
+  vendorImage?: string;
+}
+
+function VendorNavBar({
+  vendorName,
+  vendorDescription,
+  vendorImage,
+}: VendorNavBarProps) {
   const { user, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
 
-  // Fonction pour gérer le partage
+  // Fonction pour gérer le partage avec les infos dynamiques du vendeur
   const handleShare = async () => {
     if (typeof window === "undefined") return;
     const vendorUrl = window.location.href;
+
+    // Utiliser les informations du vendeur si disponibles
+    const shareTitle = vendorName
+      ? `${vendorName} - Boutique en ligne`
+      : "Découvrez cet espace vendeur";
+
+    const shareText =
+      vendorDescription ||
+      `Visitez ${
+        vendorName || "cet espace vendeur"
+      } pour découvrir ses produits`;
+
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "Découvrez cet espace vendeur",
-          text: "Visitez cet espace vendeur pour découvrir ses produits",
+          title: shareTitle,
+          text: shareText,
           url: vendorUrl,
         });
       } else {
-        await navigator.clipboard.writeText(vendorUrl);
+        // Fallback : copier avec un message personnalisé
+        const fullMessage = `${shareTitle}\n\n${shareText}\n\n${vendorUrl}`;
+        await navigator.clipboard.writeText(fullMessage);
         toast.success("Lien copié dans le presse-papier !");
       }
     } catch (err) {
@@ -67,7 +91,7 @@ function VendorNavBar() {
                 <Store className="w-6 h-6 text-white" />
               </div>
               <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-teal-600 to-teal-800 bg-clip-text text-transparent">
-                Espace Boutique
+                {vendorName || "Espace Boutique"}
               </span>
             </Link>
 
@@ -154,7 +178,6 @@ function VendorNavBar() {
         </div>
         {/* Bannière d'invitation */}
         <AnimatedPromoBanner user={user} />
-        {/* <NeonPromoBanner user={user} /> */}
       </nav>
 
       {/* Header Mobile - En haut (simplifié) */}
@@ -168,13 +191,12 @@ function VendorNavBar() {
               <Store className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-teal-600 to-teal-800 bg-clip-text text-transparent">
-              Espace Boutique
+              {vendorName || "Espace Boutique"}
             </span>
           </Link>
         </div>
         {/* Bannière d'invitation Mobile */}
         <AnimatedPromoBanner user={user} />
-        {/* <NeonPromoBanner user={user} /> */}
       </header>
 
       {/* Navigation Mobile - En bas (Style App) */}
@@ -338,8 +360,6 @@ function VendorNavBar() {
         </div>
       )}
 
-      {/* Spacer pour le contenu (évite que le bottom nav cache le contenu) */}
-      {/* <div className="lg:hidden h-16" /> */}
       <div className="lg:hidden " />
     </>
   );
