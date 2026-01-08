@@ -8,6 +8,7 @@ import VendorNavBar from "@/app/components/layout/Vendor-NavBar";
 import Image from "next/image";
 import CategoriesList from "@/app/categories/ui/components/FindCategory";
 import { VendorFooter } from "@/app/components/layout/Vendor-Footer";
+import Head from "next/head";
 import {
   Copy,
   Check,
@@ -51,11 +52,64 @@ interface Vendor {
 const customerRepo = new CustomerRepository(new CustomerMapper());
 const createCustomerUseCase = new CreateCustomerUseCase(customerRepo);
 
-// --- NOUVEAU COMPOSANT : Bouton d'Édition de Bannière ---
+// --- NOUVEAU COMPOSANT : Meta Tags pour Partage Social ---
+interface SocialMetaTagsProps {
+  vendor: Vendor;
+  currentUrl: string;
+}
+
+const SocialMetaTags = ({ vendor, currentUrl }: SocialMetaTagsProps) => {
+  const { name, site } = vendor;
+  const title = `${name} - Boutique en ligne`;
+  const description =
+    site?.description ||
+    `Découvrez les produits de ${name} sur notre plateforme`;
+  const imageUrl = site?.logoUrl || "/images/photo.jpg";
+
+  // Convertir l'URL relative en URL absolue si nécessaire
+  const absoluteImageUrl = imageUrl.startsWith("http")
+    ? imageUrl
+    : `${window.location.origin}${imageUrl}`;
+
+  return (
+    <Head>
+      {/* Meta tags standards */}
+      <title>{title}</title>
+      <meta name="description" content={description} />
+
+      {/* Open Graph (Facebook, LinkedIn, WhatsApp, etc.) */}
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={currentUrl} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={absoluteImageUrl} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={`Bannière de ${name}`} />
+      <meta property="og:site_name" content="Votre Plateforme" />
+
+      {/* Twitter Card */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={currentUrl} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={absoluteImageUrl} />
+      <meta name="twitter:image:alt" content={`Bannière de ${name}`} />
+
+      {/* WhatsApp spécifique */}
+      <meta property="og:image:type" content="image/jpeg" />
+
+      {/* Informations supplémentaires */}
+      {site?.domain && <link rel="canonical" href={currentUrl} />}
+    </Head>
+  );
+};
+
+// --- COMPOSANT : Bouton d'Édition de Bannière ---
 
 interface BannerEditButtonProps {
   vendorId: string;
-  siteId: string; // ID du site, pas du vendor
+  siteId: string;
   currentUserId: string | null;
   vendorOwnerId: string;
   onImageUpdate: (newImageUrl: string) => void;
@@ -71,7 +125,6 @@ const BannerEditButton = ({
   const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Vérifier si l'utilisateur actuel est le propriétaire
   const isOwner = currentUserId === vendorOwnerId;
 
   if (!isOwner) return null;
@@ -82,13 +135,11 @@ const BannerEditButton = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Vérifier le type de fichier
     if (!file.type.startsWith("image/")) {
       toast.error("Veuillez sélectionner une image valide");
       return;
     }
 
-    // Vérifier la taille (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast.error("L'image ne doit pas dépasser 5MB");
       return;
@@ -123,20 +174,14 @@ const BannerEditButton = ({
 
   return (
     <>
-      {/* Bouton adaptatif : cercle sur mobile, rectangulaire sur desktop */}
       <button
         onClick={() => setShowModal(true)}
         disabled={isUploading}
         className="absolute top-4 right-4 sm:top-6 sm:left-6 
     bg-white/95 backdrop-blur-sm shadow-md hover:shadow-lg 
     transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed z-20
-    
-    /* Mobile : Cercle flottant à droite */
     w-12 h-12 rounded-full flex items-center justify-center
-    
-    /* Desktop : Petit bouton rectangulaire à gauche */
     sm:w-36 cursor-pointer sm:h-auto sm:px-3 sm:py-2 sm:rounded-lg sm:border sm:border-slate-200/50
-    
     hover:bg-white hover:scale-105 active:scale-95"
         aria-label="Modifier la bannière"
       >
@@ -151,7 +196,6 @@ const BannerEditButton = ({
           ) : (
             <>
               <Camera className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
-              {/* Texte plus petit (text-xs) pour rester discret sur desktop */}
               <span className="hidden sm:inline text-xs font-medium text-slate-700">
                 Modifier
               </span>
@@ -159,7 +203,6 @@ const BannerEditButton = ({
           )}
         </div>
       </button>
-      {/* Modal de confirmation */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 transform transition-all">
@@ -190,7 +233,7 @@ const BannerEditButton = ({
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-teal-600" />
-                    Ratio recommandé : 16:9
+                    Ratio recommandé : 16:9 (1200x630px pour partage optimal)
                   </li>
                 </ul>
               </div>
@@ -224,6 +267,7 @@ const BannerEditButton = ({
     </>
   );
 };
+
 // --- COMPOSANT : Bouton de Copie du Domaine ---
 
 interface DomainCopyButtonProps {
@@ -246,6 +290,7 @@ const DomainCopyButton = ({ domain }: DomainCopyButtonProps) => {
       console.error("Erreur lors de la copie: ", err);
     }
   }, [domain]);
+
   return (
     <div
       className="flex items-center gap-2 text-sm cursor-pointer group"
@@ -352,6 +397,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
       setIsLoading(false);
     }
   };
+
   if (!user) {
     return (
       <button
@@ -365,6 +411,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
       </button>
     );
   }
+
   return (
     <button
       onClick={handleSubscribe}
@@ -403,15 +450,23 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
     </button>
   );
 };
+
 // --- Composant Principal de la Page ---
 export default function VendorProductsPage() {
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bannerUrl, setBannerUrl] = useState<string>("");
+  const [currentUrl, setCurrentUrl] = useState<string>("");
   const { user } = useAuth();
   const currentUserId = user?.id || null;
   const { id } = useParams();
+
+  useEffect(() => {
+    // Récupérer l'URL actuelle côté client
+    setCurrentUrl(window.location.href);
+  }, []);
+
   useEffect(() => {
     const fetchVendor = async () => {
       if (!id) return;
@@ -509,106 +564,113 @@ export default function VendorProductsPage() {
   const { name, id: vendorId, site } = vendor;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-blue-50">
-      <VendorNavBar />
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transform transition-all duration-300 hover:shadow-3xl">
-          {/* BANNIÈRE DE COUVERTURE */}
-          <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
-            <Image
-              src={bannerUrl}
-              alt={`Bannière ${name}`}
-              fill
-              className="object-cover transition-transform duration-700 hover:scale-105"
-              priority
-              sizes="(max-width: 1280px) 100vw, 1280px"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-            {/* NOUVEAU : Bouton d'édition de bannière */}
-            <BannerEditButton
-              vendorId={vendorId}
-              siteId={site.id} // Passer l'ID du site
-              currentUserId={currentUserId}
-              vendorOwnerId={vendor.userId}
-              onImageUpdate={handleBannerUpdate}
-            />
-            {/* Badge Premium */}
-            <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
-              <div className="flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 text-amber-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span className="text-sm font-bold text-slate-800">
-                  Boutique Vérifiée
-                </span>
-              </div>
-            </div>
-          </div>
+    <>
+      {/* Meta Tags pour le partage social */}
+      {vendor && currentUrl && (
+        <SocialMetaTags vendor={vendor} currentUrl={currentUrl} />
+      )}
 
-          {/* Contenu Principal */}
-          <div className="relative px-4 sm:px-8 pb-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-16 relative z-10">
-              <div className="flex-shrink-0 bg-white p-2 rounded-3xl shadow-sm ring-4 ring-white">
-                <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden">
-                  <Image
-                    src={bannerUrl}
-                    fill
-                    alt={`Logo ${name}`}
-                    className="object-cover"
-                    sizes="160px"
-                  />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-blue-50">
+        <VendorNavBar />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transform transition-all duration-300 hover:shadow-3xl">
+            {/* BANNIÈRE DE COUVERTURE */}
+            <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+              <Image
+                src={bannerUrl}
+                alt={`Bannière ${name}`}
+                fill
+                className="object-cover transition-transform duration-700 hover:scale-105"
+                priority
+                sizes="(max-width: 1280px) 100vw, 1280px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+
+              <BannerEditButton
+                vendorId={vendorId}
+                siteId={site.id}
+                currentUserId={currentUserId}
+                vendorOwnerId={vendor.userId}
+                onImageUpdate={handleBannerUpdate}
+              />
+
+              <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg">
+                <div className="flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5 text-amber-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <span className="text-sm font-bold text-slate-800">
+                    Boutique Vérifiée
+                  </span>
                 </div>
               </div>
+            </div>
 
-              <div className="flex-1 pt-12">
-                <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-700">
-                    Boutique
-                  </span>
-                  {site?.domain && (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                      En ligne
+            {/* Contenu Principal */}
+            <div className="relative px-4 sm:px-8 pb-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-16 relative z-10">
+                <div className="flex-shrink-0 bg-white p-2 rounded-3xl shadow-sm ring-4 ring-white">
+                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden">
+                    <Image
+                      src={bannerUrl}
+                      fill
+                      alt={`Logo ${name}`}
+                      className="object-cover"
+                      sizes="160px"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex-1 pt-12">
+                  <div className="flex flex-wrap items-center gap-3 mb-2">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-700">
+                      Boutique
                     </span>
+                    {site?.domain && (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                        En ligne
+                      </span>
+                    )}
+                  </div>
+
+                  <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3 leading-tight">
+                    {name}
+                  </h1>
+
+                  <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-slate-600">
+                    {site?.domain && <DomainCopyButton domain={site.domain} />}
+                    <SubscribeButton
+                      vendorId={vendorId}
+                      userId={currentUserId}
+                      cityId={vendor.cityId}
+                    />
+                  </div>
+
+                  {site?.description && (
+                    <div className="mt-6 p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                      <p className="text-slate-700 leading-relaxed">
+                        {site.description}
+                      </p>
+                    </div>
                   )}
                 </div>
-
-                <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3 leading-tight">
-                  {name}
-                </h1>
-
-                <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-slate-600">
-                  {site?.domain && <DomainCopyButton domain={site.domain} />}
-                  <SubscribeButton
-                    vendorId={vendorId}
-                    userId={currentUserId}
-                    cityId={vendor.cityId}
-                  />
-                </div>
-
-                {site?.description && (
-                  <div className="mt-6 p-5 bg-slate-50 rounded-2xl border border-slate-200">
-                    <p className="text-slate-700 leading-relaxed">
-                      {site.description}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
           </div>
-        </div>
 
-        <CategoriesList vendorId={vendorId} />
-        <VendorProducts vendorId={id as string} />
-        <VendorFooter
-          name={vendor.name}
-          site={vendor.site}
-          user={vendor.user}
-        />
+          <CategoriesList vendorId={vendorId} />
+          <VendorProducts vendorId={id as string} />
+          <VendorFooter
+            name={vendor.name}
+            site={vendor.site}
+            user={vendor.user}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
