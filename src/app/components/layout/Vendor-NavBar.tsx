@@ -31,6 +31,7 @@ function VendorNavBar({
   const { user, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const router = useRouter();
 
   // Fonction pour gérer le partage avec les infos dynamiques du vendeur
@@ -56,16 +57,39 @@ function VendorNavBar({
           text: shareText,
           url: vendorUrl,
         });
+        toast.success("Partagé avec succès ! 🎉");
       } else {
-        // Fallback : copier avec un message personnalisé
-        const fullMessage = `${shareTitle}\n\n${shareText}\n\n${vendorUrl}`;
-        await navigator.clipboard.writeText(fullMessage);
-        toast.success("Lien copié dans le presse-papier !");
+        // Fallback : afficher la modal avec preview
+        setShowShareModal(true);
       }
     } catch (err) {
       if (err instanceof Error && err.name !== "AbortError") {
         console.error("Erreur:", err.message);
       }
+    }
+  };
+
+  // Copier le lien avec message personnalisé
+  const handleCopyLink = async () => {
+    const vendorUrl = window.location.href;
+    const shareTitle = vendorName
+      ? `${vendorName} - Boutique en ligne`
+      : "Découvrez cet espace vendeur";
+    const shareText =
+      vendorDescription ||
+      `Visitez ${
+        vendorName || "cet espace vendeur"
+      } pour découvrir ses produits`;
+
+    const fullMessage = `${shareTitle}\n\n${shareText}\n\n${vendorUrl}`;
+
+    try {
+      await navigator.clipboard.writeText(fullMessage);
+      toast.success("Lien copié dans le presse-papier ! 📋");
+      setShowShareModal(false);
+    } catch (err) {
+      console.error("Erreur lors de la copie:", err);
+      toast.error("Erreur lors de la copie");
     }
   };
 
@@ -178,6 +202,7 @@ function VendorNavBar({
         </div>
         {/* Bannière d'invitation */}
         <AnimatedPromoBanner user={user} />
+        {/* <NeonPromoBanner user={user} /> */}
       </nav>
 
       {/* Header Mobile - En haut (simplifié) */}
@@ -197,6 +222,7 @@ function VendorNavBar({
         </div>
         {/* Bannière d'invitation Mobile */}
         <AnimatedPromoBanner user={user} />
+        {/* <NeonPromoBanner user={user} /> */}
       </header>
 
       {/* Navigation Mobile - En bas (Style App) */}
@@ -219,6 +245,7 @@ function VendorNavBar({
             <Share2 className="w-6 h-6 group-hover:scale-110 transition-transform" />
             <span className="text-xs font-medium">Partager</span>
           </button>
+
           {/* Espace Vendeur (si vendeur) / Store */}
           {user?.role === "VENDEUR" && (
             <button
@@ -232,6 +259,7 @@ function VendorNavBar({
               <span className="text-xs font-medium">Vendeur</span>
             </button>
           )}
+
           {/* Profile / Login */}
           {user ? (
             <button
@@ -253,6 +281,7 @@ function VendorNavBar({
           )}
         </div>
       </nav>
+
       {/* Menu Modal Mobile (pour options supplémentaires) */}
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/50 animate-in fade-in duration-200">
@@ -283,6 +312,7 @@ function VendorNavBar({
                   <ArrowRight className="w-5 h-5" />
                 </button>
               )}
+
               {/* Info User */}
               {user && (
                 <div className="bg-teal-50 rounded-xl p-4 border border-teal-200">
@@ -301,6 +331,7 @@ function VendorNavBar({
                   </div>
                 </div>
               )}
+
               {/* Déconnexion */}
               {user && (
                 <button
@@ -325,6 +356,7 @@ function VendorNavBar({
           />
         </>
       )}
+
       {/* Dropdown Mobile (depuis icône profil) */}
       {isDropdownOpen && user && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/50 animate-in fade-in duration-200">
@@ -360,7 +392,80 @@ function VendorNavBar({
         </div>
       )}
 
+      {/* Spacer pour le contenu (évite que le bottom nav cache le contenu) */}
       <div className="lg:hidden " />
+
+      {/* Modal de partage avec preview de l'image */}
+      {showShareModal && (
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-300">
+            {/* Image de preview */}
+            {vendorImage && (
+              <div className="relative h-48 w-full bg-gradient-to-br from-teal-100 to-teal-200">
+                <img
+                  src={vendorImage}
+                  alt={vendorName || "Boutique"}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              </div>
+            )}
+
+            {/* Contenu */}
+            <div className="p-6 space-y-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    {vendorName || "Partager cette boutique"}
+                  </h3>
+                  {vendorDescription && (
+                    <p className="text-sm text-gray-600 line-clamp-2">
+                      {vendorDescription}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => setShowShareModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors ml-2"
+                >
+                  <X className="w-5 h-5 text-gray-600" />
+                </button>
+              </div>
+
+              {/* URL */}
+              <div className="bg-gray-50 rounded-xl p-3 border border-gray-200">
+                <p className="text-xs text-gray-500 mb-1">Lien de partage</p>
+                <p className="text-sm text-gray-700 truncate font-mono">
+                  {typeof window !== "undefined" && window.location.href}
+                </p>
+              </div>
+
+              {/* Boutons d'action */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setShowShareModal(false)}
+                  className="flex-1 px-6 py-3 rounded-xl font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleCopyLink}
+                  className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <Share2 className="w-5 h-5" />
+                  Copier le lien
+                </button>
+              </div>
+
+              {/* Info supplémentaire */}
+              <p className="text-xs text-center text-gray-500 pt-2">
+                💡 Collez ce lien sur WhatsApp, Facebook ou Twitter pour
+                afficher l'aperçu avec l'image
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

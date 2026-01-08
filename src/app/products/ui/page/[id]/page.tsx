@@ -50,7 +50,6 @@ interface Vendor {
   user: User;
 }
 const customerRepo = new CustomerRepository(new CustomerMapper());
-const createCustomerUseCase = new CreateCustomerUseCase(customerRepo);
 
 // --- NOUVEAU COMPOSANT : Meta Tags pour Partage Social ---
 interface SocialMetaTagsProps {
@@ -502,7 +501,11 @@ export default function VendorProductsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-        <VendorNavBar />
+        <VendorNavBar
+          vendorName={vendor?.name}
+          vendorDescription={vendor?.site?.description}
+          vendorImage={bannerUrl}
+        />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden animate-pulse">
             <div className="h-80 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"></div>
@@ -525,7 +528,11 @@ export default function VendorProductsPage() {
   if (error || !vendor) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-        <VendorNavBar />
+        <VendorNavBar
+          vendorName={vendor?.name}
+          vendorDescription={vendor?.site?.description}
+          vendorImage={bannerUrl}
+        />
         <div className="flex items-center justify-center p-4 min-h-[calc(100vh-80px)]">
           <div className="bg-white rounded-3xl shadow-xl p-10 max-w-md w-full text-center">
             <div className="inline-flex items-center justify-center w-24 h-24 bg-red-100 rounded-full mb-6">
@@ -571,7 +578,11 @@ export default function VendorProductsPage() {
       )}
 
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-blue-50">
-        <VendorNavBar />
+        <VendorNavBar
+          vendorName={vendor?.name}
+          vendorDescription={vendor?.site?.description}
+          vendorImage={bannerUrl}
+        />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-10 transform transition-all duration-300 hover:shadow-3xl">
             {/* BANNIÈRE DE COUVERTURE */}
