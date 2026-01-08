@@ -5,10 +5,8 @@ import React from "react";
 import DashbordVendor from "./components/dashbord/Dashbord";
 import { AlertCircle, CheckCircle, Clock, Mail } from "lucide-react";
 import Link from "next/link";
-
 export default function AdminPage() {
   const { user } = useAuth();
-
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">

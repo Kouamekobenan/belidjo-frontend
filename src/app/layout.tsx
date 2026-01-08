@@ -57,10 +57,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      {" "}
-      {/* ✅ Changé en "fr" si ton public est francophone */}
       <head>
-        {/* Les fonts via <link> sont acceptables, mais Next.js préfère l'optimisation via next/font comme tu l'as fait avec Geist */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

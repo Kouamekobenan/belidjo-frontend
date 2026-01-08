@@ -19,6 +19,7 @@ import {
 interface IvendorProfile {
   id?: string;
   name?: string;
+  logoUrl?:string
 }
 
 interface ParamVendorProps {
