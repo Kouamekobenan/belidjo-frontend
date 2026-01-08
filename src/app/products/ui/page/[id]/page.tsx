@@ -37,8 +37,8 @@ export async function generateMetadata({
     openGraph: {
       title: title,
       description: description,
-      url: `https://votre-site.com/products/ui/page/${vendor.id}`,
-      siteName: "Votre Plateforme",
+      url: `https://belidjo-frontend.vercel.app/products/ui/page/${vendor.id}`,
+      siteName: "Votre Plateforme Noboutik",
       images: [
         {
           url: imageUrl,

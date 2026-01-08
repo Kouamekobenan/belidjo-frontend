@@ -32,13 +32,10 @@ export default function SuperAdminPage() {
     );
   }
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      {/* 1. La Navigation Latérale (Fixe ou Relative) */}
+    <div className="flex min-h-screen bg-gradient-to-br from-teal-50 via-white to-green-50">
       <NavBarAdmin />
-      {/* 2. Le Conteneur de contenu principal */}
       <main className="flex-1 transition-all duration-300">
-        {/* Padding pour ne pas coller aux bords et laisser de la place au bouton mobile */}
-        <div className="p-4 md:p-1 mt-14 lg:mt-0">
+        <div className="mt-14 lg:mt-0">
           <SuperAdmin />
         </div>
       </main>

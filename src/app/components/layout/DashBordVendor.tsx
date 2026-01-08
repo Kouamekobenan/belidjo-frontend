@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import {
   Package,
   Users,
@@ -26,7 +27,7 @@ interface NavbarDashbordVendorProps {
   phone?: string;
   cityName?: string;
   vendorProfile?: IvendorProfile;
-  trialDaysRemaining?: number; // Nombre de jours restants
+  trialDaysRemaining?: number;
 }
 
 export default function NavbarDashbordVendor({
@@ -34,12 +35,12 @@ export default function NavbarDashbordVendor({
   phone,
   cityName,
   vendorProfile,
-  trialDaysRemaining = 30, // Par défaut 30 jours
+  trialDaysRemaining = 30,
 }: NavbarDashbordVendorProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("/admin/ui");
   const [showTrialBanner, setShowTrialBanner] = useState(true);
+  const pathname = usePathname(); // Hook pour obtenir l'URL actuelle
 
   const Url = `/products/ui/page/${vendorProfile?.id}`;
   const imageLogo = vendorProfile?.logoUrl ?? "/images/bj.png";
@@ -71,8 +72,9 @@ export default function NavbarDashbordVendor({
     },
   ];
 
-  const handleTabClick = (href: string) => {
-    setActiveTab(href);
+  // Fonction pour vérifier si un lien est actif
+  const isActive = (href: string) => {
+    return pathname === href || pathname?.startsWith(href + "/");
   };
 
   return (
@@ -186,11 +188,27 @@ export default function NavbarDashbordVendor({
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-teal-600 transition-all duration-200 group"
+                className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
+                  isActive(item.href)
+                    ? "bg-teal-600 text-white"
+                    : "hover:bg-teal-600 text-gray-300"
+                }`}
               >
-                <item.icon className="w-5 h-5 flex-shrink-0 text-gray-300 group-hover:text-white" />
+                <item.icon
+                  className={`w-5 h-5 flex-shrink-0 ${
+                    isActive(item.href)
+                      ? "text-white"
+                      : "text-gray-300 group-hover:text-white"
+                  }`}
+                />
                 {!isCollapsed && (
-                  <span className="text-sm font-medium text-gray-300 group-hover:text-white">
+                  <span
+                    className={`text-sm font-medium ${
+                      isActive(item.href)
+                        ? "text-white"
+                        : "text-gray-300 group-hover:text-white"
+                    }`}
+                  >
                     {item.label}
                   </span>
                 )}
@@ -200,11 +218,27 @@ export default function NavbarDashbordVendor({
             {/* Paramètres */}
             <Link
               href="/admin/parametre"
-              className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-teal-600 transition-all duration-200 group"
+              className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
+                isActive("/admin/parametre")
+                  ? "bg-teal-600 text-white"
+                  : "hover:bg-teal-600 text-gray-300"
+              }`}
             >
-              <Settings className="w-5 h-5 flex-shrink-0 text-gray-300 group-hover:text-white" />
+              <Settings
+                className={`w-5 h-5 flex-shrink-0 ${
+                  isActive("/admin/parametre")
+                    ? "text-white"
+                    : "text-gray-300 group-hover:text-white"
+                }`}
+              />
               {!isCollapsed && (
-                <span className="text-sm font-medium text-gray-300 group-hover:text-white">
+                <span
+                  className={`text-sm font-medium ${
+                    isActive("/admin/parametre")
+                      ? "text-white"
+                      : "text-gray-300 group-hover:text-white"
+                  }`}
+                >
                   Paramètre
                 </span>
               )}
@@ -313,16 +347,15 @@ export default function NavbarDashbordVendor({
           {/* Dashboard */}
           <Link
             href="/admin/ui"
-            onClick={() => handleTabClick("/admin/ui")}
-            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 ${
-              activeTab === "/admin/ui"
+            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
+              isActive("/admin/ui")
                 ? "text-teal-400"
                 : "text-gray-400 hover:text-teal-300"
             }`}
           >
             <LayoutDashboard className="w-6 h-6" />
             <span className="text-[10px] font-medium">Dashboard</span>
-            {activeTab === "/admin/ui" && (
+            {isActive("/admin/ui") && (
               <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
             )}
           </Link>
@@ -330,16 +363,15 @@ export default function NavbarDashbordVendor({
           {/* Produits */}
           <Link
             href="/admin/products"
-            onClick={() => handleTabClick("/admin/products")}
-            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 ${
-              activeTab === "/admin/products"
+            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
+              isActive("/admin/products")
                 ? "text-teal-400"
                 : "text-gray-400 hover:text-teal-300"
             }`}
           >
             <Package className="w-6 h-6" />
             <span className="text-[10px] font-medium">Produits</span>
-            {activeTab === "/admin/products" && (
+            {isActive("/admin/products") && (
               <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
             )}
           </Link>
@@ -347,16 +379,15 @@ export default function NavbarDashbordVendor({
           {/* Catégories */}
           <Link
             href="/admin/categories"
-            onClick={() => handleTabClick("/admin/categories")}
-            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 ${
-              activeTab === "/admin/categories"
+            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
+              isActive("/admin/categories")
                 ? "text-teal-400"
                 : "text-gray-400 hover:text-teal-300"
             }`}
           >
             <AlignVerticalDistributeEnd className="w-6 h-6" />
             <span className="text-[10px] font-medium">Catégories</span>
-            {activeTab === "/admin/categories" && (
+            {isActive("/admin/categories") && (
               <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
             )}
           </Link>
@@ -364,16 +395,15 @@ export default function NavbarDashbordVendor({
           {/* Clients */}
           <Link
             href="/admin/customer"
-            onClick={() => handleTabClick("/admin/customer")}
-            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 ${
-              activeTab === "/admin/customer"
+            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
+              isActive("/admin/customer")
                 ? "text-teal-400"
                 : "text-gray-400 hover:text-teal-300"
             }`}
           >
             <Users className="w-6 h-6" />
             <span className="text-[10px] font-medium">Clients</span>
-            {activeTab === "/admin/customer" && (
+            {isActive("/admin/customer") && (
               <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
             )}
           </Link>

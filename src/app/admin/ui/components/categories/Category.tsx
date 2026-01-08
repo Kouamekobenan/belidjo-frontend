@@ -176,7 +176,6 @@ export default function VendorCategoriesDashboard({
         // 1. S'assurer d'avoir l'ID de la catégorie à modifier
         const categoryId = selectedCategory.id;
         // 2. Appel du Use Case de Modification
-        // Note: Nous utilisons formData directement pour l'update, en incluant l'ID (selectedCategory.id)
         await updateCategoryUseCase.execute(
           categoryId,
           categoryData, // Passe le DTO avec les nouvelles valeurs
@@ -504,7 +503,7 @@ const CategoryCardList: React.FC<CategoryListProps> = ({
         >
           <div className="flex flex-col items-start gap-3">
             {/* Image */}
-            <div className="relative w-full h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+            <div className="relative w-full h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
               {cat.imageUrl ? (
                 <Image
                   src={cat.imageUrl}

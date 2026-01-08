@@ -449,7 +449,6 @@ export default function VendorProductsClient({
   const { user } = useAuth();
   const currentUserId = user?.id || null;
   const { id } = useParams();
-
   // Mise à jour locale si l'utilisateur change la bannière
   const handleBannerUpdate = (newImageUrl: string) => {
     setBannerUrl(newImageUrl);
@@ -505,7 +504,6 @@ export default function VendorProductsClient({
                   />
                 </div>
               </div>
-
               <div className="flex-1 pt-12">
                 <h1 className="text-3xl font-bold text-slate-900">{name}</h1>
 
@@ -519,7 +517,6 @@ export default function VendorProductsClient({
                 </div>
               </div>
             </div>
-
             {site?.description && (
               <div className="mt-6 p-5 bg-slate-50 rounded-2xl border border-slate-200">
                 <p className="text-slate-700">{site.description}</p>
@@ -527,11 +524,9 @@ export default function VendorProductsClient({
             )}
           </div>
         </div>
-
         {/* Listes des produits */}
         <CategoriesList vendorId={vendorId} />
         <VendorProducts vendorId={vendorId} />
-
         <VendorFooter name={name} site={site} user={vendor.user} />
       </div>
     </div>
