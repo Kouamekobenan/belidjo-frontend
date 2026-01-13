@@ -1,247 +1,189 @@
-import { MapPin, Store } from "lucide-react"; // Search a été retiré car le filtre par nom/desc est enlevé
+import { MapPin, Store, ChevronRight, ArrowRight } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Vendor } from "../../domain/entities/vendor.entity";
 import Link from "next/link";
 import { photoCouv } from "@/app/lib/globals.type";
 
-// --- Interfaces de Données ---
-/**
- * Interface pour les données de ville.
- */
 interface City {
   id: string;
   name: string;
-  country?: string;
 }
-
-/**
- * Propriétés du composant principal VendorList.
- */
 interface VendorListProps {
   data: Vendor[];
-  /**
-   * Fonction de rappel appelée lors du clic sur un vendeur.
-   * Si non fournie, le composant tentera d'ouvrir le domaine du site.
-   */
   onVendorClick?: (vendorId: string) => void;
 }
 
-// --- Fonctions Utilitaires ---
-
-/**
- * Filtre la liste des vendeurs en fonction de la ville sélectionnée.
- * @param vendors La liste complète des vendeurs.
- * @param selectedCity L'ID de la ville sélectionnée, ou 'all'.
- * @returns La liste filtrée des vendeurs.
- */
-const filterVendors = (vendors: Vendor[], selectedCity: string): Vendor[] => {
-  return vendors.filter((vendor) => {
-    // 1. Filtre par ville (ID) UNIQUEMENT
-    const matchesCity =
-      selectedCity === "all" || vendor.city?.id === selectedCity;
-
-    return matchesCity;
-  });
-};
-
-// --- Composant : VendorListItem ---
-
-interface VendorListItemProps {
+const VendorListItem = ({
+  vendor,
+  onClick,
+}: {
   vendor: Vendor;
-  onClick: (vendorId: string, domain?: string) => void;
-}
-
-const VendorListItem = ({ vendor, onClick }: VendorListItemProps) => {
+  onClick: (id: string, domain?: string) => void;
+}) => {
   const { id, name, city, site } = vendor;
-  const isValidLogoUrl = site?.logoUrl?.startsWith("http");
 
   return (
-    // Structure pro avec espacement optimisé et flexbox
-    <li className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-gray-200 p-4 rounded-2xl shadow-sm hover:drop-shadow-xl transition-all duration-300">
-      <div
-        className="flex items-start gap-4 flex-1 cursor-pointer"
-        onClick={() => onClick(id, site?.domain)}
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            onClick(id, site?.domain);
-          }
-        }}
-      >
-        {/* Responsive Logo : plus petit sur mobile, taille standard sur sm+ */}
-        <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-gray-100 border border-gray-100 rounded-xl overflow-hidden shadow-inner">
+    <li className="group bg-white border border-slate-100 p-5 rounded-[24px] shadow-sm hover:shadow-xl hover:shadow-teal-500/5 transition-all duration-500 ease-out active:scale-[0.98]">
+      {/* Container Principal : Colonne sur mobile, Ligne sur SM+ */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+        {/* Logo Section : Centré sur mobile */}
+        <div
+          className="relative w-full sm:w-28 h-48 sm:h-28 flex-shrink-0 bg-slate-50 rounded-[20px] overflow-hidden border border-slate-100 group-hover:border-teal-100 transition-colors cursor-pointer"
+          onClick={() => onClick(id, site?.domain)}
+        >
           <img
             src={site.logoUrl ?? photoCouv}
-            alt={`Logo de ${name}`}
-            className="w-full h-full object-contain p-1" // 'object-contain' pour éviter la déformation
+            alt={name}
+            className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-500"
           />
         </div>
-        <div className="flex-1 min-w-0">
-          {/* Texte responsive : font-size ajusté sur les petites tailles */}
-          <h3 className="font-extrabold text-lg sm:text-xl text-gray-900 truncate mb-1">
-            {name}
-          </h3>
-          {city && (
-            <div className="flex items-center gap-1 text-sm text-gray-600">
-              <MapPin className="h-4 w-4 flex-shrink-0 text-teal-600" />
-              <span className="truncate font-medium">{city.name}</span>
-            </div>
-          )}
-          {site?.description && (
-            <p className="text-sm text-gray-700 mt-2 line-clamp-2">
-              {site.description}
-            </p>
-          )}
+        {/* Info Section : Aligné à gauche */}
+        <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-black text-xl md:text-2xl text-slate-900 group-hover:text-teal-600 transition-colors truncate">
+              {name}
+            </h3>
+            {city && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-50 text-teal-700 text-[10px] font-bold uppercase tracking-wider rounded-full border border-teal-100">
+                <MapPin className="h-3 w-3" />
+                {city.name}
+              </span>
+            )}
+          </div>
+
+          <p className="text-slate-500 text-sm md:text-base leading-relaxed line-clamp-2 max-w-2xl">
+            {site?.description ||
+              "Découvrez une sélection exclusive de produits de qualité supérieure chez ce partenaire certifié."}
+          </p>
+
+          <div className="flex items-center gap-4 pt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <span className="flex items-center gap-1">
+              <Store size={14} className="text-teal-500" /> Boutique Vérifiée
+            </span>
+            <span className="hidden sm:block">•</span>
+            <span className="hidden sm:block">Livraison Rapide</span>
+          </div>
+        </div>
+
+        {/* Action Section : Pleine largeur sur mobile */}
+        <div className="w-full sm:w-auto pt-2 sm:pt-0">
+          <Link
+            href={`/products/ui/page/${id}`}
+            className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 bg-slate-900 hover:bg-teal-600 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-slate-200 hover:shadow-teal-500/20 group/btn"
+          >
+            Visiter
+            <ArrowRight
+              size={18}
+              className="group-hover/btn:translate-x-1 transition-transform"
+            />
+          </Link>
         </div>
       </div>
-      {/* Bouton d'Action */}
-      <Link
-        href={`/products/ui/page/${id}`}
-        className="mt-2 sm:mt-0 px-6 cursor-pointer py-2.5 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md whitespace-nowrap focus:outline-none focus:ring-4 focus:ring-teal-500/50 text-center text-sm sm:text-base"
-        aria-label={`Visiter les produits de ${name}`}
-      >
-        visitez la boutique
-      </Link>
     </li>
   );
 };
 
-// --- Sous-Composant : Filtres de Recherche (Simplifié et mis en avant) ---
+const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => (
+  <div className="relative overflow-hidden bg-slate-900 rounded-[32px] p-8 md:p-12 mb-12 shadow-2xl">
+    {/* Décoration d'arrière-plan */}
+    <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-teal-500/20 rounded-full blur-3xl"></div>
 
-interface VendorFiltersProps {
-  selectedCity: string;
-  setSelectedCity: (city: string) => void;
-  cityOptions: City[];
-  resultCount: number;
-}
-
-const VendorFilters = ({
-  selectedCity,
-  setSelectedCity,
-  cityOptions,
-  resultCount,
-}: VendorFiltersProps) => (
-  // Conteneur attirant et visible
-  <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-2xl  p-6 md:p-8 space-y-5 border border-teal-200">
-    <h2 className="text-2xl font-bold text-teal-800 flex items-center gap-2">
-      <MapPin className="h-7 w-7 text-teal-600" />
-      Trouvez un Vendeur Près de Chez Vous
-    </h2>
-    {/* 1. Filtre par ville (Grande taille et bien visible) */}
-    <div className="relative max-w-lg">
-      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-        <MapPin className="h-6 w-6 text-teal-500" aria-hidden="true" />
+    <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+      <div className="space-y-2">
+        <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">
+          Explorer les <span className="text-teal-400">boutiques</span>
+        </h2>
+        <p className="text-slate-400 font-medium">
+          Filtrez par ville pour trouver le vendeur le plus proche.
+        </p>
       </div>
-      <select
-        value={selectedCity}
-        onChange={(e) => setSelectedCity(e.target.value)}
-        // Classes de taille et focus améliorées pour un look "pro" et grand
-        className="w-full pl-12 pr-6 py-3.5 border-2 border-teal-300 rounded-xl text-lg font-medium text-gray-900 bg-white cursor-pointer appearance-none shadow-lg transition duration-200 hover:border-teal-500 focus:ring-4 focus:ring-teal-400/50 focus:border-teal-500 outline-none"
-        aria-label="Filtre par ville"
-      >
-        <option value="all" className="text-gray-500">
-          Toutes les villes
-        </option>
-        {cityOptions.map((city) => (
-          <option key={city.id} value={city.id}>
-            {city.name}
-          </option>
-        ))}
-      </select>
-      {/* Flèche custom pour le select */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
-        <svg
-          className="h-5 w-5"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
+
+      <div className="relative w-full lg:max-w-md group">
+        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-teal-500 z-10" />
+        <select
+          value={selectedCity}
+          onChange={(e) => setSelectedCity(e.target.value)}
+          className="w-full pl-14 pr-10 py-5 bg-white/10 border border-white/10 rounded-2xl text-white font-bold text-lg appearance-none focus:bg-white focus:text-slate-900 transition-all outline-none cursor-pointer backdrop-blur-md"
         >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
+          <option value="all" className="text-slate-900">
+            Toutes les localisations
+          </option>
+          {cityOptions.map((city: any) => (
+            <option key={city.id} value={city.id} className="text-slate-900">
+              {city.name}
+            </option>
+          ))}
+        </select>
+        <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 h-6 w-6 text-teal-500 rotate-90 pointer-events-none" />
       </div>
     </div>
   </div>
 );
 
-// --- Composant Principal : Liste des Vendeurs ---
-
 export function VendorList({ data, onVendorClick }: VendorListProps) {
   const [selectedCity, setSelectedCity] = useState<string>("all");
-  // Extraction des options de ville
+
   const cityOptions = useMemo(() => {
     const cityMap = new Map<string, City>();
-    data.forEach((vendor) => {
-      if (vendor.city && !cityMap.has(vendor.city.id)) {
-        cityMap.set(vendor.city.id, vendor.city);
-      }
-    });
-    const cities = Array.from(cityMap.values()).sort((a, b) =>
+    data.forEach(
+      (v) => v.city && !cityMap.has(v.city.id) && cityMap.set(v.city.id, v.city)
+    );
+    return Array.from(cityMap.values()).sort((a, b) =>
       a.name.localeCompare(b.name)
     );
-    return cities;
   }, [data]);
 
-  // Vendeurs filtrés (Uniquement par ville)
-  const filteredVendors = useMemo(() => {
-    // Suppression du paramètre searchQuery
-    return filterVendors(data, selectedCity);
-  }, [data, selectedCity]);
+  const filteredVendors = useMemo(
+    () =>
+      data.filter((v) => selectedCity === "all" || v.city?.id === selectedCity),
+    [data, selectedCity]
+  );
 
-  // Gestion du clic sur un vendeur
   const handleVendorClick = useCallback(
-    (vendorId: string, domain?: string) => {
-      if (onVendorClick) {
-        onVendorClick(vendorId);
-      } else if (domain) {
-        window.open(`https://${domain}`, "_blank", "noopener,noreferrer");
-      }
+    (id: string, dom?: string) => {
+      onVendorClick
+        ? onVendorClick(id)
+        : dom && window.open(`https://${dom}`, "_blank");
     },
     [onVendorClick]
   );
 
-  // Affichage si aucune donnée n'est passée
-  if (!data || data.length === 0) {
+  if (!data?.length)
     return (
-      <div className="text-center py-16 text-gray-500 bg-white rounded-xl shadow-lg border border-gray-100 max-w-4xl mx-auto mt-8">
-        <Store className="mx-auto h-16 w-16 mb-4 opacity-70 text-gray-300" />
-        <p className="text-xl font-semibold">
-          Pas de vendeurs disponibles pour le moment
+      <div className="max-w-xl mx-auto mt-20 text-center space-y-4 p-12 bg-white rounded-[40px] border border-slate-100 shadow-sm">
+        <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto">
+          <Store size={40} className="text-slate-300" />
+        </div>
+        <h3 className="text-2xl font-bold text-slate-900">Aucun vendeur</h3>
+        <p className="text-slate-500">
+          Revenez un peu plus tard pour découvrir nos partenaires.
         </p>
-        <p className="text-sm mt-1">Veuillez revenir plus tard.</p>
       </div>
     );
-  }
 
   return (
-    // Conteneur principal centré et avec un padding pro
-    <div className="space-y-8 max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
-      {/* Retrait de la description inutile et mise en évidence du filtre */}
+    <div className="max-w-6xl mx-auto px-4 py-12">
       <VendorFilters
-        // searchQuery et setSearchQuery retirés
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
         cityOptions={cityOptions}
-        resultCount={filteredVendors.length}
       />
 
       {filteredVendors.length === 0 ? (
-        <div className="text-center py-12 text-gray-500 bg-white rounded-2xl shadow-lg border border-gray-100 mt-8">
-          <MapPin className="mx-auto h-12 w-12 mb-3 text-teal-400" />
-          <p className="text-xl font-bold text-gray-800">
-            Aucun résultat trouvé pour cette ville.
+        <div className="text-center py-20 bg-slate-50 rounded-[32px] border-2 border-dashed border-slate-200">
+          <MapPin size={48} className="mx-auto text-slate-300 mb-4" />
+          <p className="text-xl font-bold text-slate-900">
+            Désolé, personne ici !
           </p>
-          <p className="text-sm mt-1">
-            Essayez de sélectionner **Toutes les villes** pour élargir la
-            recherche.
-          </p>
+          <button
+            onClick={() => setSelectedCity("all")}
+            className="mt-4 text-teal-600 font-bold hover:underline"
+          >
+            Voir partout
+          </button>
         </div>
       ) : (
-        <ul className="space-y-5 mt-8">
+        <ul className="grid grid-cols-1 gap-6">
           {filteredVendors.map((vendor) => (
             <VendorListItem
               key={vendor.id}

@@ -1,143 +1,3 @@
-// "use client";
-// import React, {
-//   createContext,
-//   useContext,
-//   useEffect,
-//   useState,
-//   useRef,
-// } from "react";
-// import { User } from "../lib/globals.type";
-// import { api } from "../lib/api";
-
-// interface AuthContextType {
-//   user: User | null;
-//   isAuthenticated: boolean;
-//   loading: boolean;
-//   login: (phone: string, password: string) => Promise<User>;
-//   logout: () => void;
-//   refreshUser: () => Promise<void>;
-// }
-
-// const AuthContext = createContext<AuthContextType | null>(null);
-
-// export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-//   const [user, setUser] = useState<User | null>(null);
-//   const [isAuthenticated, setIsAuthenticated] = useState(false);
-//   const [loading, setLoading] = useState(true);
-//   const isMounted = useRef(true);
-
-//   const login = async (phone: string, password: string): Promise<User> => {
-//     try {
-//       const res = await api.post(`/auth/login`, { phone, password });
-//       const { access_token, refresh_token, user } = res.data;
-
-//       // ✅ Vérification que le code s'exécute côté client
-//       if (typeof window !== "undefined") {
-//         localStorage.setItem("access_token", access_token);
-//         localStorage.setItem("refresh_token", refresh_token);
-//         localStorage.setItem("user_id", user.id);
-//       }
-
-//       setUser(user);
-//       setIsAuthenticated(true);
-//       return user;
-//     } catch (error: any) {
-//       throw new Error(error.response?.data?.message || "Erreur de connexion");
-//     }
-//   };
-
-//   const logout = () => {
-//     if (typeof window !== "undefined") {
-//       localStorage.clear();
-//     }
-//     setUser(null);
-//     setIsAuthenticated(false);
-//   };
-
-//   const refreshUser = async () => {
-//     // ✅ Protection SSR
-//     if (typeof window === "undefined") {
-//       setLoading(false);
-//       return;
-//     }
-
-//     const token = localStorage.getItem("access_token");
-//     if (!token) {
-//       setLoading(false);
-//       return;
-//     }
-
-//     try {
-//       const res = await api.get(`/auth/me`);
-
-//       // ✅ Vérification que le composant est toujours monté
-//       if (isMounted.current) {
-//         setUser(res.data);
-//         setIsAuthenticated(true);
-//       }
-//     } catch (error: any) {
-//       console.warn("Session invalide:", error.message);
-
-//       // ✅ Si 401, essayer de refresh le token
-//       if (error.response?.status === 401) {
-//         const refreshToken = localStorage.getItem("refresh_token");
-//         if (refreshToken) {
-//           try {
-//             const res = await api.post(`/auth/refresh`, {
-//               refresh_token: refreshToken,
-//             });
-//             localStorage.setItem("access_token", res.data.access_token);
-//             // Retry refreshUser
-//             await refreshUser();
-//             return;
-//           } catch (refreshError) {
-//             console.error("Refresh token invalide");
-//           }
-//         }
-//       }
-
-//       if (isMounted.current) {
-//         logout();
-//       }
-//     } finally {
-//       if (isMounted.current) {
-//         setLoading(false);
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     isMounted.current = true;
-//     refreshUser();
-
-//     // ✅ Cleanup pour éviter les memory leaks
-//     return () => {
-//       isMounted.current = false;
-//     };
-//   }, []);
-
-//   return (
-//     <AuthContext.Provider
-//       value={{ user, isAuthenticated, loading, login, logout, refreshUser }}
-//     >
-//       {!loading ? (
-//         children
-//       ) : (
-//         <div className="flex h-screen items-center justify-center">
-//           Chargement...
-//         </div>
-//       )}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// export const useAuth = () => {
-//   const context = useContext(AuthContext);
-//   if (!context)
-//     throw new Error("useAuth doit être utilisé dans un AuthProvider");
-//   return context;
-// };
-
 "use client";
 import React, {
   createContext,
@@ -153,7 +13,10 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (phone: string, password: string) => Promise<User>;
+  login: (
+    phone: string,
+    password: string
+  ) => Promise<{ user: User; accessToken: string; refreshToken: string }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -180,20 +43,46 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const login = async (phone: string, password: string): Promise<User> => {
+  const login = async (
+    phone: string,
+    password: string
+  ): Promise<{ user: User; accessToken: string; refreshToken: string }> => {
     try {
       const res = await api.post(`/auth/login`, { phone, password });
 
-      // On extrait selon ce que ton back renvoie au login
-      // Si ton back renvoie accessToken/refreshToken (camelCase), adapte ici
-      const { access_token, refresh_token, user } = res.data;
+      console.log("📦 Réponse complète du backend:", res.data);
 
-      saveTokens(access_token, refresh_token, user.id);
+      // ✅ CORRECTION : Les tokens sont dans res.data.token
+      const userData = res.data.user;
+      const accessToken = res.data.token?.accessToken;
+      const refreshToken = res.data.token?.refreshToken;
 
-      setUser(user);
+      console.log("👤 User extrait:", userData);
+      console.log("🔑 Access Token extrait:", accessToken);
+      console.log("🔑 Refresh Token extrait:", refreshToken);
+
+      // ⚠️ Vérification de sécurité
+      if (!accessToken || !refreshToken || !userData) {
+        console.error("❌ Tokens ou user manquants dans la réponse!");
+        throw new Error("Réponse de connexion invalide du serveur");
+      }
+
+      // 🔹 Sauvegarde locale
+      saveTokens(accessToken, refreshToken, userData.id);
+
+      // 🔹 Mets à jour le contexte global
+      setUser(userData);
       setIsAuthenticated(true);
-      return user;
+
+      // 🔹 Retourne tout ce qu'il faut au frontend
+      return {
+        user: userData,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
     } catch (error: any) {
+      console.error("❌ Erreur lors du login:", error);
+      console.error("❌ Réponse d'erreur:", error.response?.data);
       throw new Error(error.response?.data?.message || "Erreur de connexion");
     }
   };
@@ -234,23 +123,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const userId = localStorage.getItem("user_id");
         if (storedRefreshToken && userId) {
           try {
-            // URL avec l'ID comme vu dans tes logs (PATCH/POST /auth/refresh/:id)
             const refreshRes = await api.post(`/auth/refresh/${userId}`, {
-              refreshToken: storedRefreshToken, // Clé exacte attendue par @Body('refreshToken')
+              refreshToken: storedRefreshToken,
             });
 
-            // On récupère les nouveaux tokens (ton back doit les renvoyer dans cet objet)
-            const { access_token, refresh_token } = refreshRes.data;
-            console.log(
-              "Tokens rafraîchis avec succès.",
-              access_token,
-              refresh_token
-            );
+            // Adapter selon la structure de votre réponse refresh
+            const newAccessToken =
+              refreshRes.data.token?.accessToken ||
+              refreshRes.data.accessToken ||
+              refreshRes.data.access_token;
+            const newRefreshToken =
+              refreshRes.data.token?.refreshToken ||
+              refreshRes.data.refreshToken ||
+              refreshRes.data.refresh_token;
 
-            if (access_token && refresh_token) {
-              saveTokens(access_token, refresh_token);
+            console.log("✅ Tokens rafraîchis avec succès.");
 
-              // On retente de récupérer le user avec le nouvel access_token
+            if (newAccessToken && newRefreshToken) {
+              saveTokens(newAccessToken, newRefreshToken);
               const retryRes = await api.get(`/auth/me`);
               if (isMounted.current) {
                 setUser(retryRes.data);
@@ -260,7 +150,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               }
             }
           } catch (refreshError) {
-            console.error("Refresh échoué : session expirée.");
+            console.error("❌ Refresh échoué : session expirée.");
           }
         }
         isRefreshing.current = false;

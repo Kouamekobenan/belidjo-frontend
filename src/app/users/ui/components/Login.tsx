@@ -1,18 +1,25 @@
 "use client";
 import React, { useState } from "react";
-import { Eye, EyeOff, Phone, Lock, ArrowRight, UserPlus, ShieldCheck } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Phone,
+  Lock,
+  ArrowRight,
+  UserPlus,
+  ShieldCheck,
+} from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { requestDeviceToken } from "@/app/lib/firebase";
+import { api } from "@/app/lib/api";
 
-// Simuler les types et hooks (à remplacer par vos imports réels)
 interface LoginDto {
   phone: string;
   password: string;
 }
-
-// Hook simulé - remplacez par votre vrai hook
 
 export default function LoginUser() {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +36,7 @@ export default function LoginUser() {
 
   const router = useRouter();
   const { login } = useAuth();
-  const LOGO_SRC = "/images/bj.png";
+
   const validateForm = (): boolean => {
     const newErrors = { phone: "", password: "", general: "" };
     let isValid = true;
@@ -66,7 +73,7 @@ export default function LoginUser() {
       setErrors((prev) => ({ ...prev, [name]: "", general: "" }));
     }
   };
-  // const router=useRouter()
+
   const handleSubmit = async () => {
     if (!validateForm()) {
       return;
@@ -75,26 +82,55 @@ export default function LoginUser() {
     setErrors({ phone: "", password: "", general: "" });
     try {
       const loggedUser = await login(formData.phone, formData.password);
-      switch (loggedUser.role) {
+      try {
+        const token = await requestDeviceToken();
+        if (token) {
+          const response = await api.patch(
+            "/users/device-token",
+            { deviceToken: token },
+            {
+              headers: {
+                Authorization: `Bearer ${loggedUser.accessToken}`,
+              },
+            }
+          );
+          console.log(
+            "✅ Device token envoyé au backend avec succès!",
+            response.data
+          );
+        } else {
+          console.warn("⚠️ Aucun device token obtenu");
+        }
+      } catch (err: any) {
+        console.error("❌ Erreur lors de l'envoi du device token:", err);
+        console.error(
+          "Détails de l'erreur:",
+          err.response?.data || err.message
+        );
+        // Ne pas bloquer la connexion si l'envoi du token échoue
+      }
+      // 3️⃣ Afficher le toast et rediriger selon le rôle
+      switch (loggedUser.user.role) {
         case "VENDEUR":
-          toast.success("Vous êtes connectez avec succès! en tant que vendeur");
+          toast.success("Vous êtes connecté avec succès en tant que vendeur !");
           router.push("/admin/ui");
           break;
         case "CUSTOMER":
-          toast.success("Vous êtes connectez avec succès!");
+          toast.success("Vous êtes connecté avec succès !");
           router.push("/vendor");
           break;
         case "ADMIN":
           toast.success(
-            "Vous êtes connectez avec succès! en tant qu'administrateur"
+            "Vous êtes connecté avec succès en tant qu'administrateur !"
           );
           router.push("/super-admin");
           break;
         default:
+          toast.success("Connexion réussie !");
           router.push("/vendor");
       }
-    } catch (err) {
-      console.error("Erreur de connexion:", err);
+    } catch (err: any) {
+      console.error("❌ Erreur de connexion:", err);
       setErrors((prev) => ({
         ...prev,
         general: "Identifiants incorrects. Veuillez réessayer.",
@@ -116,15 +152,15 @@ export default function LoginUser() {
         <div className="flex justify-center items-center pb-6">
           <Link
             href="/vendor"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-50 hover:to-cyan-700 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-50 hover:bg-teal-100 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
             <span>Accueil</span>
           </Link>
         </div>
-        {/* Header */}
+
         {/* Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 backdrop-blur-lg border border-gray-200 dark:border-gray-700">
-           <div className="mb-6 text-center">
+          <div className="mb-6 text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-full mb-3">
               <ShieldCheck className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             </div>
@@ -135,6 +171,7 @@ export default function LoginUser() {
               Accédez à votre espace personnel
             </p>
           </div>
+
           {/* Error général */}
           {errors.general && (
             <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
@@ -143,6 +180,7 @@ export default function LoginUser() {
               </p>
             </div>
           )}
+
           <div className="space-y-5">
             {/* Phone Input */}
             <div>
@@ -178,6 +216,7 @@ export default function LoginUser() {
                 </p>
               )}
             </div>
+
             {/* Password Input */}
             <div>
               <label
@@ -224,7 +263,6 @@ export default function LoginUser() {
                 </p>
               )}
             </div>
-
             {/* Submit Button */}
             <button
               type="button"
@@ -245,6 +283,7 @@ export default function LoginUser() {
               )}
             </button>
           </div>
+
           {/* Sign Up Link */}
           <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
             <div className="text-center">
@@ -254,7 +293,6 @@ export default function LoginUser() {
               <Link href="/users/ui/register">
                 <button
                   type="button"
-                  onClick={() => router.push("/register")}
                   className="inline-flex cursor-pointer items-center space-x-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 font-medium transition-colors"
                   disabled={isLoading}
                 >
@@ -265,6 +303,7 @@ export default function LoginUser() {
             </div>
           </div>
         </div>
+
         {/* Footer */}
         <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-6">
           © 2024 Belidjo Connect. Tous droits réservés.

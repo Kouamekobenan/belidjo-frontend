@@ -8,6 +8,7 @@ import Link from "next/link";
 import { cityName } from "../lib/globals.type";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { HeroSection } from "../components/layout/Herosection";
 
 // Constantes
 const LOGO_SRC = "/images/bj.png";
@@ -264,67 +265,6 @@ const Navbar = () => {
   );
 };
 
-// Composant Bouton d'aide flottant
-
-// Composant Section Héro
-const HeroSection = () => {
-  return (
-    <section
-      className="relative h-[480px] sm:h-[480px] md:h-[480px] w-full flex items-center justify-center text-white text-center overflow-hidden"
-      aria-labelledby="hero-title"
-    >
-      {/* Arrière-plan avec dégradé */}
-      <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-gradient-to-br from-teal-600 via-green-600 to-blue-700"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
-
-        {/* Effet de grille animé */}
-        <div className="absolute inset-0 opacity-10">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(255,255,255,0.1) 50px, rgba(255,255,255,0.1) 51px),
-                             repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(255,255,255,0.1) 50px, rgba(255,255,255,0.1) 51px)`,
-            }}
-          ></div>
-        </div>
-      </div>
-      {/* Contenu principal */}
-      <div className="relative z-10 px-4 sm:px-6 w-full max-w-5xl">
-        <AnimatedHeroTitle />
-        {/* Caractéristiques */}
-        <div className="mt-6 animate-fade-in-up">
-          <p className="text-sm sm:text-base md:text-lg text-white/90 font-medium px-4">
-            <span className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              <span className="flex items-center space-x-1">
-                <span className="inline-block w-2 h-2 bg-green-400 rounded-full animate-ping"></span>
-                <span className="inline-block w-2 h-2 bg-green-400 rounded-full absolute"></span>
-                <span>Livraison rapide</span>
-              </span>
-              <span className="text-white/60 hidden sm:inline">•</span>
-              <span>Vendeurs specialiser</span>
-            </span>
-          </p>
-        </div>
-        {/* Bouton CTA */}
-        <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
-          <Link
-            href="/vendor/vendorform"
-            className="group relative inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-teal-500 to-green-600 hover:from-teal-600 hover:to-green-700 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 overflow-hidden focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-teal-600"
-          >
-            {/* Effet de brillance au survol */}
-            <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-            <span className="relative flex items-center">
-              Créer ma boutique
-              <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
-            </span>
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-};
-// Composant principal de la page
 export default function Vendors() {
   return (
     <div className="min-h-screen">

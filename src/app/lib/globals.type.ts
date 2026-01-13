@@ -13,7 +13,10 @@ export interface IvendorProfile {
   cityId: string;
   isApproved: boolean;
 }
-
+interface Token {
+  accessToken: string;
+  refreshToken: string;
+}
 export interface User {
   id: string;
   name: string;
@@ -26,6 +29,7 @@ export interface User {
   updatedAt: Date;
   vendorProfile: IvendorProfile;
   cityName: string;
+  token: Token;
 }
 
 // domain/interfaces/pagination.interface.ts

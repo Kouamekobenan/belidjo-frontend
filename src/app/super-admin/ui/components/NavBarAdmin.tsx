@@ -75,8 +75,10 @@ export default function NavBarAdmin() {
             <NavItem href="/super-admin/city" icon={MapPin}>
               Gestion des villes
             </NavItem>
+            <NavItem href="/super-admin/notification" icon={MapPin}>
+              Gestion de notifications
+            </NavItem>
           </nav>
-
           {/* INFO UTILISATEUR (BAS DE SIDEBAR) */}
           <div className="mt-auto pt-6 border-t border-slate-100">
             <div className="bg-slate-50 rounded-2xl p-4">
@@ -93,7 +95,6 @@ export default function NavBarAdmin() {
                   </p>
                 </div>
               </div>
-
               <div className="space-y-3 text-[13px] text-slate-500">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-slate-400" />
@@ -108,7 +109,6 @@ export default function NavBarAdmin() {
           </div>
         </div>
       </aside>
-
       {/* AJUSTEMENT DU CONTENU PRINCIPAL */}
       <div className="lg:ml-72 min-h-screen bg-slate-50/50">
         {/* Ton contenu de page viendra ici */}

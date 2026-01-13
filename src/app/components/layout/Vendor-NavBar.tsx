@@ -15,14 +15,12 @@ import { useAuth } from "@/app/context/AuthContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import AnimatedPromoBanner from "../features/Animation";
-
 // Props pour recevoir les informations du vendeur
 interface VendorNavBarProps {
   vendorName?: string;
   vendorDescription?: string;
   vendorImage?: string;
 }
-
 function VendorNavBar({
   vendorName,
   vendorDescription,
@@ -33,7 +31,6 @@ function VendorNavBar({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const router = useRouter();
-
   // Fonction pour gérer le partage avec les infos dynamiques du vendeur
   const handleShare = async () => {
     if (typeof window === "undefined") return;
@@ -68,7 +65,6 @@ function VendorNavBar({
       }
     }
   };
-
   // Copier le lien avec message personnalisé
   const handleCopyLink = async () => {
     const vendorUrl = window.location.href;
@@ -118,11 +114,10 @@ function VendorNavBar({
                 {vendorName || "Espace Boutique"}
               </span>
             </Link>
-
             {/* Actions Desktop */}
             <div className="flex items-center space-x-3">
               {/* Bouton Espace Vendeur */}
-              {user?.role === "VENDEUR" && (
+              {user?.role === "VENDEUR" ? (
                 <button
                   onClick={() => router.push("/admin/ui")}
                   className="group relative cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
@@ -132,8 +127,17 @@ function VendorNavBar({
                   <span>Profile vendeur</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
+              ) : (
+                <button
+                  onClick={() => router.push("/vendor")}
+                  className="group relative cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
+                >
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+                  <Store className="w-5 h-5" />
+                  <span>Catalogue</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
               )}
-
               {/* Bouton Accueil */}
               <button
                 onClick={() => window.history.back()}
@@ -143,7 +147,6 @@ function VendorNavBar({
                 <Home className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 <span>Accueil</span>
               </button>
-
               {/* Bouton Partager */}
               <button
                 onClick={handleShare}
@@ -247,7 +250,7 @@ function VendorNavBar({
           </button>
 
           {/* Espace Vendeur (si vendeur) / Store */}
-          {user?.role === "VENDEUR" && (
+          {user?.role === "VENDEUR" ? (
             <button
               onClick={() => router.push("/admin/ui")}
               className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
@@ -257,6 +260,17 @@ function VendorNavBar({
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-teal-500 rounded-full"></div>
               </div>
               <span className="text-xs font-medium">Vendeur</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => router.push("/vendor")}
+              className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
+            >
+              <div className="relative">
+                <Store className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-teal-500 rounded-full"></div>
+              </div>
+              <span className="text-xs font-medium">Catalogue</span>
             </button>
           )}
 
@@ -297,7 +311,7 @@ function VendorNavBar({
             </div>
             <div className="px-4 py-6 space-y-3">
               {/* Espace Vendeur - Mobile */}
-              {user?.role === "VENDEUR" && (
+              {user?.role === "VENDEUR" ? (
                 <button
                   onClick={() => {
                     router.push("/admin/ui");
@@ -308,6 +322,20 @@ function VendorNavBar({
                   <div className="flex items-center space-x-3">
                     <Store className="w-5 h-5" />
                     <span>Profile vendeur</span>
+                  </div>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    router.push("/vendor");
+                    closeMobileMenu();
+                  }}
+                  className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-xl shadow-md font-medium"
+                >
+                  <div className="flex items-center space-x-3">
+                    <Store className="w-5 h-5" />
+                    <span>Catalogue</span>
                   </div>
                   <ArrowRight className="w-5 h-5" />
                 </button>
@@ -331,7 +359,6 @@ function VendorNavBar({
                   </div>
                 </div>
               )}
-
               {/* Déconnexion */}
               {user && (
                 <button
@@ -469,5 +496,4 @@ function VendorNavBar({
     </>
   );
 }
-
 export default VendorNavBar;
