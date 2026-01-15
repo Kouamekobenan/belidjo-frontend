@@ -34,7 +34,7 @@ const VendorListItem = ({
           <img
             src={site.logoUrl ?? photoCouv}
             alt={name}
-            className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-500"
+            // className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-500"
           />
         </div>
         {/* Info Section : Aligné à gauche */}
@@ -82,7 +82,6 @@ const VendorListItem = ({
     </li>
   );
 };
-
 const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => (
   <div className="relative overflow-hidden bg-slate-900 rounded-[32px] p-8 md:p-12 mb-12 shadow-2xl">
     {/* Décoration d'arrière-plan */}
@@ -119,7 +118,6 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => (
     </div>
   </div>
 );
-
 export function VendorList({ data, onVendorClick }: VendorListProps) {
   const [selectedCity, setSelectedCity] = useState<string>("all");
 

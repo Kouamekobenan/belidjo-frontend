@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image"; // Utilisation de l'optimisation Next.js
 import { AnimatedHeroTitle } from "../features/AnimationHome";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-
 export const HeroSection = () => {
   return (
     <section
@@ -19,15 +18,12 @@ export const HeroSection = () => {
           className="object-cover object-center transition-transform duration-1000 hover:scale-105"
           priority
         />
-
         {/* Overlay Professionnel : Mélange de dégradé sombre et de couleur de marque */}
         <div className="absolute inset-0 bg-slate-900/70 mix-blend-multiply"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-teal-900/40 via-transparent to-slate-900/90"></div>
-
         {/* Texture de grille subtile */}
         <div className="absolute inset-0 opacity-[0.15] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
       </div>
-
       {/* --- CONTENU PRINCIPAL --- */}
       <div className="relative z-10 px-4 sm:px-6 w-full max-w-5xl text-center">
         {/* Badge optionnel pour le "Professional look" */}
@@ -51,7 +47,6 @@ export const HeroSection = () => {
             <span>Vendeurs spécialisés</span>
           </div>
         </div>
-
         {/* Bouton CTA Modernisé */}
         <div className="mt-10 flex flex-col sm:flex-row gap-5 justify-center px-4">
           <Link
@@ -63,10 +58,6 @@ export const HeroSection = () => {
               <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
             </span>
           </Link>
-
-          <button className="px-8 py-4 text-base font-semibold text-white bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl transition-all">
-            En savoir plus
-          </button>
         </div>
       </div>
     </section>

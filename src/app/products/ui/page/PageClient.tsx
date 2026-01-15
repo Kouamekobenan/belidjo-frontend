@@ -26,6 +26,9 @@ import { CustomerMapper } from "@/app/customer/domain/mapper/customer.mapper";
 import toast from "react-hot-toast";
 import VendorProducts from "../components/GetProduct";
 import { photoCouv } from "@/app/lib/globals.type";
+import { NotificationRepository } from "@/app/notification/infrastructure/notification.repository";
+import { CreateNotificationUseCase } from "@/app/notification/application/usecases/create-notification.usecase";
+import { TypeNotification } from "@/app/notification/domain/enums/type-notification";
 
 interface Site {
   id: string;
@@ -50,46 +53,48 @@ interface Vendor {
   site: Site;
   user: User;
 }
-const customerRepo = new CustomerRepository(new CustomerMapper());
+// const customerRepo = new CustomerRepository(new CustomerMapper());
 
-// --- NOUVEAU COMPOSANT : Meta Tags pour Partage Social ---
-interface SocialMetaTagsProps {
-  vendor: Vendor;
-  currentUrl: string;
-}
+// // --- NOUVEAU COMPOSANT : Meta Tags pour Partage Social ---
+// interface SocialMetaTagsProps {
+//   vendor: Vendor;
+//   currentUrl: string;
+// }
 
-const SocialMetaTags = ({ vendor, currentUrl }: SocialMetaTagsProps) => {
-  const { name, site } = vendor;
-  const title = `${name} | Boutique en ligne`;
-  const description = site?.description || `Visitez la boutique de ${name}.`;
+// const SocialMetaTags = ({ vendor, currentUrl }: SocialMetaTagsProps) => {
+//   const { name, site } = vendor;
+//   const title = `${name} | Boutique en ligne`;
+//   const description = site?.description || `Visitez la boutique de ${name}.`;
 
-  // Utilise une URL absolue pour l'image (OBLIGATOIRE pour WhatsApp/FB)
-  const imageUrl = site?.logoUrl || "https://ton-domaine.com/default-share.jpg";
+//   // Utilise une URL absolue pour l'image (OBLIGATOIRE pour WhatsApp/FB)
+//   const imageUrl = site?.logoUrl || "https://ton-domaine.com/default-share.jpg";
 
-  return (
-    <Head>
-      <title>{title}</title>
-      <meta name="description" content={description} />
+//   return (
+//     <Head>
+//       <title>{title}</title>
+//       <meta name="description" content={description} />
 
-      {/* Open Graph / Facebook / WhatsApp */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={currentUrl} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={imageUrl} />
-      {/* WhatsApp préfère les images carrées ou 1200x630 */}
-      <meta property="og:image:secure_url" content={imageUrl} />
-      <meta property="og:image:type" content="image/jpeg" />
+//       {/* Open Graph / Facebook / WhatsApp */}
+//       <meta property="og:type" content="website" />
+//       <meta property="og:url" content={currentUrl} />
+//       <meta property="og:title" content={title} />
+//       <meta property="og:description" content={description} />
+//       <meta property="og:image" content={imageUrl} />
+//       {/* WhatsApp préfère les images carrées ou 1200x630 */}
+//       <meta property="og:image:secure_url" content={imageUrl} />
+//       <meta property="og:image:type" content="image/jpeg" />
 
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:image" content={imageUrl} />
-    </Head>
-  );
-};
+//       {/* Twitter */}
+//       <meta name="twitter:card" content="summary_large_image" />
+//       <meta name="twitter:image" content={imageUrl} />
+//     </Head>
+//   );
+// };
 
 // --- COMPOSANT : Bouton d'Édition de Bannière ---
 
+const notificationRepo = new NotificationRepository();
+const notificationService = new CreateNotificationUseCase(notificationRepo);
 interface BannerEditButtonProps {
   vendorId: string;
   siteId: string;
@@ -356,6 +361,15 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
           setIsSubscribed(false);
           toast.success("Vous n'êtes plus client de ce vendeur");
         }
+        const formData = {
+          senderId: userId,
+          receiverId: vendorId,
+          title: "Abonnée!!",
+          message: `Vous venez d'avoir un abonné de plus🎉🎉🎉🎉`,
+          type: TypeNotification.SUBSCRIPTION,
+          isRead: true,
+        };
+        await notificationService.execute(formData);
       } else {
         const clientData = {
           userId: userId,
