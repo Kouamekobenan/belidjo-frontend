@@ -12,8 +12,9 @@ import {
   Tag,
   Send,
   User,
-  Plus, // Ajout de l'icône Plus
-  Minus, // Ajout de l'icône Minus
+  Plus,
+  Minus,
+  ChevronLeft,
 } from "lucide-react";
 import { IProduct } from "@/app/products/domain/entities/product.entity";
 import { FindByIdProductUseCase } from "@/app/products/application/usecases/find-byId.usecase";
@@ -24,25 +25,14 @@ import { IComment } from "@/app/lib/globals.type";
 import { api } from "@/app/lib/api";
 import { ProductMapper } from "@/app/products/domain/mappers/product.mapper";
 
-// --- Configuration de la Logique Métier ---
+// --- Configuration ---
 const repository = new ProductRepository(new ProductMapper());
 const findProductById = new FindByIdProductUseCase(repository);
-
-// Définition de la couleur de base pour la cohérence
-const PRIMARY_COLOR = "text-teal-600";
-const PRIMARY_BG = "bg-teal-600";
-const HOVER_BG = "hover:bg-teal-700";
 
 export default function ProductDetail() {
   const params = useParams();
   const router = useRouter();
   const { isAuthenticated, user } = useAuth();
-  const id =
-    typeof params.id === "string"
-      ? params.id
-      : Array.isArray(params.id)
-      ? params.id[0]
-      : null;
 
   const [product, setProduct] = useState<IProduct | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,23 +40,44 @@ export default function ProductDetail() {
   const [commentContent, setCommentContent] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [commentError, setCommentError] = useState<string | null>(null);
-  const [showCommentForm, setShowCommentForm] = useState(false); // NOUVEL ÉTAT
+  const [showCommentForm, setShowCommentForm] = useState(false);
 
+  const id =
+    typeof params.id === "string"
+      ? params.id
+      : Array.isArray(params.id)
+      ? params.id[0]
+      : null;
+
+  // --- Chargement du produit ---
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      setError("Identifiant de produit manquant.");
+      return;
+    }
+    const fetchProduct = async () => {
+      try {
+        const data = await findProductById.execute(id);
+        setProduct(data);
+      } catch (err: any) {
+        setError(err.message || "Une erreur est survenue lors du chargement.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+  // --- Gestion des commentaires ---
   const handleComment = async () => {
-    // Vérifier l'authentification
     if (!isAuthenticated) {
       sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
       router.push("/users/ui/login");
       return;
     }
 
-    // Validation du commentaire
-    if (!commentContent.trim()) {
-      setCommentError("Veuillez entrer un commentaire");
-      return;
-    }
-
-    if (commentContent.trim().length < 3) {
+    if (!commentContent.trim() || commentContent.trim().length < 3) {
       setCommentError("Le commentaire doit contenir au moins 3 caractères");
       return;
     }
@@ -81,7 +92,6 @@ export default function ProductDetail() {
         userId: user?.id,
       });
 
-      // Ajouter le nouveau commentaire à la liste locale
       if (product && res.data) {
         const newComment: IComment = {
           id: res.data.id || Date.now().toString(),
@@ -93,49 +103,22 @@ export default function ProductDetail() {
 
         setProduct({
           ...product,
-          comment: [...(product.comment || []), newComment],
+          comment: [newComment, ...(product.comment || [])], // Nouveau commentaire en haut
         });
       }
 
-      // Réinitialiser le champ de commentaire et cacher le formulaire
       setCommentContent("");
-      setCommentError(null);
-      setShowCommentForm(false); // <--- Masquer le formulaire après l'envoi
+      setShowCommentForm(false);
     } catch (error: any) {
-      console.error("Erreur lors de l'envoi du commentaire:", error);
       setCommentError(
-        error.response?.data?.message ||
-          "Une erreur est survenue lors de l'envoi du commentaire"
+        error.response?.data?.message || "Erreur lors de l'envoi."
       );
     } finally {
       setIsSubmittingComment(false);
     }
   };
 
-  useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      setError("Identifiant de produit manquant.");
-      return;
-    }
-    const fetchProduct = async () => {
-      try {
-        const data = await findProductById.execute(id);
-        setProduct(data);
-      } catch (err: any) {
-        console.error("Erreur lors du chargement du produit:", err);
-        setError(err.message || "Une erreur inattendue est survenue.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [id]);
-
-  // Fonction pour vérifier l'authentification et commander via WhatsApp
-  // Remplacez la fonction handleWhatsAppOrder par celle-ci :
-
+  // --- Commande WhatsApp ---
   const handleWhatsAppOrder = () => {
     if (!isAuthenticated) {
       sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
@@ -144,220 +127,163 @@ export default function ProductDetail() {
     }
     if (!product) return;
 
-    // Construction du message avec l'image
-    const productUrl = window.location.href; // URL de la page du produit
-    const imageUrl = product.imageUrl || ""; // URL de l'image du produit
-
+    const productUrl = window.location.href;
+    const phoneNumber =
+      "225" + product.vendor.user?.phone?.replace(/[\s\-\(\)]/g, "");
     const message = encodeURIComponent(
-      `Bonjour, je suis intéressé(e) par ce produit :\n\n` +
-        `📦 *${product.name}*\n` +
-        `💰 Prix : ${product.price.toLocaleString()} FCFA\n` +
-        `📝 Description : ${product.description || "Non spécifiée"}\n` +
-        `🔗 Lien du produit : ${productUrl}\n\n` +
-        `Je souhaite passer une commande.`
+      `Bonjour, je souhaite commander :\n📦 *${
+        product.name
+      }*\n💰 *${product.price.toLocaleString()} FCFA*\n\nLien : ${productUrl}`
     );
-
-    const phoneNumber = "225" + product.vendor.user?.phone;
-    if (!phoneNumber) {
-      alert("Numéro de téléphone du vendeur non disponible.");
-      return;
-    }
-    const cleanPhone = phoneNumber.replace(/[\s\-\(\)]/g, "");
-    // Si une image existe, on l'inclut dans l'URL WhatsApp
-    let whatsappUrl = `https://wa.me/${cleanPhone}?text=${message}`;
-
-    if (imageUrl) {
-      const messageWithImage = encodeURIComponent(
-        `Bonjour, je suis intéressé(e) par ce produit :\n\n` +
-          `📦 *${product.name}*\n` +
-          `💰 Prix : ${product.price.toLocaleString()} FCFA\n` +
-          `📝 Description : ${product.description || "Non spécifiée"}\n` +
-          `🖼️ Image : ${imageUrl}\n` +
-          `🔗 Lien du produit : ${productUrl}\n\n` +
-          `Je souhaite passer une commande.`
-      );
-      whatsappUrl = `https://wa.me/${cleanPhone}?text=${messageWithImage}`;
-    }
-
-    window.open(whatsappUrl, "_blank");
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
-  // --- États de Chargement et Erreur (omis pour la concision) ---
-  if (loading) {
+
+  if (loading)
     return (
-      <div className="min-h-screen bg-gray-50 flex justify-center items-center p-4">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-600 mb-4"></div>
-          <p className="text-xl text-gray-700 font-medium">
-            Chargement du produit...
+      <div className="min-h-screen flex flex-col justify-center items-center bg-white">
+        <div className="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-gray-500 font-medium">
+          Chargement du produit...
+        </p>
+      </div>
+    );
+
+  if (error || !product)
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
+        <div className="text-center bg-white p-8 rounded-3xl shadow-sm border border-gray-100 max-w-sm">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-gray-800">Oups !</h2>
+          <p className="text-gray-500 mt-2 text-sm">
+            {error || "Produit introuvable"}
           </p>
+          <button
+            onClick={() => router.back()}
+            className="mt-6 w-full py-3 bg-gray-900 text-white rounded-xl font-bold"
+          >
+            Retour
+          </button>
         </div>
       </div>
     );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex justify-center items-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full border-l-4 border-red-500">
-          <div className="flex items-center gap-3 mb-4">
-            <AlertCircle className="w-8 h-8 text-red-500" />
-            <h2 className="text-2xl font-bold text-gray-900">Erreur</h2>
-          </div>
-          <p className="text-gray-600">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex justify-center items-center p-4">
-        <div className="text-center bg-white rounded-2xl shadow-xl p-12 max-w-md">
-          <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <p className="text-xl text-gray-700">Produit introuvable</p>
-        </div>
-      </div>
-    );
-  }
-
-  const stockStatus = product.quantity < 5 ? "Stock limité" : "En stock";
-  const stockColor =
-    product.quantity < 5
-      ? "text-orange-600 bg-orange-50"
-      : "text-teal-600 bg-teal-50";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-28 lg:pb-12">
       <VendorNavBar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-12">
-        <div className="bg-white rounded-2xl lg:rounded-3xl shadow-2xl border border-gray-100 overflow-hidden mb-6 lg:mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-            {/* Section Image */}
-            <div className="relative bg-gray-50 p-4 sm:p-6 lg:p-12 flex items-center justify-center border-b lg:border-r lg:border-b-0 border-gray-100">
-              <div className="relative w-full h-64 sm:h-80 lg:h-[500px] flex items-center justify-center">
+
+      <main className="max-w-7xl mx-auto lg:px-8 lg:py-10">
+        <div className="bg-white lg:rounded-[40px] lg:shadow-2xl lg:border lg:border-gray-100 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            {/* --- SECTION IMAGE (Haute sur mobile) --- */}
+            <div className="relative p-4  bg-gray-100">
+              <div className="relative w-full rounded-2xl  h-[50vh] sm:h-[500px] lg:h-[650px]">
                 {product.imageUrl ? (
                   <Image
                     src={product.imageUrl}
-                    alt={`Image du produit ${product.name}`}
+                    alt={product.name}
                     fill
+                    priority
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    style={{ objectFit: "contain" }}
-                    className="drop-shadow-xl"
+                    className="object-cover rounded-2xl lg:object-contain"
                   />
                 ) : (
-                  <div className="flex flex-col justify-center items-center h-full text-gray-300">
-                    <Package className="w-20 h-20 mb-4" />
-                    <p className="text-lg">Image non disponible</p>
+                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                    <Package className="w-20 h-20" />
+                    <p>Aucune image</p>
                   </div>
                 )}
               </div>
+              <div className="absolute top-4 left-4 lg:hidden">
+                <button
+                  onClick={() => router.back()}
+                  className="p-3 bg-white/80 backdrop-blur rounded-full shadow-lg text-gray-900"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+              </div>
             </div>
 
-            {/* Section Informations */}
-            <div className="p-4 sm:p-6 lg:p-12 flex flex-col justify-between">
-              <div>
-                <div className="flex flex-wrap items-center gap-2 mb-3">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs sm:text-sm font-semibold ${stockColor}`}
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full mr-2"
-                      style={{
-                        backgroundColor: stockColor.includes("orange")
-                          ? "orange"
-                          : "#047857",
-                      }}
-                    ></span>
-                    {stockStatus}
-                  </span>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs sm:text-sm font-semibold text-gray-600 bg-gray-100">
-                    <Tag className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5" />
-                    {"Non catégorisé"}
-                  </span>
-                </div>
+            {/* --- SECTION INFOS --- */}
+            <div className="p-6 lg:p-14 flex flex-col justify-center">
+              <div className="flex items-center gap-3 mb-6">
+                <span
+                  className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${
+                    product.quantity < 5
+                      ? "bg-orange-500 text-white"
+                      : "bg-teal-600 text-white"
+                  }`}
+                >
+                  {product.quantity < 5 ? "Stock Limité" : "En Stock"}
+                </span>
+                <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
+                  <Tag className="w-3 h-3" /> Produit vérifié
+                </span>
+              </div>
 
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900 mb-3 lg:mb-4 leading-snug">
-                  {product.name}
-                </h1>
+              <h1 className="text-3xl lg:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
+                {product.name}
+              </h1>
 
-                {/* Prix */}
-                <div className="mb-4 lg:mb-6">
-                  <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-teal-600 mb-1">
-                    {product.price.toLocaleString()}{" "}
-                    <span className="text-lg sm:text-xl font-normal text-gray-500">
-                      FCFA
-                    </span>
-                  </p>
-                </div>
+              <div className="flex items-baseline gap-2 mb-8">
+                <span className="text-4xl lg:text-5xl font-black text-teal-600">
+                  {product.price.toLocaleString()}
+                </span>
+                <span className="text-xl font-bold text-gray-400">FCFA</span>
+              </div>
 
-                {/* Description */}
-                <div className="mb-4 lg:mb-6">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 lg:mb-3 border-l-4 border-teal-500 pl-3">
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-xs font-black text-gray-900 uppercase tracking-widest mb-3 border-b border-gray-100 pb-2">
                     Description
-                  </h2>
-                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                    {product.description ||
-                      "Aucune description fournie pour ce produit."}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-lg">
+                    {product.description || "Description non disponible."}
                   </p>
                 </div>
 
-                {/* Quantité & Vendeur */}
-                <div className="grid grid-cols-2 gap-3 lg:gap-4 text-center mt-4 lg:mt-6">
-                  <div className="bg-blue-50 rounded-lg lg:rounded-xl p-3 lg:p-4 shadow-sm border border-blue-100">
-                    <p className="text-xs sm:text-sm text-gray-600 font-medium">
-                      Quantité en stock
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="p-5 bg-gray-50 rounded-3xl border border-gray-100">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Stock
                     </p>
-                    <p className="text-xl sm:text-2xl font-bold text-green-700 mt-1">
+                    <p className="text-2xl font-black text-gray-800">
                       {product.quantity}
                     </p>
                   </div>
-                  <div className="bg-teal-50 rounded-lg lg:rounded-xl p-3 lg:p-4 shadow-sm border border-teal-100">
-                    <p className="text-xs sm:text-sm text-gray-600 font-medium">
-                      Vendeur
+                  <div className="p-5 bg-teal-50 rounded-3xl border border-teal-100">
+                    <p className="text-[10px] font-black text-teal-400 uppercase tracking-widest">
+                      Boutique
                     </p>
-                    <p className="text-base sm:text-lg font-bold text-teal-700 mt-1 truncate">
-                      {product.vendor.user?.name || "Inconnu"}
+                    <p className="text-sm font-bold text-teal-700 truncate">
+                      {product.vendor.user?.name || "Boutique Officielle"}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Section Actions */}
-              <div className="mt-6 lg:mt-8 pt-4 lg:pt-6 border-t border-gray-100">
-                <button
-                  onClick={handleWhatsAppOrder}
-                  className={`w-full cursor-pointer bg-gradient-to-r from-teal-600 to-teal-700 ${HOVER_BG} text-white font-bold py-3 sm:py-4 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg lg:text-xl`}
-                >
-                  <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
-                  Commander via WhatsApp
-                </button>
-              </div>
+              <button
+                onClick={handleWhatsAppOrder}
+                className="hidden lg:flex mt-12 w-full bg-teal-600 hover:bg-teal-700 text-white py-6 rounded-3xl font-black text-xl items-center justify-center gap-4 transition-all hover:scale-[1.02] shadow-2xl shadow-teal-200"
+              >
+                <ShoppingCart className="w-7 h-7" />
+                Commander maintenant
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Section Commentaires */}
-        <div className="bg-white rounded-2xl lg:rounded-3xl shadow-xl border border-gray-100 p-4 sm:p-6 lg:p-12">
-          <div className="flex items-center justify-between flex-wrap gap-4 mb-6 lg:mb-8">
-            {" "}
-            {/* Adjusted for flex layout */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              <MessageSquare
-                className={`w-6 h-6 sm:w-8 sm:h-8 ${PRIMARY_COLOR}`}
-              />
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                Commentaires
-                {product?.comment && product.comment.length > 0 && (
-                  <span className="ml-2 sm:ml-3 text-base sm:text-lg font-normal text-gray-500">
-                    ({product.comment.length})
-                  </span>
-                )}
-              </h2>
-            </div>
-            {/* Bouton pour ouvrir/fermer le formulaire */}
+        {/* --- SECTION COMMENTAIRES --- */}
+        <section className="mt-12 px-4 lg:px-0 max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+              <MessageSquare className="w-6 h-6 text-teal-600" />
+              Avis Clients
+              <span className="text-gray-300 font-medium">
+                ({product.comment?.length || 0})
+              </span>
+            </h2>
             <button
               onClick={() => {
-                // Si l'utilisateur n'est pas authentifié, on redirige, sinon on bascule l'affichage
                 if (!isAuthenticated) {
                   sessionStorage.setItem(
                     "redirectAfterLogin",
@@ -366,73 +292,51 @@ export default function ProductDetail() {
                   router.push("/users/ui/login");
                 } else {
                   setShowCommentForm(!showCommentForm);
-                  // Optionnel : Réinitialiser le contenu du commentaire lorsqu'on le ferme
-                  if (showCommentForm) {
-                    setCommentContent("");
-                    setCommentError(null);
-                  }
                 }
               }}
-              className={`py-2 px-4 rounded-full text-white font-semibold transition-all duration-300 flex items-center gap-2 text-sm ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm ${
                 showCommentForm
-                  ? "bg-red-500 hover:bg-red-600"
-                  : `${PRIMARY_BG} ${HOVER_BG}`
+                  ? "bg-red-50 text-red-600"
+                  : "bg-white text-teal-600 border border-teal-100"
               }`}
             >
               {showCommentForm ? (
                 <>
-                  <Minus className="w-4 h-4" />
-                  Annuler le Commentaire
+                  <Minus className="w-4 h-4" /> Annuler
                 </>
               ) : (
                 <>
-                  <Plus className="w-4 h-4" />
-                  Ajouter un Commentaire
+                  <Plus className="w-4 h-4" /> Ajouter un avis
                 </>
               )}
             </button>
           </div>
 
-          {/* Formulaire d'ajout de commentaire (Conditionnel) */}
-          {showCommentForm && isAuthenticated && (
-            <div className="mb-6 lg:mb-8">
-              <div className="space-y-3 lg:space-y-4 p-4 border border-teal-200 bg-teal-50 rounded-xl shadow-inner">
-                <p className="text-gray-700 font-medium">Votre avis compte :</p>
-                <div className="relative">
-                  <textarea
-                    value={commentContent}
-                    onChange={(e) => {
-                      setCommentContent(e.target.value);
-                      setCommentError(null);
-                    }}
-                    placeholder="Laissez votre avis sur ce produit..."
-                    rows={3}
-                    className="w-full px-4 py-3 text-black text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-200 resize-none"
-                    disabled={isSubmittingComment}
-                  />
-                </div>
-
-                {commentError && (
-                  <div className="flex items-center gap-2 text-red-600 text-xs sm:text-sm bg-red-100 p-2 sm:p-3 rounded-lg border border-red-300">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>{commentError}</span>
-                  </div>
-                )}
-
+          {showCommentForm && (
+            <div className="mb-10 p-6 bg-white rounded-[32px] border-2 border-teal-50 shadow-xl shadow-teal-50/50 animate-in fade-in slide-in-from-top-4 duration-300">
+              <textarea
+                value={commentContent}
+                onChange={(e) => {
+                  setCommentContent(e.target.value);
+                  setCommentError(null);
+                }}
+                placeholder="Dites-nous ce que vous pensez de ce produit..."
+                className="w-full p-5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 text-gray-800 min-h-[120px] text-lg"
+              />
+              {commentError && (
+                <p className="mt-2 text-red-500 text-xs px-2">{commentError}</p>
+              )}
+              <div className="mt-4 flex justify-end">
                 <button
                   onClick={handleComment}
                   disabled={isSubmittingComment || !commentContent.trim()}
-                  className={`w-full sm:w-auto ${PRIMARY_BG} ${HOVER_BG} text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-200 text-white px-8 py-3 rounded-xl font-black flex items-center gap-2 transition-all shadow-lg shadow-teal-100"
                 >
                   {isSubmittingComment ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent"></div>
-                      Envoi en cours...
-                    </>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   ) : (
                     <>
-                      <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-                      Publier le commentaire
+                      <Send className="w-5 h-5" /> Publier l'avis
                     </>
                   )}
                 </button>
@@ -440,109 +344,64 @@ export default function ProductDetail() {
             </div>
           )}
 
-          {/* Message de connexion (si non authentifié et formulaire caché) */}
-          {!isAuthenticated && !showCommentForm && (
-            <div className="bg-gradient-to-r from-teal-50 to-blue-50 border-2 border-teal-200 rounded-xl p-4 sm:p-6 text-center mb-6 lg:mb-8">
-              <MessageSquare className="w-10 h-10 sm:w-12 sm:h-12 text-teal-600 mx-auto mb-3" />
-              <p className="text-gray-700 text-sm sm:text-base mb-3 sm:mb-4">
-                Connectez-vous pour laisser un commentaire
-              </p>
-              <button
-                onClick={() => {
-                  sessionStorage.setItem(
-                    "redirectAfterLogin",
-                    window.location.pathname
-                  );
-                  router.push("/users/ui/login");
-                }}
-                className={`${PRIMARY_BG} ${HOVER_BG} text-white font-semibold py-2 sm:py-2.5 px-5 sm:px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 text-sm sm:text-base`}
-              >
-                Se connecter
-              </button>
-            </div>
-          )}
-
-          {/* Liste des commentaires */}
-          {product?.comment && product.comment.length > 0 ? (
-            <div className="space-y-3 sm:space-y-4 lg:space-y-6">
-              {product.comment.map((comment, index) => (
+          <div className="space-y-6">
+            {product.comment && product.comment.length > 0 ? (
+              product.comment.map((comment, index) => (
                 <div
                   key={comment.id || index}
-                  className="bg-gray-50 rounded-xl p-3 sm:p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200"
+                  className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm transition-hover hover:shadow-md"
                 >
-                  <div className="flex items-start gap-2 sm:gap-3 lg:gap-4">
-                    <div className="flex-shrink-0">
-                      <div
-                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full ${PRIMARY_BG} flex items-center justify-center text-white font-bold text-xs sm:text-sm`}
-                      >
-                        <User className="w-4 h-4 sm:w-5 sm:h-5" />
-                      </div>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-teal-100">
+                      <User className="w-6 h-6" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-gray-700 text-sm sm:text-base leading-relaxed break-words">
-                        {comment.content}
+                    <div>
+                      <p className="font-black text-gray-900">Client Anonyme</p>
+                      <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest italic">
+                        {comment.createdAt
+                          ? new Date(comment.createdAt).toLocaleDateString(
+                              "fr-FR"
+                            )
+                          : "Récemment"}
                       </p>
-                      {comment.createdAt && (
-                        <p className="text-xs text-gray-500 mt-1.5 sm:mt-2">
-                          {new Date(comment.createdAt).toLocaleDateString(
-                            "fr-FR",
-                            {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}
-                        </p>
-                      )}
                     </div>
                   </div>
+                  <p className="text-gray-600 leading-relaxed italic text-lg">
+                    "{comment.content}"
+                  </p>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 sm:py-12 bg-gray-50 rounded-xl border border-gray-200">
-              <MessageSquare className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
-              <p className="text-gray-500 text-base sm:text-lg">
-                Aucun commentaire pour le moment
-              </p>
-              <p className="text-gray-400 text-xs sm:text-sm mt-2">
-                Soyez le premier à laisser un avis !
-              </p>
-            </div>
+              ))
+            ) : (
+              <div className="text-center py-20 bg-white rounded-[40px] border-2 border-dashed border-gray-100">
+                <p className="text-gray-400 font-bold">
+                  Soyez le premier à donner votre avis !
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
+
+      {/* --- BARRE D'ACTION MOBILE FIXE --- */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-5 bg-white/90 backdrop-blur-xl border-t border-gray-100 z-50">
+        <div className="max-w-md mx-auto flex gap-4">
+          {product.vendor.user?.phone && (
+            <a
+              href={`tel:${product.vendor.user.phone}`}
+              className="flex items-center justify-center w-16 h-16 bg-gray-100 text-gray-900 rounded-[24px] active:scale-90 transition-transform"
+            >
+              <Phone className="w-7 h-7" />
+            </a>
           )}
-        </div>
-
-        {/* Espace pour éviter que le FAB ne masque le contenu */}
-        <div className="lg:hidden h-20"></div>
-      </div>
-
-      {/* Boutons d'Appel (omis pour la concision) */}
-      {/* Bouton d'Appel Flottant Mobile */}
-      {product.vendor.user?.phone && (
-        <a
-          href={`tel:${product.vendor.user.phone}`}
-          className="fixed bottom-6 right-6 lg:hidden w-14 h-14 sm:w-16 sm:h-16 bg-teal-600 text-white rounded-full shadow-2xl flex items-center justify-center transform hover:scale-105 transition-all duration-300 z-50 animate-pulse-slow"
-          aria-label={`Appeler le vendeur au ${product.vendor.user.phone}`}
-        >
-          <Phone className="w-6 h-6 sm:w-7 sm:h-7" />
-        </a>
-      )}
-
-      {/* Bouton d'Appel Desktop */}
-      {product.vendor.user?.phone && (
-        <div className="hidden lg:block fixed bottom-8 right-8 z-50">
-          <a
-            href={`tel:${product.vendor.user.phone}`}
-            className="cursor-pointer bg-white border border-teal-500 text-teal-500 font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-teal-50 transition-all duration-200 flex items-center justify-center gap-3 text-lg whitespace-nowrap"
-            aria-label={`Appeler le vendeur au ${product.vendor.user.phone}`}
+          <button
+            onClick={handleWhatsAppOrder}
+            className="flex-1 bg-teal-600 text-white font-black rounded-[24px] flex items-center justify-center gap-3 active:scale-95 transition-transform shadow-2xl shadow-teal-200"
           >
-            <Phone className="w-5 h-5" />
-            Appeler le Vendeur
-          </a>
+            <ShoppingCart className="w-6 h-6" />
+            Commander via WhatsApp
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -117,7 +117,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                     />
 
                     {/* Badge de stock flottant */}
-                    <div className="absolute top-3 left-3">
+                    {/* <div className="absolute top-3 left-3">
                       <span
                         className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest backdrop-blur-md shadow-sm ${
                           p.quantity > 0
@@ -127,7 +127,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                       >
                         {p.quantity > 0 ? `Stock: ${p.quantity}` : "Épuisé"}
                       </span>
-                    </div>
+                    </div> */}
 
                     {/* Overlay au survol */}
                     <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />

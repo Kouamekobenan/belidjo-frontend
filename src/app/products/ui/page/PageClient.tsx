@@ -520,7 +520,6 @@ export default function VendorProductsClient({
               </div>
               <div className="flex-1 pt-12">
                 <h1 className="text-3xl font-bold text-slate-900">{name}</h1>
-
                 <div className="flex flex-wrap items-center gap-4 mt-4">
                   {site?.domain && <DomainCopyButton domain={site.domain} />}
                   <SubscribeButton
