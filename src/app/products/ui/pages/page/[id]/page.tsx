@@ -381,7 +381,6 @@ export default function ProductDetail() {
           </div>
         </section>
       </main>
-
       {/* --- BARRE D'ACTION MOBILE FIXE --- */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 p-5 bg-white/90 backdrop-blur-xl border-t border-gray-100 z-50">
         <div className="max-w-md mx-auto flex gap-4">

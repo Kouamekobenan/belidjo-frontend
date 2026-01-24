@@ -1,5 +1,4 @@
 "use client";
-import { useAuth } from "@/app/context/AuthContext";
 import { Vendor } from "@/app/vendor/domain/entities/vendor.entity";
 import { VendorRepository } from "@/app/vendor/infrastructure/api/vendor.api";
 import React, { useEffect, useState } from "react";
@@ -9,7 +8,6 @@ import {
   XCircle,
   Globe,
   Phone,
-  Mail,
   ShieldCheck,
   Search,
 } from "lucide-react";
@@ -22,7 +20,7 @@ const findAllVendorUseCase = new GetAllVendorUseCase(repoVendor);
 const approveVendorUseCase = new ApproveVendorUseCase(repoVendor);
 
 export default function SuperAdmin() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(true);
@@ -148,6 +146,9 @@ export default function SuperAdmin() {
                       </div>
                       <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mt-1">
                         <Phone size={10} /> {v.user?.phone}
+                        <span className="bg-green-200 p-1 rounded-md">
+                          {v.city.name}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -245,9 +246,12 @@ export default function SuperAdmin() {
                   <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
                     <Phone size={10} />
                     <span>{v.user?.phone}</span>
+                    <span className="bg-green-200 p-1 rounded-md">
+                      {" "}
+                      {v.city.name}
+                    </span>
                   </div>
                 </div>
-
                 {/* Action Button */}
                 <button
                   onClick={() => handleToggleStatus(v.id)}

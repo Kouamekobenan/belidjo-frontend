@@ -17,6 +17,7 @@ import Image from "next/image";
 import { cityName } from "@/app/lib/globals.type";
 import { AnimatedHeroTitle } from "./AnimationHome";
 import Link from "next/link";
+import { HeroSection } from "../layout/Herosection";
 
 // ============================================
 // INTERFACES
@@ -234,48 +235,7 @@ export default function HomePage() {
       {/* Section Héro avec Titre Animé */}
       <section className="relative h-[480px] sm:h-[480px] md:h-[480px] w-full flex items-center justify-center text-white text-center overflow-hidden">
         {/* Image en arrière-plan */}
-        <div className="absolute inset-0 z-0">
-          <div className="w-full h-full bg-gradient-to-br from-teal-600 via-green-600 to-blue-700"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
-        </div>
-
-        {/* Contenu de la section Héro */}
-        <div className="relative z-10 px-4 sm:px-6 w-full max-w-5xl">
-          <AnimatedHeroTitle />
-
-          {/* Sous-titre avec animation */}
-          <p className="mt-6 text-sm sm:text-base md:text-lg text-white/90 font-medium animate-fade-in-up px-4">
-            <span className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              <span className="flex items-center space-x-1">
-                <span className="inline-block w-2 h-2 bg-green-400 rounded-full animate-ping"></span>
-                <span className="inline-block w-2 h-2 bg-green-400 rounded-full"></span>
-                <span>Livraison rapide</span>
-              </span>
-              {/* <span className="text-white/60 hidden sm:inline">•</span>
-              <span>Paiement sécurisé</span> */}
-              <span className="text-white/60 hidden sm:inline">•</span>
-              <span>Prix imbattables</span>
-            </span>
-          </p>
-
-          {/* Boutons CTA */}
-          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
-            <Link
-              href="/vendor"
-              className="group inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-teal-500 to-green-600 hover:from-teal-600 hover:to-green-700 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-              <span
-                className="relative flex
-              
-               items-center"
-              >
-                Je faire mes achats
-                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1" />
-              </span>
-            </Link>
-          </div>
-        </div>
+        <HeroSection/>
       </section>
       {/* Contenu principal */}
       <main
@@ -347,7 +307,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
         {/* Section Étapes */}
         <section className="mb-12" id="etapes">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-8 sm:mb-12 text-center px-2">
@@ -377,7 +336,6 @@ export default function HomePage() {
             />
           </div>
         </section>
-
         <section
           id="create"
           className="bg-gradient-to-br from-white to-gray-50 shadow-2xl rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 sm:mb-16 lg:mb-20 border border-gray-100"

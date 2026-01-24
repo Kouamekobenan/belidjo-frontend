@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Send,
   X,
@@ -46,15 +46,17 @@ export const SendNotificationForm = ({
     isRead: false,
   });
 
-  // Correction : Initialisation en tant que tableau vide
   const [users, setUsers] = useState<User[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // ✅ CORRECTION 1: Utiliser une ref pour éviter les boucles infinies
+  const hasHandledSuccess = useRef(false);
+
+  // Charger les utilisateurs
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await findAllUserUseCase.execute();
-        // Filtrer pour ne pas s'envoyer de notification à soi-même (optionnel)
         setUsers(Array.isArray(response) ? response : []);
       } catch (err) {
         console.error("Échec du chargement des utilisateurs", err);
@@ -64,8 +66,14 @@ export const SendNotificationForm = ({
     fetchUsers();
   }, []);
 
+  // ✅ CORRECTION 2: Gérer le succès proprement sans créer de boucle
   useEffect(() => {
-    if (success) {
+    if (success && !hasHandledSuccess.current) {
+      hasHandledSuccess.current = true;
+
+      console.log("✅ Notification envoyée avec succès !");
+
+      // Réinitialiser le formulaire
       setFormData({
         senderId: "",
         receiverId: defaultReceiverId || "",
@@ -75,35 +83,70 @@ export const SendNotificationForm = ({
         isRead: false,
       });
       setErrors({});
+
+      // Callback de succès avec délai
       if (onSuccess) {
-        setTimeout(() => {
-          onSuccess();
+        const timer = setTimeout(() => {
+          onSuccess(); // ← Appelle le callback pour rafraîchir la liste
           resetState();
+          hasHandledSuccess.current = false;
         }, 2000);
+
+        return () => clearTimeout(timer);
+      } else {
+        const timer = setTimeout(() => {
+          resetState();
+          hasHandledSuccess.current = false;
+        }, 2000);
+
+        return () => clearTimeout(timer);
       }
+    }
+
+    if (!success) {
+      hasHandledSuccess.current = false;
     }
   }, [success, defaultReceiverId, onSuccess, resetState]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+
     if (!formData.receiverId)
       newErrors.receiverId = "Veuillez choisir un destinataire";
     if (!formData.title.trim()) newErrors.title = "Le titre est requis";
     if (!formData.message.trim()) newErrors.message = "Le message est requis";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm() || !currentUser) return;
-    await sendNotification({ ...formData, senderId: currentUser.id });
+
+    if (!validateForm() || !currentUser) {
+      console.error("Validation échouée ou utilisateur non connecté");
+      return;
+    }
+
+    // ✅ CORRECTION 3: Vérifier que senderId est bien défini
+    const notificationData: CreateNotificationDto = {
+      ...formData,
+      senderId: currentUser.id,
+    };
+
+    console.log("📤 Envoi de la notification:", notificationData);
+
+    try {
+      await sendNotification(notificationData);
+    } catch (err) {
+      console.error("❌ Erreur lors de l'envoi:", err);
+    }
   };
 
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -143,7 +186,7 @@ export const SendNotificationForm = ({
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* --- LE SELECT DESTINATAIRE --- */}
+        {/* Destinataire */}
         {!defaultReceiverId && (
           <div>
             <label
@@ -181,7 +224,8 @@ export const SendNotificationForm = ({
             )}
           </div>
         )}
-        {/* Type de notification */}
+
+        {/* Type et Titre */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
@@ -224,9 +268,13 @@ export const SendNotificationForm = ({
               }`}
               placeholder="Ex: Mise à jour compte"
             />
+            {errors.title && (
+              <p className="mt-1.5 text-xs font-medium text-red-500">
+                {errors.title}
+              </p>
+            )}
           </div>
         </div>
-
         {/* Message */}
         <div>
           <label
@@ -246,6 +294,11 @@ export const SendNotificationForm = ({
             }`}
             placeholder="Écrivez votre message ici..."
           />
+          {errors.message && (
+            <p className="mt-1.5 text-xs font-medium text-red-500">
+              {errors.message}
+            </p>
+          )}
           <p className="mt-2 text-right text-xs text-gray-400">
             {formData.message.length}/500
           </p>

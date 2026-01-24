@@ -49,7 +49,6 @@ export default function RegisterForm() {
   // Instanciation du Repository et UseCase (Gardé pour la fonctionnalité)
   const userRepo = new UserRepository(new UserMapper());
   const createUserUseCase = new CreateUserUseCase(userRepo);
-
   // Récupération des villes
   useEffect(() => {
     const fetchCity = async () => {
