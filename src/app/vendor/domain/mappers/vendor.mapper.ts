@@ -10,6 +10,9 @@ export class VendorMapper {
       model.isApproved,
       model.approvedById,
       model.approvedAt,
+      model.isFeatured,
+      model.featuredStart,
+      model.featuredEnd,
       model.user,
       model.site,
       model.city
