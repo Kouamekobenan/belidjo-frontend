@@ -7,6 +7,9 @@ export class Vendor {
     public isApproved: boolean,
     public approvedById: string,
     public approvedAt: Date,
+    public isFeatured: boolean,
+    public featuredStart: Date | null,
+    public featuredEnd: Date | null,
     public readonly user: {
       id: string;
       name: string;
@@ -25,6 +28,6 @@ export class Vendor {
       id: string;
       name: string;
       country: string;
-    }
+    },
   ) {}
 }

@@ -7,4 +7,6 @@ export interface IVendorRepository {
   findAll(limit: number, page: number): Promise<IPaginatedResponse<Vendor>>;
   approved(vendorId: string): Promise<void>;
   update(id: string, update: UpdateDto, file?: File | null): Promise<void>;
+  findFeatured(): Promise<Vendor[]>;
+  // findById(id: string): Promise<Vendor | null>;
 }

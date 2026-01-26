@@ -4,13 +4,6 @@ import { VendorList } from "../components/Vendor-list";
 import { Vendor } from "../../domain/entities/vendor.entity";
 import { Store, AlertTriangle, RefreshCw, Sparkles } from "lucide-react";
 
-// =============================================================================
-// COMPOSANTS DE CHARGEMENT (SKELETONS)
-// =============================================================================
-
-/**
- * Skeleton pour le filtre de recherche
- */
 const FilterSkeleton = () => (
   <div className="bg-gradient-to-r from-teal-50 via-cyan-50 to-blue-50 rounded-2xl shadow-xl p-6 animate-pulse">
     <div className="h-6 bg-teal-200 rounded-lg w-48 mb-4"></div>
@@ -181,6 +174,7 @@ export default function VendorPage() {
 
     try {
       const data = await getVendorsUseCase();
+      console.log("Vendeurs chargés 11:", data);
       setVendors(data);
     } catch (e) {
       console.error("Erreur lors du chargement des vendeurs:", e);
