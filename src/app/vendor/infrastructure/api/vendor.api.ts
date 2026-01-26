@@ -72,4 +72,8 @@ export class VendorRepository implements IVendorRepository {
     const response = await api.get(`/vendor/featured/all`);
     return response.data.data;
   }
+  async updateStatus(id: string, status: boolean): Promise<void> {
+    const url = `/vendor/feature-status/${id}`;
+    await api.patch(url, { status });
+  }
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/app/context/AuthContext";
-import { LayoutDashboard, MapPin, Bell, User, Phone } from "lucide-react";
+import { LayoutDashboard, MapPin, Bell, User, Phone, Home } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -56,9 +56,13 @@ export default function NavBarAdmin() {
 
           {/* NAVIGATION */}
           <nav className="flex-1 space-y-2">
+            <NavItem href="/vendor" icon={Home}>
+              Accueil
+            </NavItem>
             <NavItem href="/super-admin" icon={LayoutDashboard}>
               Tableau de bord
             </NavItem>
+
             <NavItem href="/super-admin/city" icon={MapPin}>
               Gestion des villes
             </NavItem>
@@ -97,10 +101,10 @@ export default function NavBarAdmin() {
           </div>
         </div>
       </aside>
-
       {/* BOTTOM NAVIGATION MOBILE */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 safe-area-bottom">
         <div className="flex items-center justify-around px-2 py-2">
+          <MobileNavItem href="/vendor" icon={Home} label="Home" />
           <MobileNavItem
             href="/super-admin"
             icon={LayoutDashboard}
@@ -129,7 +133,6 @@ export default function NavBarAdmin() {
           </button>
         </div>
       </nav>
-
       {/* MODAL UTILISATEUR MOBILE */}
       {showUserModal && (
         <>
@@ -164,7 +167,6 @@ export default function NavBarAdmin() {
           </div>
         </>
       )}
-
       {/* AJUSTEMENT DU CONTENU PRINCIPAL */}
       <div className="lg:ml-72 min-h-screen bg-slate-50/50 pb-20 lg:pb-0">
         {/* Ton contenu de page viendra ici */}
