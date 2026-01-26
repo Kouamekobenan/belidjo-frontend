@@ -185,7 +185,6 @@ export const VendorFooter = ({ name, site, user }: Vendor) => {
               L&apos;équipe noboutik
             </span>
           </p>
-
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="text-xs font-bold uppercase tracking-widest text-white flex items-center gap-2 hover:opacity-70 transition-opacity"
