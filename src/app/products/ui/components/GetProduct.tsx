@@ -42,7 +42,6 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-
   if (error)
     return (
       <div className="flex flex-col items-center justify-center p-12 bg-red-50 rounded-3xl border border-red-100 text-red-600 max-w-xl mx-auto mt-20">

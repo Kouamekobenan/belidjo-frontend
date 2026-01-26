@@ -34,7 +34,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
           CUSTOMER_PER_PAGE,
           currentPage
         );
-        console.log("data customer", res.data);
+        // console.log("data customer", res.data);
         setCustomers(res.data);
       } catch (error) {
         console.log("Erreur lors de la recuperation des données:", error);

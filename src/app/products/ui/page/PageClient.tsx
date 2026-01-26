@@ -29,6 +29,8 @@ import { photoCouv } from "@/app/lib/globals.type";
 import { NotificationRepository } from "@/app/notification/infrastructure/notification.repository";
 import { CreateNotificationUseCase } from "@/app/notification/application/usecases/create-notification.usecase";
 import { TypeNotification } from "@/app/notification/domain/enums/type-notification";
+import { FindAllCustomerUseCase } from "@/app/customer/application/usecases/find-all-customer.usecase";
+import { Customer } from "@/app/customer/domain/entities/customer.entity";
 
 interface Site {
   id: string;
@@ -53,46 +55,10 @@ interface Vendor {
   site: Site;
   user: User;
 }
-// const customerRepo = new CustomerRepository(new CustomerMapper());
-
-// // --- NOUVEAU COMPOSANT : Meta Tags pour Partage Social ---
-// interface SocialMetaTagsProps {
-//   vendor: Vendor;
-//   currentUrl: string;
-// }
-
-// const SocialMetaTags = ({ vendor, currentUrl }: SocialMetaTagsProps) => {
-//   const { name, site } = vendor;
-//   const title = `${name} | Boutique en ligne`;
-//   const description = site?.description || `Visitez la boutique de ${name}.`;
-
-//   // Utilise une URL absolue pour l'image (OBLIGATOIRE pour WhatsApp/FB)
-//   const imageUrl = site?.logoUrl || "https://ton-domaine.com/default-share.jpg";
-
-//   return (
-//     <Head>
-//       <title>{title}</title>
-//       <meta name="description" content={description} />
-
-//       {/* Open Graph / Facebook / WhatsApp */}
-//       <meta property="og:type" content="website" />
-//       <meta property="og:url" content={currentUrl} />
-//       <meta property="og:title" content={title} />
-//       <meta property="og:description" content={description} />
-//       <meta property="og:image" content={imageUrl} />
-//       {/* WhatsApp préfère les images carrées ou 1200x630 */}
-//       <meta property="og:image:secure_url" content={imageUrl} />
-//       <meta property="og:image:type" content="image/jpeg" />
-
-//       {/* Twitter */}
-//       <meta name="twitter:card" content="summary_large_image" />
-//       <meta name="twitter:image" content={imageUrl} />
-//     </Head>
-//   );
-// };
 
 // --- COMPOSANT : Bouton d'Édition de Bannière ---
-
+const customerRep = new CustomerRepository(new CustomerMapper());
+const findAllCustomerUseCase = new FindAllCustomerUseCase(customerRep);
 const notificationRepo = new NotificationRepository();
 const notificationService = new CreateNotificationUseCase(notificationRepo);
 interface BannerEditButtonProps {
@@ -118,7 +84,7 @@ const BannerEditButton = ({
   if (!isOwner) return null;
 
   const handleFileSelect = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -457,8 +423,22 @@ export default function VendorProductsClient({
   // On initialise le state avec les données du serveur
   const [vendor, setVendor] = useState<Vendor>(initialVendor);
   const [bannerUrl, setBannerUrl] = useState<string>(
-    initialVendor.site?.logoUrl || photoCouv
+    initialVendor.site?.logoUrl || photoCouv,
   );
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const res = await findAllCustomerUseCase.execute(vendorId, 500, 1);
+        // console.log("data customer", res.data);
+        setCustomers(res.data);
+      } catch (error) {
+        console.log("Erreur lors de la recuperation des données:", error);
+      }
+    };
+    fetchCustomers();
+  }, [vendor.id]);
 
   const { user } = useAuth();
   const currentUserId = user?.id || null;
@@ -519,14 +499,47 @@ export default function VendorProductsClient({
                 </div>
               </div>
               <div className="flex-1 pt-12">
-                <h1 className="text-3xl font-bold text-slate-900">{name}</h1>
-                <div className="flex flex-wrap items-center gap-4 mt-4">
+                {/* Titre principal */}
+                <h1 className="text-4xl font-bold text-slate-900 mb-6">
+                  {name}
+                </h1>
+
+                {/* Actions et statistiques */}
+                <div className="flex flex-wrap items-center gap-3">
+                  {/* Bouton de domaine */}
                   {site?.domain && <DomainCopyButton domain={site.domain} />}
+
+                  {/* Bouton d'abonnement */}
                   <SubscribeButton
                     vendorId={vendorId}
                     userId={currentUserId}
                     cityId={vendor.cityId}
                   />
+
+                  {/* Badge du nombre d'abonnés */}
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <svg
+                      className="w-5 h-5 text-green-600"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-2xl font-bold text-slate-900">
+                        {customers.length.toLocaleString("fr-FR")}
+                      </span>
+                      <span className="text-sm font-medium text-slate-600">
+                        {customers.length > 1 ? "abonnés" : "abonné"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
