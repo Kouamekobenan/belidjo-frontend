@@ -32,7 +32,7 @@ const VendorListItem = ({
           onClick={() => onClick(id, site?.domain)}
         >
           <img
-            src={site.logoUrl ?? photoCouv}
+            src={site?.logoUrl ?? photoCouv}
             alt={name}
             // className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-500"
           />
@@ -107,9 +107,13 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => (
           <option value="all" className="text-slate-900">
             Toutes les localisations
           </option>
-          {cityOptions.map((city: any) => (
-            <option key={city.id} value={city.id} className="text-slate-900">
-              {city.name}
+          {cityOptions?.map((city: any, index: number) => (
+            <option
+              key={city?.id || `city-${index}`}
+              value={city?.id}
+              className="text-slate-900"
+            >
+              {city?.name}
             </option>
           ))}
         </select>

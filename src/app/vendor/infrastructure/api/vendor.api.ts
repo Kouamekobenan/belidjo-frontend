@@ -17,7 +17,7 @@ export class VendorRepository implements IVendorRepository {
   // constructor(private readonly mapper: VendorMapper) {}
   async getAll(
     limit: number,
-    page: number
+    page: number,
   ): Promise<IPaginatedResponse<Vendor>> {
     const response = await api.get(`/vendor/paginate`, {
       params: { limit, page },
@@ -37,7 +37,7 @@ export class VendorRepository implements IVendorRepository {
   async update(
     id: string,
     update: UpdateDto,
-    file?: File | null
+    file?: File | null,
   ): Promise<void> {
     const url = `/vendor/site/${id}`;
     let response;
@@ -55,7 +55,7 @@ export class VendorRepository implements IVendorRepository {
 
   async findAll(
     limit: number,
-    page: number
+    page: number,
   ): Promise<IPaginatedResponse<Vendor>> {
     const response = await api.get(`/vendor`, {
       params: { limit, page },
@@ -67,5 +67,9 @@ export class VendorRepository implements IVendorRepository {
       limit: response.data.limit,
       page: response.data.page,
     };
+  }
+  async findFeatured(): Promise<Vendor[]> {
+    const response = await api.get(`/vendor/featured/all`);
+    return response.data.data;
   }
 }

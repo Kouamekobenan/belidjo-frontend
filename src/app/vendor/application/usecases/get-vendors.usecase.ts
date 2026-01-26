@@ -13,9 +13,12 @@ export async function getVendorsUseCase(): Promise<Vendor[]> {
         v.isApproved,
         v.approvedById,
         v.approvedAt,
+        v.isFeatured,
+        v.featuredStart,
+        v.featuredEnd,
         v.user,
         v.site,
-        v.city
-      )
+        v.city,
+      ),
   );
 }

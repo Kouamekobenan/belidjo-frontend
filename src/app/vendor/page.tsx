@@ -9,6 +9,7 @@ import { cityName } from "../lib/globals.type";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { HeroSection } from "../components/layout/Herosection";
+import Carrosel from "./ui/components/Carrosel";
 
 // Constantes
 const LOGO_SRC = "/images/bj.png";
@@ -270,10 +271,9 @@ export default function Vendors() {
     <div className="min-h-screen">
       {/* Navigation */}
       <Navbar />
-      {/* Section Héro */}
-      <HeroSection />
+      <Carrosel />
       {/* Contenu principal */}
-      <main className="relative z-0 mb-20 md:mb-1" >
+      <main className="relative z-0 mb-20 md:mb-1">
         <VendorPage />
       </main>
     </div>
