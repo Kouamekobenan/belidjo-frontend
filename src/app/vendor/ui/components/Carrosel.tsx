@@ -100,10 +100,7 @@ export default function Carrosel() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
         <div className="flex flex-col gap-2">
           <h2 className="text-3xl flex gap-2 md:text-5xl lg:text-6xl font-black text-slate-900 leading-tight">
-            <span>Les vendeurs  </span>
-            <span className="block text-transparent bg-clip-text bg-teal-500 ">
-                 en vedette
-            </span>
+            <span>Les vendeurs en vedette </span>
           </h2>
           <p className="text-slate-600 text-sm md:text-base font-medium">
             Découvrez nos meilleurs partenaires commerciaux
