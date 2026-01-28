@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// ✅ SEO Optimisé pour noBoutik
+//  SEO Optimisé pour noBoutik
 export const metadata: Metadata = {
   title: {
     default: "noBoutik | Achetez et vendez en toute simplicité",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "ecommerce",
     "noBoutik",
   ],
-  metadataBase: new URL("https://votre-domaine.com"), // Remplace par ton vrai domaine plus tard
+  metadataBase: new URL("https://belidjo-frontend.vercel.app"), // Remplace par ton vrai domaine plus tard
   openGraph: {
     title: "noBoutik",
     description: "Connectez-vous avec les meilleurs vendeurs de votre région.",
@@ -79,7 +79,6 @@ export default function RootLayout({
       >
         <AuthProvider>
           <NotificationProvider>{children}</NotificationProvider>
-          {/* {children} */}
           <Toaster position="top-right" />
         </AuthProvider>
       </body>

@@ -31,27 +31,49 @@ export class ProductRepository implements IProductRepository {
         });
       } else {
         const productPayload = this.mapper.toApp(dto);
-
         response = await api.post(url, productPayload);
       }
 
       return this.mapper.toEntity(response.data);
     } catch (error: any) {
       console.error(
-        "Erreur Infrastructure (Repository) lors de la création du produit:",
-        error
+        "❌ Erreur Infrastructure (Repository) lors de la création du produit:",
+        error,
       );
-      // Rejeter une erreur compréhensible par la couche Application/Domaine
-      const message =
-        error?.response?.data?.message ||
-        "Erreur de connexion à l'API lors de la création.";
-      throw new Error(message);
+
+      // ✅ Extraire le message d'erreur du backend
+      let errorMessage = "Erreur de connexion à l'API lors de la création.";
+      let statusCode = error?.response?.status;
+
+      // Vérifier si le backend a renvoyé un message spécifique
+      if (error?.response?.data?.message) {
+        const backendMessage = error.response.data.message;
+        // Si c'est un tableau de messages (erreurs de validation)
+        if (Array.isArray(backendMessage)) {
+          errorMessage = backendMessage.join(", ");
+        } else {
+          errorMessage = backendMessage;
+        }
+      } else if (error?.message) {
+        // Utiliser le message d'erreur générique si pas de message backend
+        errorMessage = error.message;
+      }
+      // ✅ Créer une nouvelle erreur qui préserve le status ET le message
+      const customError: any = new Error(errorMessage);
+      customError.status = statusCode;
+      customError.response = {
+        status: statusCode,
+        data: error?.response?.data,
+      };
+
+      throw customError;
     }
   }
+
   async update(
     productId: string,
     dto: CreateProductDto,
-    file?: File | null
+    file?: File | null,
   ): Promise<Product> {
     let response;
     const url = `/products/${productId}`;
@@ -85,7 +107,7 @@ export class ProductRepository implements IProductRepository {
     } catch (error: any) {
       console.error(
         "Erreur Infrastructure (Repository) lors de la création du produit:",
-        error
+        error,
       );
       // Rejeter une erreur compréhensible par la couche Application/Domaine
       const message =
@@ -97,10 +119,10 @@ export class ProductRepository implements IProductRepository {
   async getAll(
     vendorId: string,
     limit: number,
-    page: number
+    page: number,
   ): Promise<IPaginatedResponse<IProduct>> {
     const res = await api.get(
-      `/products/${vendorId}?page=${page}&limit=${limit}`
+      `/products/${vendorId}?page=${page}&limit=${limit}`,
     );
     return {
       data: res.data.data,
@@ -117,10 +139,10 @@ export class ProductRepository implements IProductRepository {
   async findByCatId(
     catId: string,
     limit: number,
-    page: number
+    page: number,
   ): Promise<IPaginatedResponse<IProduct>> {
     const res = await api.get(
-      `/products/cat/${catId}?page=${page}&limit=${limit}`
+      `/products/cat/${catId}?page=${page}&limit=${limit}`,
     );
     return {
       data: res.data.data,
