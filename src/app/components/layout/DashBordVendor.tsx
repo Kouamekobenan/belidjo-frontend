@@ -80,45 +80,10 @@ export default function NavbarDashbordVendor({
   return (
     <>
       {/* Bannière d'essai gratuit - Desktop (sous le header) */}
-      {showTrialBanner && (
-        <div className="hidden lg:block fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white shadow-lg">
-          <div className="flex items-center justify-between px-6 py-3">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 p-2 rounded-full">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="font-bold text-sm">
-                  Essai gratuit en cours - {trialDaysRemaining} jours restants
-                </p>
-                <p className="text-xs text-white/90">
-                  Profitez de toutes les fonctionnalités premium gratuitement
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link href="#">
-                <button className="bg-white text-orange-600 hover:bg-gray-100 px-4 py-2 rounded-lg font-semibold text-sm transition-colors">
-                  Mettre à niveau
-                </button>
-              </Link>
-              <button
-                onClick={() => setShowTrialBanner(false)}
-                className="p-1 hover:bg-white/20 rounded transition-colors"
-                aria-label="Fermer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
+      
       {/* Sidebar Desktop */}
       <aside
-        className={`hidden lg:flex flex-col fixed left-0 ${
-          showTrialBanner ? "top-[60px]" : "top-0"
-        } h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white transition-all duration-300 ease-in-out z-40 shadow-2xl ${
+        className={`hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white transition-all duration-300 ease-in-out z-40 shadow-2xl ${
           isCollapsed ? "w-20" : "w-72"
         }`}
       >
@@ -273,13 +238,8 @@ export default function NavbarDashbordVendor({
           )}
         </div>
       </aside>
-
       {/* Header Mobile */}
-      <div
-        className={`lg:hidden fixed ${
-          showTrialBanner ? "top-[56px]" : "top-0"
-        } left-0 right-0 z-50 bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-xl transition-all duration-300`}
-      >
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-xl">
         <div className="flex items-center justify-between px-4 py-3">
           {/* Logo et nom */}
           <Link href={Url} className="flex items-center gap-3">
@@ -312,35 +272,6 @@ export default function NavbarDashbordVendor({
       </div>
 
       {/* Bannière d'essai gratuit - Mobile (en haut) */}
-      {showTrialBanner && (
-        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg">
-          <div className="flex items-center justify-between px-4 py-2">
-            <div className="flex items-center gap-2 flex-1">
-              <Sparkles className="w-4 h-4 flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-xs truncate">
-                  Essai gratuit - {trialDaysRemaining}j restants
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Link href="#">
-                <button className="bg-white text-orange-600 hover:bg-gray-100 px-3 py-1 rounded text-xs font-semibold transition-colors whitespace-nowrap">
-                  Upgrade
-                </button>
-              </Link>
-              <button
-                onClick={() => setShowTrialBanner(false)}
-                className="p-1 hover:bg-white/20 rounded transition-colors"
-                aria-label="Fermer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Navigation Mobile Bottom - Style App */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-gray-900 to-gray-800 border-t border-gray-700 shadow-2xl">
         <div className="grid grid-cols-5 h-16">
@@ -391,7 +322,6 @@ export default function NavbarDashbordVendor({
               <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
             )}
           </Link>
-
           {/* Clients */}
           <Link
             href="/admin/customer"
@@ -407,7 +337,6 @@ export default function NavbarDashbordVendor({
               <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
             )}
           </Link>
-
           {/* Menu / Profil */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -418,7 +347,6 @@ export default function NavbarDashbordVendor({
           </button>
         </div>
       </nav>
-
       {/* Modal Menu Mobile */}
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/60 animate-in fade-in duration-200">
