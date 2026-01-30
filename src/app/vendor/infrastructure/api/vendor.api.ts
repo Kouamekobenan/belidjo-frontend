@@ -7,7 +7,7 @@ import { UpdateDto } from "../../application/dtos/update-site-dto";
 
 export const VendorApi = {
   async getAll() {
-    const res = await api.get("/vendor");
+    const res = await api.get("/vendor/paginate");
     // console.log("vendor data:", res.data.data);
     return res.data.data;
   },
@@ -19,7 +19,7 @@ export class VendorRepository implements IVendorRepository {
     limit: number,
     page: number,
   ): Promise<IPaginatedResponse<Vendor>> {
-    const response = await api.get(`/vendor/paginate`, {
+    const response = await api.get(`/vendor`, {
       params: { limit, page },
     });
     return {
