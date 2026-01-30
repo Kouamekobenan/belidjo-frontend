@@ -1,14 +1,12 @@
 // src/app/vendors/page.tsx
 "use client";
 
-import { ArrowRight, LogIn, X, Home, Info, Phone, Store } from "lucide-react";
-import { AnimatedHeroTitle } from "../components/features/AnimationHome";
+import { LogIn, X, Home, Info, Phone, Store } from "lucide-react";
 import VendorPage from "./ui/pages/Vendor";
 import Link from "next/link";
 import { cityName } from "../lib/globals.type";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { HeroSection } from "../components/layout/Herosection";
 import Carrosel from "./ui/components/Carrosel";
 
 // Constantes

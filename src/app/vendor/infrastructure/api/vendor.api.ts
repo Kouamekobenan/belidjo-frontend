@@ -7,7 +7,7 @@ import { UpdateDto } from "../../application/dtos/update-site-dto";
 
 export const VendorApi = {
   async getAll() {
-    const res = await api.get("/vendor/paginate");
+    const res = await api.get("/vendor");
     // console.log("vendor data:", res.data.data);
     return res.data.data;
   },

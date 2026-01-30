@@ -13,9 +13,6 @@ import {
   Eye,
   BarChart3,
   Calendar,
-  CheckCircle,
-  Clock,
-  Mail,
 } from "lucide-react";
 import {
   AreaChart,
@@ -33,7 +30,6 @@ import { ProductMapper } from "@/app/products/domain/mappers/product.mapper";
 
 const repo = new ProductRepository(new ProductMapper());
 const getProducts = new GetProductsByVendorUseCase(repo);
-
 interface StatsCard {
   title: string;
   value: string | number;
@@ -43,7 +39,6 @@ interface StatsCard {
   color: string;
   bgColor: string;
 }
-
 export default function DashbordVendor() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
@@ -51,7 +46,6 @@ export default function DashbordVendor() {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
   const vendorId = user?.vendorProfile?.id;
-
   useEffect(() => {
     setLoading(true);
     setError(null);
@@ -275,7 +269,6 @@ export default function DashbordVendor() {
             </div>
           ))}
         </div>
-
         {/* Graphiques */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
           {/* Graphique de tendance des ventes */}
@@ -332,7 +325,6 @@ export default function DashbordVendor() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-
           {/* Graphique de stock par catégorie */}
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-5 sm:p-6">
             <div className="flex items-center justify-between mb-5 sm:mb-6">
@@ -374,7 +366,6 @@ export default function DashbordVendor() {
             </ResponsiveContainer>
           </div>
         </div>
-
         {/* Produits récents */}
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-5 sm:p-6">
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-5 sm:mb-6 flex items-center gap-2">
