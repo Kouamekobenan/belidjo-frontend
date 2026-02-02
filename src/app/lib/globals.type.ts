@@ -1,9 +1,12 @@
-export enum Role {
-  USER = "USER",
-  ADMIN = "ADMIN",
-  CUSTOMER = "CUSTOMER",
-  VENDEUR = "VENDEUR",
-}
+// export enum Role {
+//   USER = "USER",
+//   ADMIN = "ADMIN",
+//   CUSTOMER = "CUSTOMER",
+//   VENDEUR = "VENDEUR",
+
+import { UserRole } from "../users/domain/enums/role.enum";
+
+// }
 export interface IvendorProfile {
   id: string;
   userId: string;
@@ -22,7 +25,7 @@ export interface User {
   name: string;
   password: string;
   phone: string;
-  role: Role;
+  role: UserRole;
   refreshToken: string;
   cityId: string;
   createdAt: Date;
