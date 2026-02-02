@@ -95,7 +95,7 @@ export default function SuperAdmin() {
   };
 
   return (
-    <div className="space-y-6 md:space-y-8 p-4 md:p-6 bg-slate-50 min-h-screen">
+    <div className="space-y-6 pb-24 md:space-y-8 p-4 md:p-6 bg-slate-50 min-h-screen">
       {/* HEADER DE LA PAGE */}
       <div className="flex flex-col gap-4">
         <div>

@@ -205,9 +205,7 @@ function VendorNavBar({
         </div>
         {/* Bannière d'invitation */}
         <AnimatedPromoBanner user={user} />
-        {/* <NeonPromoBanner user={user} /> */}
       </nav>
-
       {/* Header Mobile - En haut (simplifié) */}
       <header className="lg:hidden bg-white/95 backdrop-blur-md shadow-md sticky top-0 z-50 border-b border-gray-200/50">
         <div className="px-4 py-3">
@@ -227,7 +225,6 @@ function VendorNavBar({
         <AnimatedPromoBanner user={user} />
         {/* <NeonPromoBanner user={user} /> */}
       </header>
-
       {/* Navigation Mobile - En bas (Style App) */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-2xl">
         <div className="grid grid-cols-4 h-16">
@@ -239,7 +236,6 @@ function VendorNavBar({
             <Home className="w-6 h-6 group-hover:scale-110 transition-transform" />
             <span className="text-xs font-medium">Accueil</span>
           </button>
-
           {/* Partager */}
           <button
             onClick={handleShare}
@@ -248,7 +244,6 @@ function VendorNavBar({
             <Share2 className="w-6 h-6 group-hover:scale-110 transition-transform" />
             <span className="text-xs font-medium">Partager</span>
           </button>
-
           {/* Espace Vendeur (si vendeur) / Store */}
           {user?.role === "VENDEUR" ? (
             <button

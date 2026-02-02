@@ -64,7 +64,7 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params; // 👈 On attend l'ID
+  const { id } = await params; 
   const data = await getVendor(id);
 
   if (!data?.data) return <div>Vendeur introuvable</div>;

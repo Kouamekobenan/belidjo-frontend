@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Sparkles, Gift, TrendingUp, X, ChevronRight } from "lucide-react";
+import { Sparkles, Gift, TrendingUp, X, ChevronRight, Zap } from "lucide-react";
 
 interface AnimatedPromoBannerProps {
-  user?: any; // Votre type d'utilisateur
+  user?: any;
 }
 
 export default function AnimatedPromoBanner({
@@ -12,13 +12,15 @@ export default function AnimatedPromoBanner({
 }: AnimatedPromoBannerProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
+
   useEffect(() => {
-    // Animation d'entrée
+    // Animation d'entrée progressive
     const timer = setTimeout(() => {
       setIsAnimating(true);
     }, 100);
     return () => clearTimeout(timer);
   }, []);
+
   const handleClose = () => {
     setIsAnimating(false);
     setTimeout(() => {
@@ -26,14 +28,18 @@ export default function AnimatedPromoBanner({
     }, 300);
   };
 
-  if (user && isVisible) {
-    return (
+  // if (!user || !isVisible) {
+  //   return null;
+  // }
+
+  return (
+    <>
       <div
         className={`
           relative overflow-hidden
-          bg-gradient-to-r from-teal-50 via-blue-50 to-purple-50
-          border-t border-b border-teal-200/60
-          shadow-xl
+          bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50
+          border-y border-emerald-200/60
+          shadow-lg
           transform transition-all duration-500 ease-out
           ${
             isAnimating
@@ -42,396 +48,301 @@ export default function AnimatedPromoBanner({
           }
         `}
       >
-        {/* Effet de brillance animé en arrière-plan */}
+        {/* Effet de brillance diagonal animé */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -inset-full animate-shine bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"></div>
-        </div>
-        {/* Particules décoratives animées */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-teal-400 rounded-full animate-float-1"></div>
-          <div className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-purple-400 rounded-full animate-float-2"></div>
-          <div className="absolute top-3/4 right-1/4 w-2 h-2 bg-blue-400 rounded-full animate-float-3"></div>
-          <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-pink-400 rounded-full animate-float-4"></div>
+          <div className="banner-shine"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-between gap-3">
-            {/* Icône animée */}
+        {/* Particules décoratives flottantes */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="particle particle-1"></div>
+          <div className="particle particle-2"></div>
+          <div className="particle particle-3"></div>
+          <div className="particle particle-4"></div>
+          <div className="particle particle-5"></div>
+        </div>
+
+        {/* Contenu principal */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-4">
+            {/* Icône animée avec effet glow */}
             <div className="flex-shrink-0 hidden sm:block">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-purple-500 rounded-full blur-md opacity-50 animate-pulse-slow"></div>
-                <div className="relative bg-gradient-to-r from-teal-500 to-purple-600 p-2 rounded-full animate-bounce-gentle">
-                  <Gift className="w-5 h-5 text-white" />
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-cyan-500 rounded-full blur-lg opacity-60 animate-pulse-glow"></div>
+                <div className="relative bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 p-2.5 rounded-full shadow-xl icon-float">
+                  <Gift className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </div>
               </div>
             </div>
 
-            {/* Contenu principal */}
+            {/* Contenu textuel */}
             <div className="flex-1 text-center">
-              <p className="text-xs sm:text-sm md:text-base text-gray-800 leading-relaxed">
-                {/* Badge "Offre exclusive" animé */}
-                <span className="inline-flex items-center space-x-1.5 px-3 py-1 bg-gradient-to-r from-orange-400 to-red-500 text-white text-xs font-bold rounded-full shadow-lg animate-wiggle mr-2">
-                  <Sparkles className="w-3 h-3 animate-spin-slow" />
-                  <span>OFFRE EXCLUSIVE</span>
-                  <Sparkles className="w-3 h-3 animate-spin-slow" />
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
+                {/* Badge offre exclusive */}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white text-[10px] sm:text-xs font-black uppercase tracking-wider rounded-full shadow-lg badge-wiggle">
+                  <Sparkles className="w-3 h-3 sparkle-spin" />
+                  <span>Offre Exclusive</span>
+                  <Zap className="w-3 h-3" />
                 </span>
 
-                {/* Texte principal avec animations */}
-                <span className="inline-block animate-fade-in-up">
+                {/* Message principal */}
+                <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                  <span className="text-gray-700 font-medium">
+                    Inscrivez-vous sur
+                  </span>
+
                   <Link
                     href="/users/ui/login"
-                    className="group relative inline-flex items-center font-bold text-transparent bg-gradient-to-r from-teal-600 via-blue-600 to-purple-600 bg-clip-text animate-gradient-x hover:scale-105 transition-transform duration-300"
+                    className="group relative inline-flex items-center font-bold"
                   >
-                    <span className="relative text-green-600">
-                      avec NoBoutik
-                      {/* Effet de soulignement animé */}
-                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-teal-600 to-purple-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    <span className="relative text-emerald-600 hover:text-emerald-700 transition-colors">
+                      NoBoutik
+                      {/* Soulignement animé */}
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-600 to-cyan-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
                     </span>
-                    <ChevronRight className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight className="w-4 h-4 ml-0.5 text-emerald-600 transform group-hover:translate-x-1 transition-transform duration-300" />
                   </Link>
-                </span>
 
-                {/* Texte secondaire responsive */}
-                <span className="hidden sm:inline ml-2 text-gray-700">
-                  <span className="inline-flex items-center space-x-1">
-                    <span>profitez de</span>
-                    <span className="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-bold rounded-full animate-pulse-slow">
-                      <TrendingUp className="w-3 h-3 mr-1" />
-                      -20%
-                    </span>
-                    <span>de réduction !</span>
+                  <span className="text-gray-700 font-medium hidden sm:inline">
+                    et profitez de
                   </span>
-                </span>
-                <span className="sm:hidden ml-2 text-gray-700 text-xs">
-                  pour des réductions !
-                </span>
+
+                  {/* Badge réduction */}
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-black rounded-full shadow-md discount-pulse">
+                    <TrendingUp className="w-3.5 h-3.5" strokeWidth={3} />
+                    -20%
+                  </span>
+
+                  <span className="text-gray-700 font-medium">
+                    de réduction !
+                  </span>
+                </div>
+              </div>
+
+              {/* Texte secondaire mobile */}
+              <p className="mt-1.5 text-[10px] text-gray-600 sm:hidden">
+                Valable sur votre première commande
               </p>
             </div>
 
-            {/* Bouton de fermeture */}
+            {/* Bouton de fermeture élégant */}
             <button
               onClick={handleClose}
-              className="flex-shrink-0 p-1.5 rounded-full hover:bg-gray-200/50 transition-colors group"
-              aria-label="Fermer"
+              className="flex-shrink-0 p-1.5 rounded-full hover:bg-gray-200/60 active:bg-gray-300/60 transition-all duration-200 group"
+              aria-label="Fermer la bannière"
             >
-              <X className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors" />
+              <X className="w-4 h-4 text-gray-500 group-hover:text-gray-700 group-hover:rotate-90 transition-all duration-300" />
             </button>
           </div>
 
-          {/* Barre de progression animée (optionnel) */}
-          <div className="mt-2 w-full h-1 bg-gray-200/50 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-teal-500 via-blue-500 to-purple-600 animate-progress"></div>
+          {/* Barre de progression (temps limité) */}
+          <div className="mt-3 w-full h-1 bg-gray-200/50 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 progress-bar"></div>
           </div>
         </div>
-
-        {/* Styles pour les animations */}
-        <style jsx>{`
-          @keyframes shine {
-            0% {
-              transform: translateX(-100%) skewX(-12deg);
-            }
-            100% {
-              transform: translateX(200%) skewX(-12deg);
-            }
-          }
-
-          @keyframes float-1 {
-            0%,
-            100% {
-              transform: translate(0, 0) scale(1);
-              opacity: 0.6;
-            }
-            50% {
-              transform: translate(-10px, -15px) scale(1.2);
-              opacity: 1;
-            }
-          }
-
-          @keyframes float-2 {
-            0%,
-            100% {
-              transform: translate(0, 0) scale(1);
-              opacity: 0.5;
-            }
-            50% {
-              transform: translate(15px, -20px) scale(1.3);
-              opacity: 0.9;
-            }
-          }
-
-          @keyframes float-3 {
-            0%,
-            100% {
-              transform: translate(0, 0) scale(1);
-              opacity: 0.7;
-            }
-            50% {
-              transform: translate(-20px, -10px) scale(1.1);
-              opacity: 1;
-            }
-          }
-
-          @keyframes float-4 {
-            0%,
-            100% {
-              transform: translate(0, 0) scale(1);
-              opacity: 0.4;
-            }
-            50% {
-              transform: translate(10px, -25px) scale(1.4);
-              opacity: 0.8;
-            }
-          }
-
-          @keyframes bounce-gentle {
-            0%,
-            100% {
-              transform: translateY(0);
-            }
-            50% {
-              transform: translateY(-8px);
-            }
-          }
-
-          @keyframes wiggle {
-            0%,
-            100% {
-              transform: rotate(0deg);
-            }
-            25% {
-              transform: rotate(-3deg);
-            }
-            75% {
-              transform: rotate(3deg);
-            }
-          }
-
-          @keyframes gradient-x {
-            0%,
-            100% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-          }
-
-          @keyframes fade-in-up {
-            from {
-              opacity: 0;
-              transform: translateY(10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          @keyframes progress {
-            0% {
-              transform: translateX(-100%);
-            }
-            100% {
-              transform: translateX(0);
-            }
-          }
-
-          @keyframes pulse-slow {
-            0%,
-            100% {
-              opacity: 1;
-            }
-            50% {
-              opacity: 0.7;
-            }
-          }
-
-          @keyframes spin-slow {
-            from {
-              transform: rotate(0deg);
-            }
-            to {
-              transform: rotate(360deg);
-            }
-          }
-
-          .animate-shine {
-            animation: shine 3s infinite;
-          }
-
-          .animate-float-1 {
-            animation: float-1 4s ease-in-out infinite;
-          }
-
-          .animate-float-2 {
-            animation: float-2 5s ease-in-out infinite;
-          }
-
-          .animate-float-3 {
-            animation: float-3 6s ease-in-out infinite;
-          }
-
-          .animate-float-4 {
-            animation: float-4 4.5s ease-in-out infinite;
-          }
-
-          .animate-bounce-gentle {
-            animation: bounce-gentle 3s ease-in-out infinite;
-          }
-
-          .animate-wiggle {
-            animation: wiggle 2s ease-in-out infinite;
-          }
-
-          .animate-gradient-x {
-            background-size: 200% auto;
-            animation: gradient-x 3s ease infinite;
-          }
-
-          .animate-fade-in-up {
-            animation: fade-in-up 0.8s ease-out;
-          }
-
-          .animate-progress {
-            animation: progress 3s ease-in-out infinite;
-          }
-
-          .animate-pulse-slow {
-            animation: pulse-slow 3s ease-in-out infinite;
-          }
-
-          .animate-spin-slow {
-            animation: spin-slow 8s linear infinite;
-          }
-        `}</style>
       </div>
-    );
-  }
 
-  return null;
-}
+      {/* Styles CSS pour les animations */}
+      <style jsx>{`
+        /* ===== ANIMATIONS PRINCIPALES ===== */
 
-// ============================================
-// VERSION ALTERNATIVE : Style Minimal
-// ============================================
-
-export function MinimalPromoBanner({ user }: AnimatedPromoBannerProps) {
-  const [isVisible, setIsVisible] = useState(true);
-
-  if (!user && isVisible) {
-    return (
-      <div className="relative bg-gradient-to-r from-teal-500 via-blue-600 to-purple-600 overflow-hidden">
-        {/* Effet de vague animée */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjEiIGZpbGw9IndoaXRlIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIi8+PC9zdmc+')] animate-drift"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <p className="text-sm md:text-base text-white font-medium">
-              <span className="animate-pulse">✨</span>
-              <Link
-                href="/users/ui/login"
-                className="ml-2 underline hover:no-underline font-bold hover:text-yellow-300 transition-colors"
-              >
-                Inscrivez-vous
-              </Link>
-              <span className="ml-2">et économisez jusqu'à 20% !</span>
-            </p>
-            <button
-              onClick={() => setIsVisible(false)}
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        <style jsx>{`
-          @keyframes drift {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(40px);
-            }
+        @keyframes shine {
+          0% {
+            transform: translateX(-100%) skewX(-15deg);
           }
-
-          .animate-drift {
-            animation: drift 20s linear infinite;
+          100% {
+            transform: translateX(200%) skewX(-15deg);
           }
-        `}</style>
-      </div>
-    );
-  }
+        }
 
-  return null;
-}
-
-// ============================================
-// VERSION : Style Néon
-// ============================================
-
-export function NeonPromoBanner({ user }: AnimatedPromoBannerProps) {
-  if (!user) {
-    return (
-      <div className="relative bg-gray-900 border-t border-b border-purple-500/50 overflow-hidden">
-        {/* Effet néon pulsant */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 animate-pulse-slow"></div>
-
-        <div className="relative max-w-7xl mx-auto px-4 py-4 text-center">
-          <p className="text-sm md:text-base">
-            <span className="neon-text text-xl font-black">
-              ⚡ OFFRE SPÉCIALE ⚡
-            </span>
-            <br className="sm:hidden" />
-            <Link
-              href="/users/ui/login"
-              className="ml-2 neon-text-link text-green-600 font-bold hover:scale-110 inline-block transition-transform"
-            >
-              Créez votre compte
-            </Link>
-            <span className="text-gray-300 ml-2">
-              pour des réductions exclusives !
-            </span>
-          </p>
-        </div>
-
-        <style jsx>{`
-          .neon-text {
-            color: #fff;
-            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff00ff,
-              0 0 30px #ff00ff, 0 0 40px #ff00ff;
-            animation: neon-flicker 1.5s infinite alternate;
+        @keyframes float {
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.6;
           }
-
-          .neon-text-link {
-            color: #0ff;
-            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff,
-              0 0 30px #0ff;
+          50% {
+            transform: translate(var(--float-x), var(--float-y)) scale(1.2);
+            opacity: 1;
           }
+        }
 
-          @keyframes neon-flicker {
-            0%,
-            19%,
-            21%,
-            23%,
-            25%,
-            54%,
-            56%,
-            100% {
-              opacity: 1;
-            }
-            20%,
-            24%,
-            55% {
-              opacity: 0.8;
-            }
+        @keyframes icon-float {
+          0%,
+          100% {
+            transform: translateY(0) rotate(0deg);
           }
-        `}</style>
-      </div>
-    );
-  }
+          50% {
+            transform: translateY(-6px) rotate(5deg);
+          }
+        }
 
-  return null;
+        @keyframes badge-wiggle {
+          0%,
+          100% {
+            transform: rotate(0deg) scale(1);
+          }
+          25% {
+            transform: rotate(-2deg) scale(1.02);
+          }
+          75% {
+            transform: rotate(2deg) scale(1.02);
+          }
+        }
+
+        @keyframes sparkle-spin {
+          0% {
+            transform: rotate(0deg) scale(1);
+          }
+          50% {
+            transform: rotate(180deg) scale(1.2);
+          }
+          100% {
+            transform: rotate(360deg) scale(1);
+          }
+        }
+
+        @keyframes discount-pulse {
+          0%,
+          100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+          }
+          50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+          }
+        }
+
+        @keyframes progress-bar {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes pulse-glow {
+          0%,
+          100% {
+            opacity: 0.5;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.8;
+            transform: scale(1.1);
+          }
+        }
+
+        /* ===== CLASSES D'ANIMATION ===== */
+
+        .banner-shine {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent
+          );
+          transform: translateX(-100%) skewX(-15deg);
+          animation: shine 4s ease-in-out infinite;
+        }
+
+        .particle {
+          position: absolute;
+          border-radius: 50%;
+          pointer-events: none;
+        }
+
+        .particle-1 {
+          top: 20%;
+          left: 15%;
+          width: 8px;
+          height: 8px;
+          background: rgba(16, 185, 129, 0.4);
+          --float-x: -12px;
+          --float-y: -18px;
+          animation: float 4s ease-in-out infinite;
+        }
+
+        .particle-2 {
+          top: 50%;
+          left: 40%;
+          width: 6px;
+          height: 6px;
+          background: rgba(6, 182, 212, 0.5);
+          --float-x: 15px;
+          --float-y: -22px;
+          animation: float 5s ease-in-out infinite 0.5s;
+        }
+
+        .particle-3 {
+          top: 70%;
+          right: 25%;
+          width: 7px;
+          height: 7px;
+          background: rgba(20, 184, 166, 0.4);
+          --float-x: -18px;
+          --float-y: -15px;
+          animation: float 6s ease-in-out infinite 1s;
+        }
+
+        .particle-4 {
+          top: 30%;
+          right: 35%;
+          width: 5px;
+          height: 5px;
+          background: rgba(34, 197, 94, 0.6);
+          --float-x: 10px;
+          --float-y: -25px;
+          animation: float 4.5s ease-in-out infinite 1.5s;
+        }
+        .particle-5 {
+          top: 60%;
+          left: 70%;
+          width: 6px;
+          height: 6px;
+          background: rgba(14, 165, 233, 0.5);
+          --float-x: -14px;
+          --float-y: -20px;
+          animation: float 5.5s ease-in-out infinite 2s;
+        }
+
+        .icon-float {
+          animation: icon-float 3s ease-in-out infinite;
+        }
+
+        .badge-wiggle {
+          animation: badge-wiggle 2.5s ease-in-out infinite;
+        }
+
+        .sparkle-spin {
+          animation: sparkle-spin 4s linear infinite;
+        }
+
+        .discount-pulse {
+          animation: discount-pulse 2s ease-in-out infinite;
+        }
+
+        .progress-bar {
+          animation: progress-bar 4s ease-in-out infinite;
+        }
+
+        .animate-pulse-glow {
+          animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        /* ===== RESPONSIVE OPTIMIZATIONS ===== */
+
+        @media (max-width: 640px) {
+          .particle {
+            width: 4px !important;
+            height: 4px !important;
+          }
+        }
+      `}</style>
+    </>
+  );
 }
