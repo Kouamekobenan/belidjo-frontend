@@ -28,6 +28,11 @@ export default function AnimatedPromoBanner({
     }, 300);
   };
 
+  // Retourner null si pas visible pour retirer complètement du DOM
+  if (!isVisible) {
+    return null;
+  }
+
   // if (!user || !isVisible) {
   //   return null;
   // }
