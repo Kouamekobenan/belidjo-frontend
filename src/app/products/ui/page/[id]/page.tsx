@@ -1,13 +1,12 @@
 // app/products/ui/page/[id]/page.tsx
 import { Metadata } from "next";
 import VendorProductsPage from "../PageClient";
-
 async function getVendor(id: string) {
   const res = await fetch(
     `https://belidjo-production.up.railway.app/vendor/${id}`,
     {
       cache: "no-store",
-    }
+    },
   );
   if (!res.ok) return null;
   return res.json();
@@ -64,8 +63,9 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params; 
+  const { id } = await params;
   const data = await getVendor(id);
+ 
 
   if (!data?.data) return <div>Vendeur introuvable</div>;
 

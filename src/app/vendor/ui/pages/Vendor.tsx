@@ -174,7 +174,7 @@ export default function VendorPage() {
 
     try {
       const data = await getVendorsUseCase();
-      console.log("Vendeurs chargés 11:", data);
+      // console.log("Vendeurs chargés 11:", data);
       setVendors(data);
     } catch (e) {
       console.error("Erreur lors du chargement des vendeurs:", e);
