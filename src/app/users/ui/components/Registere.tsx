@@ -22,8 +22,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import Image from "next/image";
-
 export default function RegisterForm() {
   const [formData, setFormData] = useState<RegisterDto>({
     name: "",
@@ -33,9 +31,6 @@ export default function RegisterForm() {
     role: UserRole.CUSTOMER,
     cityId: "",
   });
-  // J'ai mis le LOGO_SRC ici pour la clarté, mais il peut rester en dehors.
-  const LOGO_SRC = "/images/bj.png";
-
   const [city, setCity] = useState<ICity[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingCities, setLoadingCities] = useState(true);
@@ -143,7 +138,6 @@ export default function RegisterForm() {
       setLoading(false);
       return;
     }
-
     try {
       const dto: RegisterDto = {
         name: formData.name.trim(),

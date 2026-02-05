@@ -211,8 +211,8 @@ export default function ProductForm({
     // Validation du nom
     if (!formData.name.trim()) {
       errors.name = "Le nom du produit est obligatoire";
-    } else if (formData.name.trim().length < 3) {
-      errors.name = "Le nom doit contenir au moins 3 caractères";
+    } else if (formData.name.trim().length < 2) {
+      errors.name = "Le nom doit contenir au moins 2 caractères";
     } else if (formData.name.length > 100) {
       errors.name = `Le nom est trop long (${formData.name.length}/100 caractères)`;
     }
@@ -220,9 +220,9 @@ export default function ProductForm({
     // Validation de la description
     if (!formData.description.trim()) {
       errors.description = "La description du produit est obligatoire";
-    } else if (formData.description.trim().length < 10) {
+    } else if (formData.description.trim().length < 2) {
       errors.description =
-        "La description doit contenir au moins 10 caractères";
+        "La description doit contenir au moins 2 caractères";
     } else if (formData.description.length > 500) {
       errors.description = `La description est trop longue (${formData.description.length}/500 caractères)`;
     }

@@ -7,9 +7,7 @@ import VendorNavBar from "@/app/components/layout/Vendor-NavBar";
 import Image from "next/image";
 import CategoriesList from "@/app/categories/ui/components/FindCategory";
 import { VendorFooter } from "@/app/components/layout/Vendor-Footer";
-import Head from "next/head";
 import {
-  Copy,
   Check,
   Bell,
   BellOff,
@@ -24,7 +22,6 @@ import {
   Phone,
 } from "lucide-react";
 import { CustomerRepository } from "@/app/customer/infrastructure/customer-repository.impl";
-import { CreateCustomerUseCase } from "@/app/customer/application/usecases/create-customer.usecase";
 import { useAuth } from "@/app/context/AuthContext";
 import { CustomerMapper } from "@/app/customer/domain/mapper/customer.mapper";
 import toast from "react-hot-toast";
@@ -35,6 +32,8 @@ import { CreateNotificationUseCase } from "@/app/notification/application/usecas
 import { TypeNotification } from "@/app/notification/domain/enums/type-notification";
 import { FindAllCustomerUseCase } from "@/app/customer/application/usecases/find-all-customer.usecase";
 import { Customer } from "@/app/customer/domain/entities/customer.entity";
+import { VisitRepository } from "@/app/visit/infrastruture/visit.repository";
+import { SaveVisitUseCase } from "@/app/visit/application/usecases/save.visit.usecase";
 
 interface Site {
   id: string;
@@ -405,8 +404,10 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
     </button>
   );
 };
-
+const visitRepo = new VisitRepository();
+const saveVisitUseCase = new SaveVisitUseCase(visitRepo);
 // --- Composant Principal de la Page ---
+
 export default function VendorProductsClient({
   initialVendor,
 }: {
@@ -417,6 +418,28 @@ export default function VendorProductsClient({
     initialVendor.site?.logoUrl || photoCouv,
   );
   const [customers, setCustomers] = useState<Customer[]>([]);
+
+  const visitRecorded = useRef(false);
+
+  useEffect(() => {
+    const recordVisit = async () => {
+      // Éviter les appels multiples
+      if (visitRecorded.current) return;
+
+      try {
+        visitRecorded.current = true; // Marquer comme enregistré AVANT l'appel
+        const result = await saveVisitUseCase.execute(vendorId);
+        console.log("Visite enregistrée avec succès", result);
+      } catch (error) {
+        visitRecorded.current = false; // Réinitialiser en cas d'erreur
+        console.error("Erreur silencieuse analytics:", error);
+      }
+    };
+
+    if (vendor.id && !visitRecorded.current) {
+      recordVisit();
+    }
+  }, [vendor.id]);
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -432,7 +455,6 @@ export default function VendorProductsClient({
 
   const { user } = useAuth();
   const currentUserId = user?.id || null;
-  const { id } = useParams();
 
   const handleBannerUpdate = (newImageUrl: string) => {
     setBannerUrl(newImageUrl);

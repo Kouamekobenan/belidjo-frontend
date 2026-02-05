@@ -80,7 +80,7 @@ export default function NavbarDashbordVendor({
   return (
     <>
       {/* Bannière d'essai gratuit - Desktop (sous le header) */}
-      
+
       {/* Sidebar Desktop */}
       <aside
         className={`hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white transition-all duration-300 ease-in-out z-40 shadow-2xl ${
@@ -322,21 +322,16 @@ export default function NavbarDashbordVendor({
               <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
             )}
           </Link>
-          {/* Clients */}
+
+          {/* Voir ma boutique (remplace Clients) */}
           <Link
-            href="/admin/customer"
-            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
-              isActive("/admin/customer")
-                ? "text-teal-400"
-                : "text-gray-400 hover:text-teal-300"
-            }`}
+            href={Url}
+            className="flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative text-gray-400 hover:text-teal-300"
           >
-            <Users className="w-6 h-6" />
-            <span className="text-[10px] font-medium">Clients</span>
-            {isActive("/admin/customer") && (
-              <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
-            )}
+            <Home className="w-6 h-6" />
+            <span className="text-[10px] font-medium">Boutique</span>
           </Link>
+
           {/* Menu / Profil */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -447,12 +442,15 @@ export default function NavbarDashbordVendor({
                   Actions rapides
                 </p>
 
-                {/* Voir ma boutique */}
-                <Link href={Url} onClick={() => setIsMobileMenuOpen(false)}>
+                {/* Mes abonnés (déplacé depuis la bottom nav) */}
+                <Link
+                  href="/admin/customer"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
                   <button className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl shadow-lg transition-all duration-200 font-medium">
                     <div className="flex items-center gap-3">
-                      <Home className="w-5 h-5" />
-                      <span>Voir ma boutique</span>
+                      <Users className="w-5 h-5" />
+                      <span>Mes abonnés</span>
                     </div>
                     <ChevronRight className="w-5 h-5" />
                   </button>
