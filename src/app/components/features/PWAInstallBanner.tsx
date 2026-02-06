@@ -202,13 +202,13 @@ export default function PWAInstallBanner({
             >
               <Smartphone size={16} />
             </button>
-            <button
+            {/* <button
               onClick={handleDismiss}
               className="text-white/80 hover:text-white hover:bg-white/20 rounded-lg p-1.5 transition-all"
               aria-label="Fermer"
             >
               <X size={16} />
-            </button>
+            </button> */}
           </div>
         </div>
 

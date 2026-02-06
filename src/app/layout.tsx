@@ -111,7 +111,7 @@ export default function RootLayout({
       <head>
         {/* ✅ Les polices Google sont déjà gérées par next/font, pas besoin de les recharger */}
         {/* Si tu veux vraiment Roboto, Poppins, Inter, décommente ci-dessous : */}
-        {/* 
+        
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -122,7 +122,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
-        */}
+       
 
         {/* ✅ PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
