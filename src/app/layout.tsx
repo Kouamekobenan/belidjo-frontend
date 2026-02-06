@@ -4,6 +4,8 @@ import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { NotificationProvider } from "./lib/useFCMnotification";
+import PWAInstallBanner from "./components/features/PWAInstallBanner";
+import ServiceWorkerRegister from "./components/features/ServiceWorkerRegister";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -79,6 +81,9 @@ export default function RootLayout({
       >
         <AuthProvider>
           <NotificationProvider>{children}</NotificationProvider>
+          <ServiceWorkerRegister />
+          {/* On place la bannière ici */}
+          <PWAInstallBanner />
           <Toaster position="top-right" />
         </AuthProvider>
       </body>
