@@ -64,7 +64,6 @@ export default function PWAInstallBanner({
             />
           </div>
         </div>
-
         {/* Tooltip animé */}
         <div className="absolute bottom-full right-0 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none">
           <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap shadow-2xl">
@@ -117,7 +116,6 @@ export default function PWAInstallBanner({
       </div>
     );
   }
-
   // ============================================
   // STYLE STANDARD
   // ============================================
@@ -295,3 +293,88 @@ export default function PWAInstallBanner({
     </div>
   );
 }
+
+// "use client";
+// import { usePWAInstall } from "@/app/hook/usePWAInstall";
+// import Image from "next/image";
+// import { useState } from "react";
+
+// export default function PWAInstallBanner() {
+//   const { isInstallable, handleInstallClick } = usePWAInstall();
+//   const [isMinimized, setIsMinimized] = useState(false);
+
+//   if (!isInstallable) return null;
+
+//   // --- VERSION RÉDUITE (ICÔNE FLOTTANTE) ---
+//   if (isMinimized) {
+//     return (
+//       <button
+//         onClick={() => setIsMinimized(false)}
+//         className="fixed bottom-6 right-6 z-[9999] p-1 bg-white border-2 border-black rounded-full shadow-2xl animate-bounce md:animate-none hover:scale-110 transition-transform"
+//       >
+//         <div className="relative h-12 w-12">
+//           <Image
+//             src="/images/bj.png"
+//             alt="Ouvrir installation"
+//             fill
+//             className="rounded-full object-cover"
+//           />
+//         </div>
+//         <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border border-white">
+//           !
+//         </span>
+//       </button>
+//     );
+//   }
+
+//   // --- VERSION COMPLÈTE (BANNIÈRE) ---
+//   return (
+//     <div className="fixed bottom-4 left-4 right-4 z-[9999] md:max-w-md md:left-auto md:right-6">
+//       <div className="bg-white border border-gray-200 rounded-2xl shadow-2xl p-4 flex items-center gap-4 animate-in slide-in-from-bottom-10 duration-500 relative">
+//         {/* Bouton pour réduire en haut à droite */}
+//         <button
+//           onClick={() => setIsMinimized(true)}
+//           className="absolute -top-2 -right-2 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full p-1 border border-gray-200"
+//         >
+//           <svg
+//             xmlns="http://www.w3.org/2000/svg"
+//             className="h-4 w-4"
+//             fill="none"
+//             viewBox="0 0 24 24"
+//             stroke="currentColor"
+//           >
+//             <path
+//               strokeLinecap="round"
+//               strokeLinejoin="round"
+//               strokeWidth={2}
+//               d="M6 18L18 6M6 6l12 12"
+//             />
+//           </svg>
+//         </button>
+
+//         <div className="relative h-12 w-12 flex-shrink-0">
+//           <Image
+//             src="/images/bj.png"
+//             alt="Logo noBoutik"
+//             fill
+//             className="rounded-xl object-cover"
+//           />
+//         </div>
+
+//         <div className="flex-grow">
+//           <h3 className="font-bold text-gray-900 text-sm">noBoutik</h3>
+//           <p className="text-[11px] text-gray-500 leading-tight">
+//             Installez l'app pour une meilleure expérience
+//           </p>
+//         </div>
+
+//         <button
+//           onClick={handleInstallClick}
+//           className="bg-black text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-gray-800 transition-all active:scale-95"
+//         >
+//           Installer
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
