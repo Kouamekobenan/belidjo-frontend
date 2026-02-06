@@ -4,13 +4,13 @@
   "description": "La plateforme de mise en relation entre vendeurs locaux et clients. Trouvez les meilleurs produits ou ouvrez votre boutique gratuitement sur noBoutik.",
   "icons": [
     {
-      "src": "/images/bj.png",
-      "sizes":  "512x512",
+      "src": "/images/android-chrome-192x192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/bj.png",
+      "src": "/images/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
