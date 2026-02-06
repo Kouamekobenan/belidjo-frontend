@@ -127,7 +127,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
 
         {/* ✅ Apple Touch Icon (déjà géré par metadata.icons, mais on peut le laisser) */}
-        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
 
         {/* ✅ Meta theme-color (déjà dans viewport, mais certains navigateurs le préfèrent ici) */}
         <meta name="theme-color" content="#000000" />
