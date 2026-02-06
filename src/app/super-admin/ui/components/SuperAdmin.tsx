@@ -17,6 +17,7 @@ import { ApproveVendorUseCase } from "@/app/vendor/application/usecases/approve-
 import toast from "react-hot-toast";
 import { GetAllVendorUseCase } from "@/app/vendor/application/usecases/getAll-vendor.usecase";
 import { UpdateFeatureStatusUsecase } from "@/app/vendor/application/usecases/update-feature-status.usecase";
+import VendorVisitModal from "./VendorVisitModal";
 
 const repoVendor = new VendorRepository();
 const findAllVendorUseCase = new GetAllVendorUseCase(repoVendor);
@@ -277,6 +278,11 @@ export default function SuperAdmin() {
                               Vedette
                             </span>
                           )}
+                          {/* Modal des statistiques */}
+                          <VendorVisitModal
+                            vendorId={v.id}
+                            vendorName={v.name}
+                          />
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -445,6 +451,11 @@ export default function SuperAdmin() {
                         {v.city.name}
                       </span>
                     </div>
+                  </div>
+
+                  {/* Bouton Statistiques */}
+                  <div className="pt-1">
+                    <VendorVisitModal vendorId={v.id} vendorName={v.name} />
                   </div>
 
                   {/* Action Buttons */}
