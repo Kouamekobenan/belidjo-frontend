@@ -114,20 +114,6 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                       alt={p.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-
-                    {/* Badge de stock flottant */}
-                    {/* <div className="absolute top-3 left-3">
-                      <span
-                        className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest backdrop-blur-md shadow-sm ${
-                          p.quantity > 0
-                            ? "bg-white/90 text-slate-900"
-                            : "bg-red-500 text-white"
-                        }`}
-                      >
-                        {p.quantity > 0 ? `Stock: ${p.quantity}` : "Épuisé"}
-                      </span>
-                    </div> */}
-
                     {/* Overlay au survol */}
                     <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </Link>
@@ -139,7 +125,6 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                         {p.name}
                       </h3>
                     </div>
-
                     <div className="mt-auto pt-3 flex items-center justify-between">
                       <div className="flex flex-col">
                         <span className="text-xs font-bold text-slate-400 line-through decoration-red-400/30">
@@ -150,7 +135,6 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                           <span className="text-[10px] ml-0.5">FCFA</span>
                         </span>
                       </div>
-
                       <Link
                         href={`${PRODUCT_DETAIL_BASE_PATH}/ui/pages/page/${p.id}`}
                         className="p-2.5 bg-slate-900 text-white rounded-xl hover:bg-teal-500 transition-colors shadow-lg shadow-slate-200"
@@ -173,7 +157,6 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                   >
                     <ChevronLeft size={20} />
                   </button>
-
                   <div className="flex items-center px-2">
                     {/* Logique simplified des numéros de page pour le design */}
                     {[...Array(pagination.totalPages)].map((_, i) => {

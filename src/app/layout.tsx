@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "noBoutik | Achetez et vendez en toute simplicité",
     description: "Connectez-vous avec les meilleurs vendeurs de votre région.",
-    images: ["/logo.png"],
+    images: ["/images/android-chrome-512x512.png"],
   },
   robots: {
     index: true,
@@ -86,8 +86,8 @@ export const metadata: Metadata = {
   },
   // ✅ Icons - Next.js les gère automatiquement si tu as app/icon.png
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: "/images/android-chrome-512x512.png",
+    apple: "/images/apple-touch-icon.png",
   },
 };
 
@@ -108,9 +108,6 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        {/* ✅ Les polices Google sont déjà gérées par next/font, pas besoin de les recharger */}
-        {/* Si tu veux vraiment Roboto, Poppins, Inter, décommente ci-dessous : */}
-
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

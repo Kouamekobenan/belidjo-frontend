@@ -92,11 +92,11 @@ export default function LoginUser() {
               headers: {
                 Authorization: `Bearer ${loggedUser.accessToken}`,
               },
-            }
+            },
           );
           console.log(
             "✅ Device token envoyé au backend avec succès!",
-            response.data
+            response.data,
           );
         } else {
           console.warn("⚠️ Aucun device token obtenu");
@@ -105,7 +105,7 @@ export default function LoginUser() {
         console.error("❌ Erreur lors de l'envoi du device token:", err);
         console.error(
           "Détails de l'erreur:",
-          err.response?.data || err.message
+          err.response?.data || err.message,
         );
         // Ne pas bloquer la connexion si l'envoi du token échoue
       }
@@ -121,7 +121,7 @@ export default function LoginUser() {
           break;
         case "ADMIN":
           toast.success(
-            "Vous êtes connecté avec succès en tant qu'administrateur !"
+            "Vous êtes connecté avec succès en tant qu'administrateur !",
           );
           router.push("/super-admin");
           break;
@@ -283,30 +283,37 @@ export default function LoginUser() {
               )}
             </button>
           </div>
-
           {/* Sign Up Link */}
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <div className="text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                Vous n'avez pas de compte ?
+          <div className="flex flex-col pt-4 items-center space-y-4">
+            <div className="flex items-center space-x-2">
+              <span className="h-px w-8 bg-gray-200 dark:bg-gray-700"></span>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Nouveau sur Noboutik ?
               </p>
-              <Link href="/users/ui/register">
-                <button
-                  type="button"
-                  className="inline-flex cursor-pointer items-center space-x-2 text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 font-medium transition-colors"
-                  disabled={isLoading}
-                >
-                  <UserPlus className="w-5 h-5" />
-                  <span>Créer un compte</span>
-                </button>
-              </Link>
+              <span className="h-px w-8 bg-gray-200 dark:bg-gray-700"></span>
             </div>
+            <Link href="/users/ui/register" className="w-full">
+              <button
+                type="button"
+                disabled={isLoading}
+                className="group relative w-full flex items-center justify-center space-x-3 px-6 py-3 border-2 border-teal-600 dark:border-teal-500 text-teal-600 dark:text-teal-400 font-bold rounded-xl hover:bg-teal-600 hover:text-white dark:hover:bg-teal-500 dark:hover:text-white transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+              >
+                <UserPlus className="w-5 h-5 transition-transform group-hover:scale-110" />
+                <span>Créer mon compte gratuitement</span>
+                {/* Petit effet de brillance au survol (optionnel) */}
+                <div className="absolute inset-0 w-full h-full bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
+              </button>
+            </Link>
+
+            <p className="text-xs text-center text-gray-400 dark:text-gray-500">
+              Rejoignez notre communauté de vendeurs en quelques secondes.
+            </p>
           </div>
         </div>
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-6">
-          © 2024 Belidjo Connect. Tous droits réservés.
+          © 2026 Noboutik Connect. Tous droits réservés.
         </p>
       </div>
     </div>

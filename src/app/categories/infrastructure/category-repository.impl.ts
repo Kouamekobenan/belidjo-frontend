@@ -31,7 +31,7 @@ export class CategoryRepository implements ICategoryRepository {
   async findAll(
     vendorId: string,
     limit: number,
-    page: number
+    page: number,
   ): Promise<IPaginatedResponse<Category>> {
     try {
       const res = await api.get(`/cat/vendor/${vendorId}`, {
@@ -43,7 +43,7 @@ export class CategoryRepository implements ICategoryRepository {
 
       // 🧩 Mapping des catégories en entités de domaine
       const categories = dataArray.map((item: any) =>
-        this.mapper.toEntity(item)
+        this.mapper.toEntity(item),
       );
 
       return {
@@ -56,7 +56,7 @@ export class CategoryRepository implements ICategoryRepository {
     } catch (error) {
       console.error(
         "❌ Erreur lors de la récupération des catégories :",
-        error
+        error,
       );
       throw error;
     }
@@ -68,7 +68,7 @@ export class CategoryRepository implements ICategoryRepository {
   async update(
     id: string,
     dto: CreateCategoryDto,
-    file: File | null
+    file: File | null,
   ): Promise<Category> {
     const url = `/cat/${id}`;
     let response;
@@ -86,5 +86,10 @@ export class CategoryRepository implements ICategoryRepository {
       response = await api.patch(url, category);
     }
     return this.mapper.toEntity(response.data.data);
+  }
+  async getTree(): Promise<Category[]> {
+    const url = "/cat/cat/tree";
+    const catTree = await api.get(url);
+    return catTree.data.data;
   }
 }
