@@ -490,7 +490,6 @@ export default function ProductForm({
                       {currentSuggestion}
                     </p>
                   </div>
-
                   {/* Boutons d'action - Stack sur mobile, côte à côte sur desktop */}
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <button
