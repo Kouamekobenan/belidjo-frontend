@@ -108,7 +108,7 @@ export default function Carrosel() {
         </div>
         <Link
           href="/vendor/vendorform"
-          className="group flex items-center justify-center gap-3 bg-gradient-to-r from-slate-900 to-slate-800 text-white px-6 md:px-8 py-4 md:py-5 rounded-2xl hover:from-teal-600 hover:to-teal-500 transition-all duration-500 shadow-xl shadow-slate-900/25 hover:shadow-teal-500/30 hover:scale-105 active:scale-100"
+          className="group flex items-center justify-center gap-3 bg-gradient-to-r from-teal-900 to-teal-800 text-white px-6 md:px-8 py-4 md:py-5 rounded-2xl hover:from-slate-600 hover:to-slate-500 transition-all duration-500 shadow-xl shadow-slate-900/25 hover:shadow-teal-500/30 hover:scale-105 active:scale-100"
         >
           <Store className="w-5 h-5 text-teal-400 group-hover:text-white transition-colors" />
           <span className="font-bold whitespace-nowrap">

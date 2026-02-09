@@ -159,7 +159,6 @@ export default function CategoriesList({ vendorId }: { vendorId: string }) {
               <ChevronLeft className="w-5 h-5 text-gray-700" />
             </button>
           )}
-
           {/* Conteneur de scroll horizontal */}
           <div
             ref={scrollContainerRef}

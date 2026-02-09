@@ -7,13 +7,14 @@ export interface ICategoryRepository {
   findAll(
     vendorId: string,
     limit: number,
-    page: number
+    page: number,
   ): Promise<IPaginatedResponse<Category>>;
+  getTree(): Promise<Category[]>;
   create(dto: CreateCategoryDto, file: File | null): Promise<Category>;
   delete(id: string): Promise<void>;
   update(
     id: string,
     dto: CreateCategoryDto,
-    file: File | null
+    file: File | null,
   ): Promise<Category>;
 }

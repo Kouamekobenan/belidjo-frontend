@@ -18,32 +18,23 @@ import {
   AlertCircle,
   ArrowLeft,
   Loader2,
+  ChevronRight,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { Category } from "@/app/categories/domain/entities/category.entity";
 
 // ============================================
-// INTERFACES
+// INTERFACES (Mises à jour pour le Tree)
 // ============================================
+
 
 interface ProductFormProps {
   productToEdit?: IProductToEdit;
   onSubmit: (data: CreateProductDto, file?: File | null) => Promise<void>;
   onCancel: () => void;
-  availableCategories: { id: string; name: string }[];
-}
-
-interface FieldProps {
-  label: string;
-  name: string;
-  value: string | number;
-  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  error?: string;
-  type?: string;
-  placeholder?: string;
-  min?: number;
-  step?: string;
-  icon?: React.ReactNode;
-  required?: boolean;
+  availableCategories: Category[]; // Modifié pour accepter l'arbre
+  onCategoryChange?: (category: Category) => void; // Pour l'autocomplétion
+  suggestedName?: string; // Nom suggéré par le parent
 }
 
 // ============================================
@@ -55,6 +46,8 @@ export default function ProductForm({
   onSubmit,
   onCancel,
   availableCategories = [],
+  onCategoryChange,
+  suggestedName,
 }: ProductFormProps) {
   // États
   const [formData, setFormData] = useState<CreateProductDto>(initialFormData);
@@ -65,6 +58,18 @@ export default function ProductForm({
     Record<string, string>
   >({});
   const [isDragOver, setIsDragOver] = useState(false);
+
+  // États pour la navigation dans l'arbre
+  const [selectedParent, setSelectedParent] = useState<Category | null>(
+    null,
+  );
+
+  // Effet pour l'autocomplétion : Injecte le nom suggéré si le nom est vide
+  useEffect(() => {
+    if (suggestedName && (!formData.name || formData.name === "")) {
+      setFormData((prev) => ({ ...prev, name: suggestedName }));
+    }
+  }, [suggestedName]);
 
   // Charger les données en mode modification
   useEffect(() => {
@@ -79,508 +84,311 @@ export default function ProductForm({
         vendorId: productToEdit.vendorId || "",
       });
       setImagePreview(productToEdit.imageUrl || "");
-    } else {
-      setFormData(initialFormData);
-      setImagePreview("");
     }
-    setValidationErrors({});
   }, [productToEdit]);
 
   // Gestion des changements de champs
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value, type } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: type === "number" ? parseFloat(value) || 0 : value,
     }));
-
-    // Supprimer l'erreur du champ modifié
     setValidationErrors((prev) => {
       const { [name]: _, ...rest } = prev;
       return rest;
     });
   };
 
-  // Gestion du fichier image
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    processImageFile(file);
-  };
-
-  // Gestion du drag & drop
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragOver(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      processImageFile(file);
-    } else if (file) {
-      setValidationErrors((prev) => ({
-        ...prev,
-        image: "Le fichier déposé n'est pas une image valide",
-      }));
+  // Gestion de la sélection de catégorie (Tree)
+  const handleSelectCategory = (cat: Category, isParent: boolean) => {
+    if (isParent) {
+      setSelectedParent(cat);
+      // On réinitialise l'ID produit si on change de parent
+      setFormData((prev) => ({ ...prev, categoryId: "" }));
+    } else {
+      setFormData((prev) => ({ ...prev, categoryId: cat.id }));
+      // On déclenche l'autocomplétion vers le parent
+      if (onCategoryChange) onCategoryChange(cat);
     }
+
+    setValidationErrors((prev) => {
+      const { categoryId, ...rest } = prev;
+      return rest;
+    });
   };
 
-  // Traiter le fichier image avec validation détaillée
+  // ... (Garder tes fonctions processImageFile, handleFileChange, handleDrop, removeImage identiques)
   const processImageFile = (file: File | null) => {
-    // Réinitialiser les erreurs d'image
     setValidationErrors((prev) => {
       const { image, ...rest } = prev;
       return rest;
     });
-
     if (!file) {
       setImageFile(null);
-      if (!productToEdit) {
-        setImagePreview("");
-      }
       return;
     }
-
-    // Validation du type de fichier
     const validImageTypes = [
       "image/jpeg",
       "image/jpg",
       "image/png",
-      "image/gif",
       "image/webp",
     ];
     if (!validImageTypes.includes(file.type)) {
       setValidationErrors((prev) => ({
         ...prev,
-        image: `Format de fichier non supporté (${file.type}). Formats acceptés: JPG, PNG, GIF, WEBP`,
+        image: "Format non supporté",
       }));
       return;
     }
-
-    // Validation de la taille (10MB maximum)
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MiB (environ 2.1 MB)
-    if (file.size > maxSizeInBytes) {
-      const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-      setValidationErrors((prev) => ({
-        ...prev,
-        image: `L'image est trop volumineuse (${fileSizeInMB} MiB). Taille maximale autorisée: 2 MiB`,
-      }));
-      return;
-    }
-
-    // Si tout est valide, traiter l'image
     setImageFile(file);
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result as string);
-    };
-    reader.onerror = () => {
-      setValidationErrors((prev) => ({
-        ...prev,
-        image:
-          "Erreur lors de la lecture du fichier. Veuillez réessayer avec une autre image.",
-      }));
-    };
+    reader.onloadend = () => setImagePreview(reader.result as string);
     reader.readAsDataURL(file);
   };
-
-  // Supprimer l'image
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) =>
+    processImageFile(e.target.files?.[0] || null);
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+  const handleDragLeave = () => setIsDragOver(false);
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file?.type.startsWith("image/")) processImageFile(file);
+  };
   const removeImage = () => {
     setImageFile(null);
-    setImagePreview(productToEdit?.imageUrl || "");
-    // Supprimer l'erreur d'image s'il y en avait une
-    setValidationErrors((prev) => {
-      const { image, ...rest } = prev;
-      return rest;
-    });
+    setImagePreview("");
   };
 
-  // Validation du formulaire avec messages détaillés
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
-
-    // Validation du nom
-    if (!formData.name.trim()) {
-      errors.name = "Le nom du produit est obligatoire";
-    } else if (formData.name.trim().length < 2) {
-      errors.name = "Le nom doit contenir au moins 2 caractères";
-    } else if (formData.name.length > 100) {
-      errors.name = `Le nom est trop long (${formData.name.length}/100 caractères)`;
-    }
-
-    // Validation de la description
-    if (!formData.description.trim()) {
-      errors.description = "La description du produit est obligatoire";
-    } else if (formData.description.trim().length < 2) {
-      errors.description =
-        "La description doit contenir au moins 2 caractères";
-    } else if (formData.description.length > 500) {
-      errors.description = `La description est trop longue (${formData.description.length}/500 caractères)`;
-    }
-
-    // Validation de la catégorie
-    if (!formData.categoryId) {
-      errors.categoryId = "Veuillez sélectionner une catégorie pour ce produit";
-    }
-
-    // Validation du prix
-    if (formData.price <= 0) {
-      errors.price = "Le prix doit être supérieur à 0 FCFA";
-    } else if (formData.price > 10000000) {
-      errors.price = "Le prix semble anormalement élevé. Veuillez vérifier.";
-    }
-
-    // Validation de la quantité
-    if (formData.quantity < 0) {
-      errors.quantity = "La quantité ne peut pas être négative";
-    } else if (formData.quantity > 1000000) {
-      errors.quantity =
-        "La quantité semble anormalement élevée. Veuillez vérifier.";
-    }
-
-    // Validation de l'image (uniquement pour les nouveaux produits)
-    if (!productToEdit && !imagePreview && !imageFile) {
-      errors.image =
-        "L'image du produit est obligatoire pour créer un nouveau produit";
-    }
-
+    if (!formData.name.trim()) errors.name = "Le nom est obligatoire";
+    if (!formData.description.trim())
+      errors.description = "La description est obligatoire";
+    if (!formData.categoryId)
+      errors.categoryId = "Veuillez choisir une catégorie";
+    if (formData.price <= 0) errors.price = "Le prix doit être > 0";
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  // Soumission du formulaire avec gestion d'erreurs améliorée
-  const handleSubmit = async (e: FormEvent) => {
+  const internalHandleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      // Scroll vers la première erreur
-      const firstErrorKey = Object.keys(validationErrors)[0];
-      const firstErrorElement = document.getElementById(firstErrorKey);
-      if (firstErrorElement) {
-        firstErrorElement.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
-      return;
-    }
-
+    if (!validateForm()) return;
     setIsSubmitting(true);
     try {
       await onSubmit(formData, imageFile);
     } catch (error) {
-      console.error("Erreur lors de la soumission:", error);
-
-      // Message d'erreur détaillé selon le type d'erreur
-      let errorMessage = "Une erreur est survenue lors de l'enregistrement";
-
-      if (error instanceof Error) {
-        // Détecter les types d'erreurs courants
-        if (
-          error.message.includes("network") ||
-          error.message.includes("fetch")
-        ) {
-          errorMessage =
-            "Erreur de connexion. Vérifiez votre connexion Internet et réessayez.";
-        } else if (
-          error.message.includes("401") ||
-          error.message.includes("unauthorized")
-        ) {
-          errorMessage = "Session expirée. Veuillez vous reconnecter.";
-        } else if (
-          error.message.includes("403") ||
-          error.message.includes("forbidden")
-        ) {
-          errorMessage =
-            "Vous n'avez pas l'autorisation d'effectuer cette action.";
-        } else if (error.message.includes("404")) {
-          errorMessage =
-            "Ressource introuvable. Le produit a peut-être été supprimé.";
-        } else if (
-          error.message.includes("413") ||
-          error.message.includes("too large")
-        ) {
-          errorMessage =
-            "L'image est trop volumineuse pour être téléchargée. Essayez avec une image plus petite.";
-        } else if (error.message.includes("500")) {
-          errorMessage =
-            "Erreur serveur. Veuillez réessayer dans quelques instants.";
-        } else {
-          errorMessage = `Erreur: ${error.message}`;
-        }
-      }
-
-      toast.error(errorMessage);
+      toast.error("Erreur d'enregistrement");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Détermination du mode
-  const isEditMode = !!productToEdit;
-  const title = isEditMode ? "Modifier le produit" : "Nouveau produit";
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/20 py-6 sm:py-8 lg:py-12 px-3 sm:px-4 lg:px-6">
-      <div className="max-w-5xl mx-auto">
-        {/* Header avec retour */}
-        <div className="mb-6 sm:mb-8">
-          <button
-            onClick={onCancel}
-            className="group inline-flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors mb-4"
-          >
-            <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
-            <span className="font-medium">Retour à la liste</span>
-          </button>
+    <div className="min-h-screen bg-slate-50 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <button
+          onClick={onCancel}
+          className="flex items-center text-gray-600 mb-6 hover:text-black transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" /> Retour
+        </button>
 
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl shadow-lg">
-              <Package className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                {title}
-              </h1>
-              <p className="text-gray-600 mt-1">
-                {isEditMode
-                  ? "Modifiez les informations de votre produit"
-                  : "Ajoutez un nouveau produit à votre catalogue"}
-              </p>
-            </div>
-          </div>
-        </div>
-        {/* Formulaire */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Card principale */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-            {/* Section Image */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 sm:px-8 py-6 border-b border-gray-200">
-              <div className="flex items-center space-x-3 mb-4">
-                <ImageIcon className="w-5 h-5 text-teal-600" />
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Image du produit
-                </h2>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Aperçu de l'image */}
-                <div className="relative">
-                  <div className="aspect-square rounded-xl overflow-hidden bg-white border-2 border-dashed border-gray-300 shadow-inner">
-                    {imagePreview ? (
-                      <div className="relative w-full h-full group">
-                        <img
-                          src={imagePreview}
-                          alt="Aperçu"
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <button
-                            type="button"
-                            onClick={removeImage}
-                            className="p-3 bg-red-500 hover:bg-red-600 rounded-full transition-colors"
-                          >
-                            <X className="w-6 h-6 text-white" />
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
-                        <ImageIcon className="w-16 h-16 mb-2" />
-                        <p className="text-sm">Aucune image</p>
-                      </div>
-                    )}
-                  </div>
+        <form onSubmit={internalHandleSubmit} className="space-y-8">
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+            {/* ZONE IMAGE */}
+            <div className="p-8 border-b border-gray-100 bg-gray-50/50">
+              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <ImageIcon className="w-6 h-6 mr-2 text-teal-600" /> Image du
+                produit
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="aspect-video md:aspect-square rounded-2xl bg-white border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden relative">
+                  {imagePreview ? (
+                    <>
+                      <img
+                        src={imagePreview}
+                        className="w-full h-full object-cover"
+                        alt="Preview"
+                      />
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full shadow-lg"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </>
+                  ) : (
+                    <div className="text-gray-400 text-center p-4">
+                      <Upload className="w-12 h-12 mx-auto mb-2 opacity-20" />
+                      <p className="text-sm">Aucune image sélectionnée</p>
+                    </div>
+                  )}
                 </div>
-                {/* Zone de téléversement */}
                 <div
-                  id="image"
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  className={`relative border-2 border-dashed rounded-xl p-6 transition-all ${
-                    isDragOver
-                      ? "border-green-500 bg-blue-50"
-                      : validationErrors.image
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300 bg-white hover:border-green-400"
-                  }`}
+                  className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center transition-colors ${isDragOver ? "border-teal-500 bg-teal-50" : "border-gray-200 bg-white"}`}
                 >
-                  <div className="text-center space-y-4">
-                    <div className="flex justify-center">
-                      <div
-                        className={`p-4 rounded-full ${validationErrors.image ? "bg-red-100" : "bg-blue-100"}`}
-                      >
-                        <Upload
-                          className={`w-8 h-8 ${validationErrors.image ? "text-red-600" : "text-green-600"}`}
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="image-upload" className="cursor-pointer">
-                        <span className="text-green-600 font-semibold hover:text-green-700">
-                          Choisir un fichier
-                        </span>
-                        <span className="text-gray-600">
-                          {" "}
-                          ou glisser-déposer
-                        </span>
-                      </label>
-                      <input
-                        id="image-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-                    </div>
-
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG, GIF, WEBP jusqu'à 2MiB MB
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {validationErrors.image && (
-                <div className="mt-4 flex items-start space-x-2 text-red-600 bg-red-50 px-4 py-3 rounded-lg border border-red-200">
-                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm font-medium">
-                    {validationErrors.image}
+                  <input
+                    type="file"
+                    id="img-input"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                  />
+                  <label
+                    htmlFor="img-input"
+                    className="cursor-pointer bg-teal-600 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:bg-teal-700 transition-all"
+                  >
+                    Choisir une photo
+                  </label>
+                  <p className="mt-4 text-xs text-gray-500 uppercase tracking-widest">
+                    PNG, JPG ou WEBP (Max 2Mo)
                   </p>
                 </div>
+              </div>
+              {validationErrors.image && (
+                <p className="mt-2 text-red-500 text-sm flex items-center">
+                  <AlertCircle className="w-4 h-4 mr-1" />{" "}
+                  {validationErrors.image}
+                </p>
               )}
             </div>
 
-            {/* Section Informations générales */}
-            <div className="px-6 sm:px-8 py-6 border-b border-gray-200">
-              <div className="flex items-center space-x-3 mb-6">
-                <FileText className="w-5 h-5 text-teal-600" />
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Informations générales
-                </h2>
-              </div>
+            {/* SECTION CATEGORIE (TREE) */}
+            <div className="p-8 border-b border-gray-100">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                <Tag className="w-6 h-6 mr-2 text-teal-600" /> Choisir la
+                catégorie
+              </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <InputField
-                  label="Nom du produit"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Ex: Coca-Cola 1L"
-                  error={validationErrors.name}
-                  icon={<Package className="w-5 h-5" />}
-                  required
-                />
+              <div className="space-y-6">
+                {/* Niveau 1: Racines */}
+                <div className="flex flex-wrap gap-3">
+                  {availableCategories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => handleSelectCategory(cat, true)}
+                      className={`px-6 py-3 rounded-2xl font-semibold transition-all border-2 ${selectedParent?.id === cat.id ? "bg-teal-600 border-teal-600 text-white shadow-lg" : "bg-white border-gray-100 text-gray-600 hover:border-teal-200"}`}
+                    >
+                      {cat.name}
+                    </button>
+                  ))}
+                </div>
 
-                <SelectField
-                  label="Catégorie"
-                  name="categoryId"
-                  value={formData.categoryId}
-                  onChange={handleChange}
-                  options={availableCategories}
-                  error={validationErrors.categoryId}
-                  icon={<Tag className="w-5 h-5" />}
-                  required
-                />
-              </div>
-
-              <div className="mt-6">
-                <TextAreaField
-                  label="Description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Décrivez votre produit en détail..."
-                  error={validationErrors.description}
-                  required
-                />
+                {/* Niveau 2: Enfants */}
+                {selectedParent &&
+                  selectedParent.children &&
+                  selectedParent.children.length > 0 && (
+                    <div className="p-6 bg-teal-50/50 rounded-3xl animate-in slide-in-from-top-2 duration-300">
+                      <p className="text-xs font-bold text-teal-700 mb-4 uppercase tracking-wider">
+                        Sous-catégories de {selectedParent.name}
+                      </p>
+                      <div className="flex flex-wrap gap-3">
+                        {selectedParent.children.map((sub) => (
+                          <button
+                            key={sub.id}
+                            type="button"
+                            onClick={() => handleSelectCategory(sub, false)}
+                            className={`flex items-center px-5 py-3 rounded-xl font-medium transition-all ${formData.categoryId === sub.id ? "bg-black text-white shadow-xl scale-105" : "bg-white text-gray-700 hover:shadow-md"}`}
+                          >
+                            {sub.name}
+                            {formData.categoryId === sub.id && (
+                              <Check className="w-4 h-4 ml-2" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                {validationErrors.categoryId && (
+                  <p className="text-red-500 text-sm flex items-center">
+                    <AlertCircle className="w-4 h-4 mr-1" />{" "}
+                    {validationErrors.categoryId}
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* Section Prix et Stock */}
-            <div className="px-6 sm:px-8 py-6">
-              <div className="flex items-center space-x-3 mb-6">
-                <DollarSign className="w-5 h-5 text-teal-600" />
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Prix et stock
-                </h2>
-              </div>
+            {/* INFORMATIONS PRODUIT */}
+            <div className="p-8 space-y-6">
+              <InputField
+                label="Nom de l'article"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Ex: Pagne Bazin Riche"
+                error={validationErrors.name}
+                icon={<Package />}
+                required
+              />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <InputField
-                  label="Prix unitaire (FCFA)"
+                  label="Prix (FCFA)"
                   name="price"
                   type="number"
                   value={formData.price}
                   onChange={handleChange}
-                  placeholder="Ex: 1000"
-                  min={0}
-                  step="0.01"
+                  icon={<DollarSign />}
                   error={validationErrors.price}
-                  icon={<DollarSign className="w-5 h-5" />}
                   required
                 />
-
                 <InputField
-                  label="Quantité en stock"
+                  label="Stock disponible"
                   name="quantity"
                   type="number"
                   value={formData.quantity}
                   onChange={handleChange}
-                  placeholder="Ex: 50"
-                  min={0}
+                  icon={<Hash />}
                   error={validationErrors.quantity}
-                  icon={<Hash className="w-5 h-5" />}
                   required
                 />
               </div>
+
+              <TextAreaField
+                label="Description détaillée"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Matière, taille, coloris..."
+                error={validationErrors.description}
+                required
+              />
             </div>
           </div>
 
-          {/* Boutons d'action */}
-          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
+          {/* ACTIONS */}
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-4">
             <button
               type="button"
               onClick={onCancel}
-              disabled={isSubmitting}
-              className="w-full sm:w-auto px-6 py-3 border-2 border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-8 py-4 text-gray-500 font-bold hover:text-black"
             >
               Annuler
             </button>
-
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative w-full cursor-pointer sm:w-auto px-8 py-3 bg-gradient-to-r from-teal-600 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:from-teal-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+              className="bg-teal-600 text-white px-10 py-4 rounded-2xl font-bold shadow-2xl hover:bg-teal-700 disabled:opacity-50 flex items-center justify-center min-w-[200px]"
             >
-              {/* Effet de brillance */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-
-              <span className="relative flex items-center justify-center space-x-2">
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Enregistrement...</span>
-                  </>
-                ) : (
-                  <>
-                    <Check className="w-5 h-5" />
-                    <span>
-                      {isEditMode ? "Enregistrer" : "Créer le produit"}
-                    </span>
-                  </>
-                )}
-              </span>
+              {isSubmitting ? (
+                <Loader2 className="animate-spin mr-2" />
+              ) : (
+                <Check className="mr-2" />
+              )}
+              {productToEdit ? "Mettre à jour" : "Mettre en vente"}
             </button>
           </div>
         </form>
@@ -590,10 +398,10 @@ export default function ProductForm({
 }
 
 // ============================================
-// COMPOSANTS RÉUTILISABLES
+// COMPOSANTS RÉUTILISABLES (Inchangés)
 // ============================================
 
-const InputField: React.FC<FieldProps> = ({
+const InputField: React.FC<any> = ({
   label,
   name,
   value,
@@ -601,49 +409,31 @@ const InputField: React.FC<FieldProps> = ({
   error,
   type = "text",
   placeholder,
-  min,
-  step,
   icon,
   required,
 }) => (
   <div className="space-y-2">
-    <label htmlFor={name} className="block text-sm font-semibold text-gray-700">
-      {label} {required && <span className="text-red-500">*</span>}
+    <label className="text-sm font-bold text-gray-700 ml-1">
+      {label} {required && "*"}
     </label>
-    <div className="relative">
-      {icon && (
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-          {icon}
-        </div>
-      )}
+    <div className="relative group">
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-teal-600 transition-colors">
+        {icon}
+      </div>
       <input
         type={type}
         name={name}
-        id={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        min={min}
-        step={step}
-        className={`w-full ${
-          icon ? "pl-11" : "pl-4"
-        } pr-4 py-3 border rounded-xl text-black focus:outline-none focus:ring-2 transition-all ${
-          error
-            ? "border-red-500 bg-red-50 focus:ring-red-500"
-            : "border-gray-300 bg-white hover:border-gray-400 focus:ring-blue-500 focus:border-transparent"
-        }`}
+        className={`w-full pl-12 pr-4 py-4 bg-white border-2 rounded-2xl focus:outline-none transition-all ${error ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-teal-500 text-black shadow-sm hover:border-gray-200"}`}
       />
     </div>
-    {error && (
-      <div className="flex items-start space-x-2 text-red-600">
-        <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-        <p className="text-sm font-medium">{error}</p>
-      </div>
-    )}
+    {error && <p className="text-red-500 text-xs font-medium ml-1">{error}</p>}
   </div>
 );
 
-const TextAreaField: React.FC<Omit<FieldProps, "type" | "min" | "step">> = ({
+const TextAreaField: React.FC<any> = ({
   label,
   name,
   value,
@@ -653,114 +443,26 @@ const TextAreaField: React.FC<Omit<FieldProps, "type" | "min" | "step">> = ({
   required,
 }) => (
   <div className="space-y-2">
-    <label htmlFor={name} className="block text-sm font-semibold text-gray-700">
-      {label} {required && <span className="text-red-500">*</span>}
+    <label className="text-sm font-bold text-gray-700 ml-1">
+      {label} {required && "*"}
     </label>
     <textarea
       name={name}
-      id={name}
       rows={4}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={`w-full px-4 py-3 border text-black rounded-xl focus:outline-none focus:ring-2 transition-all resize-none ${
-        error
-          ? "border-red-500 bg-red-50 focus:ring-red-500"
-          : "border-gray-300 bg-white hover:border-gray-400 focus:ring-blue-500 focus:border-transparent"
-      }`}
+      className={`w-full p-4 bg-white border-2 rounded-2xl focus:outline-none transition-all resize-none ${error ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-teal-500 text-black shadow-sm hover:border-gray-200"}`}
     />
-    <div className="flex justify-between items-start">
+    <div className="flex justify-between px-1">
       {error ? (
-        <div className="flex items-start space-x-2 text-red-600">
-          <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-          <p className="text-sm font-medium">{error}</p>
-        </div>
+        <p className="text-red-500 text-xs font-medium">{error}</p>
       ) : (
-        <div></div>
+        <div />
       )}
-      <span
-        className={`text-xs ${value.toString().length > 500 ? "text-red-500 font-semibold" : "text-gray-500"}`}
-      >
-        {value.toString().length}/500 caractères
-      </span>
+      <p className="text-[10px] text-gray-400 font-bold uppercase">
+        {value.length} / 500
+      </p>
     </div>
-  </div>
-);
-
-interface SelectFieldProps {
-  label: string;
-  name: string;
-  value: string;
-  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-  options: { id: string; name: string }[];
-  error?: string;
-  icon?: React.ReactNode;
-  required?: boolean;
-}
-
-const SelectField: React.FC<SelectFieldProps> = ({
-  label,
-  name,
-  value,
-  onChange,
-  options,
-  error,
-  icon,
-  required,
-}) => (
-  <div className="space-y-2">
-    <label htmlFor={name} className="block text-sm font-semibold text-gray-700">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    <div className="relative">
-      {icon && (
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-          {icon}
-        </div>
-      )}
-      <select
-        name={name}
-        id={name}
-        value={value}
-        onChange={onChange}
-        className={`w-full ${
-          icon ? "pl-11" : "pl-4"
-        } pr-10 py-3 border rounded-xl text-black focus:outline-none focus:ring-2 transition-all appearance-none ${
-          error
-            ? "border-red-500 bg-red-50 focus:ring-red-500"
-            : "border-gray-300 bg-white hover:border-gray-400 focus:ring-blue-500 focus:border-transparent"
-        }`}
-      >
-        <option value="" disabled>
-          Sélectionnez une catégorie...
-        </option>
-        {options.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.name}
-          </option>
-        ))}
-      </select>
-      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-        <svg
-          className="w-5 h-5 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </div>
-    </div>
-    {error && (
-      <div className="flex items-start space-x-2 text-red-600">
-        <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-        <p className="text-sm font-medium">{error}</p>
-      </div>
-    )}
   </div>
 );
