@@ -64,27 +64,48 @@ export default function ProductForm({
   const [selectedParent, setSelectedParent] = useState<Category | null>(null);
   const [selectedChild, setSelectedChild] = useState<Category | null>(null);
 
-  // États pour l'autocomplétion
-  const [showSuggestion, setShowSuggestion] = useState(false);
-  const [currentSuggestion, setCurrentSuggestion] = useState<string>("");
+  // États pour tracker les modifications manuelles
   const [hasUserEditedName, setHasUserEditedName] = useState(false);
+  const [hasUserEditedDescription, setHasUserEditedDescription] =
+    useState(false);
 
-  // Effet pour gérer l'autocomplétion depuis la catégorie sélectionnée
+  // Effet pour auto-compléter le nom et la description depuis la catégorie sélectionnée
   useEffect(() => {
-    if (selectedChild && !hasUserEditedName) {
-      const suggestion = generateProductName(selectedParent, selectedChild);
-      setCurrentSuggestion(suggestion);
-      setShowSuggestion(true);
+    if (selectedChild) {
+      // Auto-compléter le nom si l'utilisateur ne l'a pas modifié
+      if (!hasUserEditedName) {
+        const generatedName = generateProductName(
+          selectedParent,
+          selectedChild,
+        );
+        setFormData((prev) => ({ ...prev, name: generatedName }));
+      }
+
+      // Auto-compléter la description si l'utilisateur ne l'a pas modifiée
+      if (!hasUserEditedDescription && selectedChild.description) {
+        setFormData((prev) => ({
+          ...prev,
+          description: selectedChild.description || "",
+        }));
+      }
     }
-  }, [selectedChild, selectedParent, hasUserEditedName]);
+  }, [
+    selectedChild,
+    selectedParent,
+    hasUserEditedName,
+    hasUserEditedDescription,
+  ]);
 
   // Effet pour l'autocomplétion externe (si le parent passe un nom suggéré)
   useEffect(() => {
-    if (suggestedName && (!formData.name || formData.name === "")) {
-      setCurrentSuggestion(suggestedName);
-      setShowSuggestion(true);
+    if (
+      suggestedName &&
+      !hasUserEditedName &&
+      (!formData.name || formData.name === "")
+    ) {
+      setFormData((prev) => ({ ...prev, name: suggestedName }));
     }
-  }, [suggestedName]);
+  }, [suggestedName, hasUserEditedName]);
 
   // Charger les données en mode modification
   useEffect(() => {
@@ -100,6 +121,7 @@ export default function ProductForm({
       });
       setImagePreview(productToEdit.imageUrl || "");
       setHasUserEditedName(true);
+      setHasUserEditedDescription(true);
 
       // Restaurer la sélection de catégorie
       const category = findCategoryById(
@@ -157,10 +179,12 @@ export default function ProductForm({
   ) => {
     const { name, value, type } = e.target;
 
-    // Marquer que l'utilisateur a édité le nom manuellement
-    if (name === "name" && value !== currentSuggestion) {
+    // Marquer que l'utilisateur a édité manuellement
+    if (name === "name") {
       setHasUserEditedName(true);
-      setShowSuggestion(false);
+    }
+    if (name === "description") {
+      setHasUserEditedDescription(true);
     }
 
     setFormData((prev) => ({
@@ -173,25 +197,28 @@ export default function ProductForm({
     });
   };
 
-  // Accepter la suggestion
-  const acceptSuggestion = () => {
-    setFormData((prev) => ({ ...prev, name: currentSuggestion }));
-    setShowSuggestion(false);
-    setHasUserEditedName(false);
-    toast.success("Suggestion appliquée !", { icon: "✨" });
+  // Réinitialiser le nom pour revoir l'auto-complétion
+  const resetNameToAutoComplete = () => {
+    if (selectedChild) {
+      const generatedName = generateProductName(selectedParent, selectedChild);
+      setFormData((prev) => ({ ...prev, name: generatedName }));
+      setHasUserEditedName(false);
+      toast.success("Nom réinitialisé avec la suggestion", { icon: "✨" });
+    }
   };
 
-  // Rejeter la suggestion
-  const dismissSuggestion = () => {
-    setShowSuggestion(false);
-    setHasUserEditedName(true);
-  };
-
-  // Réinitialiser le nom pour voir à nouveau la suggestion
-  const resetNameToSuggestion = () => {
-    setHasUserEditedName(false);
-    setShowSuggestion(true);
-    setFormData((prev) => ({ ...prev, name: "" }));
+  // Réinitialiser la description pour revoir l'auto-complétion
+  const resetDescriptionToAutoComplete = () => {
+    if (selectedChild && selectedChild.description) {
+      setFormData((prev) => ({
+        ...prev,
+        description: selectedChild.description || "",
+      }));
+      setHasUserEditedDescription(false);
+      toast.success("Description réinitialisée avec celle de la catégorie", {
+        icon: "✨",
+      });
+    }
   };
 
   // Gestion de la sélection de catégorie
@@ -202,8 +229,8 @@ export default function ProductForm({
         setSelectedParent(cat);
         setSelectedChild(null);
         setFormData((prev) => ({ ...prev, categoryId: "" }));
-        setShowSuggestion(false);
         setHasUserEditedName(false);
+        setHasUserEditedDescription(false);
       } else {
         setSelectedParent(cat);
       }
@@ -212,15 +239,10 @@ export default function ProductForm({
       setSelectedChild(cat);
       setFormData((prev) => ({ ...prev, categoryId: cat.id }));
 
-      // Déclencher l'autocomplétion
+      // Déclencher l'événement de changement de catégorie
       if (onCategoryChange) onCategoryChange(cat);
 
-      // Si l'utilisateur n'a pas encore édité le nom, on montre la suggestion
-      if (!hasUserEditedName) {
-        const suggestion = generateProductName(selectedParent, cat);
-        setCurrentSuggestion(suggestion);
-        setShowSuggestion(true);
-      }
+      // L'auto-complétion se fera via useEffect
     }
 
     setValidationErrors((prev) => {
@@ -456,61 +478,6 @@ export default function ProductForm({
 
             {/* INFORMATIONS PRODUIT */}
             <div className="p-8 space-y-6">
-              {showSuggestion && currentSuggestion && (
-                <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 border-2 border-purple-200 rounded-2xl p-4 sm:p-6 animate-in slide-in-from-top-2 duration-300 shadow-lg">
-                  {/* En-tête avec bouton fermer */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="bg-purple-100 p-2 rounded-lg">
-                        <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
-                      </div>
-                      <h3 className="font-bold text-purple-900 text-sm sm:text-base">
-                        Suggestion intelligente
-                      </h3>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={dismissSuggestion}
-                      className="text-purple-400 hover:text-purple-600 transition-colors p-1.5 hover:bg-purple-100 rounded-lg"
-                      title="Fermer"
-                      aria-label="Fermer la suggestion"
-                    >
-                      <X className="w-4 h-4 sm:w-5 sm:h-5" />
-                    </button>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-xs sm:text-sm text-purple-700 mb-3 leading-relaxed">
-                    Basé sur votre sélection, nous vous proposons :
-                  </p>
-
-                  {/* Zone de suggestion */}
-                  <div className="bg-white rounded-xl p-3 sm:p-4 border-2 border-purple-300 shadow-sm mb-4">
-                    <p className="font-bold text-base sm:text-lg text-gray-800 break-words">
-                      {currentSuggestion}
-                    </p>
-                  </div>
-                  {/* Boutons d'action - Stack sur mobile, côte à côte sur desktop */}
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                    <button
-                      type="button"
-                      onClick={acceptSuggestion}
-                      className="w-full sm:flex-1 bg-purple-600 text-white px-4 py-3 sm:py-3.5 rounded-xl font-bold hover:bg-purple-700 active:scale-95 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base"
-                    >
-                      <Check className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                      <span>Utiliser cette suggestion</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={dismissSuggestion}
-                      className="w-full sm:w-auto px-4 py-3 sm:px-6 sm:py-3.5 rounded-xl font-bold text-purple-600 hover:bg-purple-100 active:bg-purple-200 transition-all border-2 border-purple-200 text-sm sm:text-base whitespace-nowrap"
-                    >
-                      Écrire moi-même
-                    </button>
-                  </div>
-                </div>
-              )}
-
               {/* Champ Nom avec option de réinitialisation */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -520,11 +487,11 @@ export default function ProductForm({
                   {hasUserEditedName && selectedChild && (
                     <button
                       type="button"
-                      onClick={resetNameToSuggestion}
-                      className="text-xs text-purple-600 hover:text-purple-800 font-medium flex items-center gap-1 transition-colors"
+                      onClick={resetNameToAutoComplete}
+                      className="text-xs text-teal-600 hover:text-teal-800 font-medium flex items-center gap-1 transition-colors"
                     >
                       <RefreshCw className="w-3 h-3" />
-                      Voir la suggestion
+                      Réinitialiser
                     </button>
                   )}
                 </div>
@@ -571,15 +538,46 @@ export default function ProductForm({
                 />
               </div>
 
-              <TextAreaField
-                label="Description détaillée"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Matière, taille, coloris..."
-                error={validationErrors.description}
-                required
-              />
+              {/* Champ Description avec option de réinitialisation */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-bold text-gray-700 ml-1">
+                    Description détaillée *
+                  </label>
+                  {hasUserEditedDescription &&
+                    selectedChild &&
+                    selectedChild.description && (
+                      <button
+                        type="button"
+                        onClick={resetDescriptionToAutoComplete}
+                        className="text-xs text-teal-600 hover:text-teal-800 font-medium flex items-center gap-1 transition-colors"
+                      >
+                        <RefreshCw className="w-3 h-3" />
+                        Réinitialiser
+                      </button>
+                    )}
+                </div>
+                <textarea
+                  name="description"
+                  rows={4}
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Matière, taille, coloris..."
+                  className={`w-full p-4 bg-white border-2 rounded-2xl focus:outline-none transition-all resize-none ${validationErrors.description ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-teal-500 text-black shadow-sm hover:border-gray-200"}`}
+                />
+                <div className="flex justify-between px-1">
+                  {validationErrors.description ? (
+                    <p className="text-red-500 text-xs font-medium">
+                      {validationErrors.description}
+                    </p>
+                  ) : (
+                    <div />
+                  )}
+                  <p className="text-[10px] text-gray-400 font-bold uppercase">
+                    {formData.description.length} / 500
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -649,38 +647,5 @@ const InputField: React.FC<any> = ({
       />
     </div>
     {error && <p className="text-red-500 text-xs font-medium ml-1">{error}</p>}
-  </div>
-);
-const TextAreaField: React.FC<any> = ({
-  label,
-  name,
-  value,
-  onChange,
-  error,
-  placeholder,
-  required,
-}) => (
-  <div className="space-y-2">
-    <label className="text-sm font-bold text-gray-700 ml-1">
-      {label} {required && "*"}
-    </label>
-    <textarea
-      name={name}
-      rows={4}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className={`w-full p-4 bg-white border-2 rounded-2xl focus:outline-none transition-all resize-none ${error ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-teal-500 text-black shadow-sm hover:border-gray-200"}`}
-    />
-    <div className="flex justify-between px-1">
-      {error ? (
-        <p className="text-red-500 text-xs font-medium">{error}</p>
-      ) : (
-        <div />
-      )}
-      <p className="text-[10px] text-gray-400 font-bold uppercase">
-        {value.length} / 500
-      </p>
-    </div>
   </div>
 );
