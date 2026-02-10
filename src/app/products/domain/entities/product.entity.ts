@@ -29,16 +29,6 @@ export interface IProduct {
   vendor: IVendor;
 }
 
-// export interface  {
-//   name: string;
-//   description: string;
-//   categoryId: string;
-//   price: number;
-//   quantity: number;
-//   imageUrl?: string; // Utilisé pour l'affichage/la modification
-//   vendorId?: string; // Peut être nécessaire si non géré par le contexte utilisateur
-// }
-
 // Interface pour le produit lors de l'édition (peut inclure l'ID)
 export interface IProductToEdit extends CreateProductDto {
   id: string;
