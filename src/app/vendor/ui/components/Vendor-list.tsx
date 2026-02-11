@@ -1,5 +1,13 @@
-import { MapPin, Store, ChevronRight, ArrowRight } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+"use client";
+import {
+  MapPin,
+  Store,
+  ChevronRight,
+  ArrowRight,
+  Search,
+  X,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Vendor } from "../../domain/entities/vendor.entity";
 import Link from "next/link";
 import { photoCouv } from "@/app/lib/globals.type";
@@ -82,63 +90,394 @@ const VendorListItem = ({
     </li>
   );
 };
-const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => (
-  <div className="relative overflow-hidden bg-slate-900 rounded-[32px] p-8 md:p-12 mb-12 shadow-2xl">
-    {/* Décoration d'arrière-plan */}
-    <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-teal-500/20 rounded-full blur-3xl"></div>
 
-    <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-      <div className="space-y-2">
-        <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">
-          Explorer les <span className="text-teal-400">boutiques</span>
-        </h2>
-        <p className="text-slate-400 font-medium">
-          Filtrez par ville pour trouver le vendeur le plus proche.
-        </p>
-      </div>
+const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const comboboxRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-      <div className="relative w-full lg:max-w-md group">
-        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-teal-500 z-10" />
-        <select
-          value={selectedCity}
-          onChange={(e) => setSelectedCity(e.target.value)}
-          className="w-full pl-14 pr-10 py-5 bg-white/10 border border-white/10 rounded-2xl text-white font-bold text-lg appearance-none focus:bg-white focus:text-slate-900 transition-all outline-none cursor-pointer backdrop-blur-md"
-        >
-          <option value="all" className="text-slate-900">
-            Toutes les localisations
-          </option>
-          {cityOptions?.map((city: any, index: number) => (
-            <option
-              key={city?.id || `city-${index}`}
-              value={city?.id}
-              className="text-slate-900"
+  // Trouver le nom de la ville sélectionnée
+  const selectedCityName =
+    selectedCity === "all"
+      ? "Toutes les localisations"
+      : cityOptions?.find((city: any) => city?.id === selectedCity)?.name || "";
+
+  // Filtrer les villes selon la recherche
+  const filteredCities =
+    cityOptions?.filter((city: any) =>
+      city?.name?.toLowerCase().includes(searchQuery.toLowerCase()),
+    ) || [];
+
+  // Bloquer le scroll du body quand le dropdown est ouvert
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
+  // Fermer le combobox en cliquant à l'extérieur
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        comboboxRef.current &&
+        !comboboxRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setSearchQuery("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Gérer la navigation au clavier
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      setIsOpen(true);
+      return;
+    }
+
+    if (isOpen) {
+      switch (e.key) {
+        case "Escape":
+          setIsOpen(false);
+          setSearchQuery("");
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          setHighlightedIndex((prev) =>
+            prev < filteredCities.length ? prev + 1 : prev,
+          );
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setHighlightedIndex((prev) => (prev > -1 ? prev - 1 : prev));
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (highlightedIndex === -1) {
+            setSelectedCity("all");
+          } else if (
+            highlightedIndex >= 0 &&
+            highlightedIndex < filteredCities.length
+          ) {
+            setSelectedCity(filteredCities[highlightedIndex].id);
+          }
+          setIsOpen(false);
+          setSearchQuery("");
+          setHighlightedIndex(-1);
+          break;
+      }
+    }
+  };
+
+  const handleSelectCity = (cityId: string) => {
+    setSelectedCity(cityId);
+    setIsOpen(false);
+    setSearchQuery("");
+    setHighlightedIndex(-1);
+  };
+
+  return (
+    <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 rounded-2xl sm:rounded-[32px] p-4 sm:p-6 md:p-12 mb-8 sm:mb-12 shadow-2xl border border-white/5">
+      {/* Décoration d'arrière-plan */}
+      <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-teal-500/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-[-30%] left-[-15%] w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl"></div>
+
+      <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 lg:gap-8">
+        {/* Titre */}
+        <div className="space-y-1.5 sm:space-y-2">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+            Explorer les{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-400">
+              boutiques
+            </span>
+          </h2>
+          <p className="text-slate-400 font-medium text-xs sm:text-sm md:text-base">
+            Filtrez par ville pour trouver le vendeur le plus proche.
+          </p>
+        </div>
+
+        {/* Combobox */}
+        <div ref={comboboxRef} className="relative w-full lg:max-w-md">
+          <div className="relative">
+            <MapPin className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-teal-400 z-10 pointer-events-none" />
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(!isOpen);
+                if (!isOpen) {
+                  setTimeout(() => inputRef.current?.focus(), 100);
+                }
+              }}
+              onKeyDown={handleKeyDown}
+              className="w-full pl-12 sm:pl-14 md:pl-16 pr-11 sm:pr-12 md:pr-14 py-3.5 sm:py-4 md:py-5 lg:py-6 bg-white/10 backdrop-blur-xl border-2 border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl text-left hover:bg-white/15 hover:border-teal-400/50 focus:bg-white/15 focus:border-teal-400 focus:outline-none transition-all duration-300 shadow-lg hover:shadow-teal-500/20 group active:scale-[0.98]"
+              aria-haspopup="listbox"
+              aria-expanded={isOpen}
             >
-              {city?.name}
-            </option>
-          ))}
-        </select>
-        <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 h-6 w-6 text-teal-500 rotate-90 pointer-events-none" />
+              <span className="truncate block">{selectedCityName}</span>
+            </button>
+
+            <ChevronRight
+              className={`absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-teal-400 pointer-events-none transition-transform duration-300 ${
+                isOpen ? "rotate-[270deg]" : "rotate-90"
+              }`}
+            />
+          </div>
+
+          {/* Overlay sombre pour mobile */}
+          {isOpen && (
+            <div
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+              onClick={() => {
+                setIsOpen(false);
+                setSearchQuery("");
+              }}
+            />
+          )}
+
+          {/* Dropdown - Version Mobile (plein écran) et Desktop */}
+          {isOpen && (
+            <>
+              {/* Version Mobile - Modal plein écran */}
+              <div className="fixed inset-x-0 bottom-0 lg:hidden bg-slate-900 rounded-t-3xl shadow-2xl z-50 animate-in slide-in-from-bottom duration-300 max-h-[85vh] flex flex-col">
+                {/* Header avec indicateur */}
+                <div className="flex-shrink-0 pt-3 pb-2 px-4">
+                  <div className="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-4" />
+                  <h3 className="text-lg font-black text-white text-center mb-1">
+                    Choisir une ville
+                  </h3>
+                  <p className="text-xs text-slate-400 text-center">
+                    {filteredCities.length + 1} localisation
+                    {filteredCities.length > 0 ? "s" : ""} disponible
+                    {filteredCities.length > 0 ? "s" : ""}
+                  </p>
+                </div>
+
+                {/* Barre de recherche */}
+                <div className="flex-shrink-0 p-4 border-b border-white/10">
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-teal-400" />
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      placeholder="Rechercher une ville..."
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setHighlightedIndex(-1);
+                      }}
+                      onKeyDown={handleKeyDown}
+                      className="w-full pl-12 pr-10 py-4 bg-white/5 border-2 border-white/10 rounded-2xl text-white placeholder-slate-500 focus:bg-white/10 focus:border-teal-400/50 focus:outline-none transition-all text-base font-medium"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => {
+                          setSearchQuery("");
+                          inputRef.current?.focus();
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <X className="h-5 w-5 text-slate-400" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Liste scrollable */}
+                <div className="flex-1 overflow-y-auto overscroll-contain">
+                  {/* Option "Toutes les localisations" */}
+                  <button
+                    type="button"
+                    onClick={() => handleSelectCity("all")}
+                    className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${
+                      selectedCity === "all"
+                        ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400"
+                        : "text-white active:bg-white/10"
+                    }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
+                      <span className="flex-1">Toutes les localisations</span>
+                      {selectedCity === "all" && (
+                        <span className="text-teal-400 text-xl">✓</span>
+                      )}
+                    </span>
+                  </button>
+
+                  {/* Villes filtrées */}
+                  {filteredCities.length > 0 ? (
+                    filteredCities.map((city: any, index: number) => (
+                      <button
+                        key={city?.id || `city-${index}`}
+                        type="button"
+                        onClick={() => handleSelectCity(city?.id)}
+                        className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${
+                          selectedCity === city?.id
+                            ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400"
+                            : "text-white active:bg-white/10"
+                        }`}
+                      >
+                        <span className="flex items-center gap-3">
+                          <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
+                          <span className="flex-1">{city?.name}</span>
+                          {selectedCity === city?.id && (
+                            <span className="text-teal-400 text-xl">✓</span>
+                          )}
+                        </span>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-5 py-12 text-center">
+                      <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Search className="h-8 w-8 text-slate-600" />
+                      </div>
+                      <p className="text-slate-400 text-base font-medium">
+                        Aucune ville trouvée pour
+                      </p>
+                      <p className="text-white font-bold text-lg mt-1">
+                        "{searchQuery}"
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer avec bouton fermer */}
+                <div className="flex-shrink-0 p-4 border-t border-white/10">
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      setSearchQuery("");
+                    }}
+                    className="w-full py-4 bg-white/10 hover:bg-white/15 text-white font-bold rounded-2xl transition-all active:scale-[0.98]"
+                  >
+                    Fermer
+                  </button>
+                </div>
+              </div>
+
+              {/* Version Desktop - Dropdown normal */}
+              <div className="hidden lg:block absolute top-full mt-3 w-full bg-slate-800/95 backdrop-blur-xl border-2 border-teal-400/30 rounded-3xl shadow-2xl shadow-teal-500/10 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                {/* Barre de recherche */}
+                <div className="p-4 border-b border-white/10 bg-slate-900/50">
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-teal-400" />
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      placeholder="Rechercher une ville..."
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setHighlightedIndex(-1);
+                      }}
+                      onKeyDown={handleKeyDown}
+                      className="w-full pl-12 pr-10 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-500 focus:bg-white/10 focus:border-teal-400/50 focus:outline-none transition-all text-base font-medium"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => {
+                          setSearchQuery("");
+                          inputRef.current?.focus();
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        <X className="h-4 w-4 text-slate-400" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Liste des options */}
+                <div className="max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-teal-500/30 scrollbar-track-transparent">
+                  {/* Option "Toutes les localisations" */}
+                  <button
+                    type="button"
+                    onClick={() => handleSelectCity("all")}
+                    onMouseEnter={() => setHighlightedIndex(-1)}
+                    className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${
+                      selectedCity === "all"
+                        ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400"
+                        : highlightedIndex === -1
+                          ? "bg-white/10 text-white"
+                          : "text-white hover:bg-white/5"
+                    }`}
+                    role="option"
+                    aria-selected={selectedCity === "all"}
+                  >
+                    <span className="flex items-center gap-3">
+                      <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
+                      Toutes les localisations
+                    </span>
+                  </button>
+
+                  {/* Villes filtrées */}
+                  {filteredCities.length > 0 ? (
+                    filteredCities.map((city: any, index: number) => (
+                      <button
+                        key={city?.id || `city-${index}`}
+                        type="button"
+                        onClick={() => handleSelectCity(city?.id)}
+                        onMouseEnter={() => setHighlightedIndex(index)}
+                        className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${
+                          selectedCity === city?.id
+                            ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400"
+                            : highlightedIndex === index
+                              ? "bg-white/10 text-white"
+                              : "text-white hover:bg-white/5"
+                        }`}
+                        role="option"
+                        aria-selected={selectedCity === city?.id}
+                      >
+                        <span className="flex items-center gap-3">
+                          <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
+                          {city?.name}
+                        </span>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-6 py-8 text-center text-slate-400 text-base">
+                      Aucune ville trouvée pour "{searchQuery}"
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+// export default VendorFilters;
 export function VendorList({ data, onVendorClick }: VendorListProps) {
   const [selectedCity, setSelectedCity] = useState<string>("all");
 
   const cityOptions = useMemo(() => {
     const cityMap = new Map<string, City>();
     data.forEach(
-      (v) => v.city && !cityMap.has(v.city.id) && cityMap.set(v.city.id, v.city)
+      (v) =>
+        v.city && !cityMap.has(v.city.id) && cityMap.set(v.city.id, v.city),
     );
     return Array.from(cityMap.values()).sort((a, b) =>
-      a.name.localeCompare(b.name)
+      a.name.localeCompare(b.name),
     );
   }, [data]);
 
   const filteredVendors = useMemo(
     () =>
       data.filter((v) => selectedCity === "all" || v.city?.id === selectedCity),
-    [data, selectedCity]
+    [data, selectedCity],
   );
 
   const handleVendorClick = useCallback(
@@ -147,7 +486,7 @@ export function VendorList({ data, onVendorClick }: VendorListProps) {
         ? onVendorClick(id)
         : dom && window.open(`https://${dom}`, "_blank");
     },
-    [onVendorClick]
+    [onVendorClick],
   );
 
   if (!data?.length)

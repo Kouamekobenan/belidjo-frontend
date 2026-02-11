@@ -179,7 +179,7 @@ export default function VendorPage() {
     } catch (e) {
       console.error("Erreur lors du chargement des vendeurs:", e);
       setError(
-        "Impossible de charger les données des partenaires. Veuillez vérifier votre connexion internet et réessayer."
+        "Impossible de charger les données des partenaires. Veuillez vérifier votre connexion internet et réessayer.",
       );
     } finally {
       setIsLoading(false);
@@ -211,15 +211,14 @@ export default function VendorPage() {
       <VendorList
         data={vendors}
         onVendorClick={(id) => {
-          // console.log(`Vendeur sélectionné: ${id}`);
           return id;
         }}
       />
     );
   };
-
+//  py-2 sm:py-5 px-2 sm:px-3 lg:px-8
   return (
-    <div className="max-w-7xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white min-h-screen">
+    <div className="max-w-7xl  bg-gradient-to-b from-gray-50 to-white min-h-screen">
       <PageHeader />
 
       <main className="mt-8" role="main" aria-label="Liste des partenaires">
