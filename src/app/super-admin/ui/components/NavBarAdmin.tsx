@@ -1,6 +1,14 @@
 "use client";
 import { useAuth } from "@/app/context/AuthContext";
-import { LayoutDashboard, MapPin, Bell, User, Phone, Home } from "lucide-react";
+import {
+  LayoutDashboard,
+  MapPin,
+  Bell,
+  User,
+  Phone,
+  Home,
+  LogOut,
+} from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,6 +17,10 @@ export default function NavBarAdmin() {
   const { user } = useAuth();
   const pathname = usePathname();
   const [showUserModal, setShowUserModal] = useState(false);
+  const { logout } = useAuth();
+  const handleLogout = () => {
+    logout();
+  };
 
   const NavItem = ({ href, icon: Icon, children }: any) => (
     <Link
@@ -96,6 +108,15 @@ export default function NavBarAdmin() {
                   <Phone className="w-4 h-4 text-slate-400" />
                   <span>{user?.phone}</span>
                 </div>
+                <div className="">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Se déconnecter</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -163,6 +184,13 @@ export default function NavBarAdmin() {
                 <Phone className="w-4 h-4 text-slate-400" />
                 <span>{user?.phone}</span>
               </div>
+              <button
+                onClick={handleLogout}
+                className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Se déconnecter</span>
+              </button>
             </div>
           </div>
         </>

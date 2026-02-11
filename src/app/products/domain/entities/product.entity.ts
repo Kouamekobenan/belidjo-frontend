@@ -38,7 +38,7 @@ export interface IProductToEdit extends CreateProductDto {
 export const initialFormData: CreateProductDto = {
   name: "",
   description: "",
-  categoryId: "", // IMPORTANT: Assurez-vous d'avoir une liste de catégories pour le sélecteur
+  categoryId: "", 
   price: 0,
   quantity: 0,
   imageUrl:"",

@@ -98,13 +98,19 @@ export default function Carrosel() {
     <div className="w-full max-w-7xl mx-auto px-4 py-12 md:py-16">
       {/* En-tête */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-3xl flex gap-2 md:text-5xl lg:text-6xl font-black text-slate-900 leading-tight">
-            <span>Les vendeurs en vedette </span>
+        <div className="flex flex-col gap-3 sm:gap-4 group">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-tight tracking-tight transition-all duration-300 group-hover:text-slate-700">
+            <span className="inline-flex items-center gap-3">
+              Vendeurs en vedette
+              <span className="inline-flex h-2.5 w-2.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 animate-pulse shadow-lg shadow-amber-500/50" />
+            </span>
           </h2>
-          <p className="text-slate-600 text-sm md:text-base font-medium">
-            Découvrez nos meilleurs partenaires commerciaux
-          </p>
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-12 bg-gradient-to-r from-amber-500 to-transparent rounded-full" />
+            <p className="text-slate-600 text-sm md:text-base lg:text-lg font-medium leading-relaxed">
+              Découvrez nos meilleurs partenaires commerciaux
+            </p>
+          </div>
         </div>
         <Link
           href="/vendor/vendorform"
