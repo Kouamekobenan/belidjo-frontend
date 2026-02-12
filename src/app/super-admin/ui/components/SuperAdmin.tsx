@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { GetAllVendorUseCase } from "@/app/vendor/application/usecases/getAll-vendor.usecase";
 import { UpdateFeatureStatusUsecase } from "@/app/vendor/application/usecases/update-feature-status.usecase";
 import VendorVisitModal from "./VendorVisitModal";
+import PreviewBadgeModal from "./PreviewBadgeModal";
 
 const repoVendor = new VendorRepository();
 const findAllVendorUseCase = new GetAllVendorUseCase(repoVendor);
@@ -67,7 +68,6 @@ export default function SuperAdmin() {
       toast.error("Erreur lors de la modification", { id: loadingToast });
     }
   };
-
   const handleToggleStatus = async (vendorId: string) => {
     const loadingToast = toast.loading("Mise à jour du statut...");
     try {
@@ -287,6 +287,7 @@ export default function SuperAdmin() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
+                          <PreviewBadgeModal vendor={v} />
                           {/* Bouton Vedette */}
                           <button
                             onClick={() =>
@@ -397,6 +398,7 @@ export default function SuperAdmin() {
                         <h4 className="font-bold text-slate-900 text-xs sm:text-sm truncate">
                           {v.name}
                         </h4>
+                        <PreviewBadgeModal vendor={v} />
                         <div className="flex items-center gap-1 text-[10px] sm:text-[11px] text-slate-500 mt-0.5">
                           <Globe size={10} className="flex-shrink-0" />
                           <span className="truncate">
