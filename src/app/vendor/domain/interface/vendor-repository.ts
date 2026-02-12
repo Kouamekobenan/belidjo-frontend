@@ -9,4 +9,5 @@ export interface IVendorRepository {
   update(id: string, update: UpdateDto, file?: File | null): Promise<void>;
   findFeatured(): Promise<Vendor[]>;
   updateStatus(id: string, status: boolean): Promise<void>;
+  findById(vendorId: string): Promise<Vendor>;
 }
