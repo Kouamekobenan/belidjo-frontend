@@ -18,7 +18,7 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const { id } = await params; // 👈 On attend l'ID
+  const { id } = await params; 
   const data = await getVendor(id);
   const vendor = data?.data;
 
@@ -29,7 +29,6 @@ export async function generateMetadata({
     vendor.site?.description || `Découvrez les produits de ${vendor.name}`;
   const imageUrl =
     vendor.site?.logoUrl || "https://votre-site.com/default-banner.jpg";
-
   return {
     title: title,
     description: description,
@@ -56,7 +55,6 @@ export async function generateMetadata({
     },
   };
 }
-
 // ✅ Correction 2 : params est une Promise ici aussi
 export default async function Page({
   params,

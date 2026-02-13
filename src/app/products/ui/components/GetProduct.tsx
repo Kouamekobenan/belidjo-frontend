@@ -72,8 +72,8 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
     );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F8FAFC] pb-4 md:pb-20">
+      <div className="max-w-7xl mx-auto lg:px-8">
         {/* Header de section */}
         <div className="py-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
@@ -88,7 +88,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
@@ -98,7 +98,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-8">
               {products.map((p) => (
                 <div
                   key={p.id}

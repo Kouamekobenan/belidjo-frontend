@@ -126,10 +126,9 @@ export default function AnimatedPromoBanner({
 
               {/* Texte secondaire mobile */}
               <p className="mt-1.5 text-[10px] text-gray-600 sm:hidden">
-                Valable sur votre première commande
+               Sur Noboutik les prix sont à négacier avant de payer 
               </p>
             </div>
-
             {/* Bouton de fermeture élégant */}
             <button
               onClick={handleClose}

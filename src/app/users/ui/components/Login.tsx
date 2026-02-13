@@ -286,8 +286,8 @@ export default function LoginUser() {
           {/* Sign Up Link */}
           <div className="flex flex-col pt-4 items-center space-y-4">
             <div className="flex items-center space-x-2">
-              <span className="h-px w-8 bg-gray-200 dark:bg-gray-700"></span>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <span className="h-px w-4 bg-gray-200 dark:bg-gray-700"></span>
+              <p className="text-sm font-serif text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Nouveau sur Noboutik ?
               </p>
               <span className="h-px w-8 bg-gray-200 dark:bg-gray-700"></span>
