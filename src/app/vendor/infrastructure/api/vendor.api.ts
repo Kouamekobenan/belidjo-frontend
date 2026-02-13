@@ -4,10 +4,11 @@ import { IVendorRepository } from "../../domain/interface/vendor-repository";
 import { IPaginatedResponse } from "@/app/lib/globals.type";
 import { Vendor } from "../../domain/entities/vendor.entity";
 import { UpdateDto } from "../../application/dtos/update-site-dto";
-
 export const VendorApi = {
-  async getAll() {
-    const res = await api.get("/vendor/paginate");
+  async getAll(limit?: number, page?: number) {
+    const res = await api.get("/vendor/paginate", {
+      params: { limit: 100, page: 1 },
+    });
     // console.log("vendor data:", res.data.data);
     return res.data.data;
   },
