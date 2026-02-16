@@ -41,10 +41,8 @@ export default function DashbordVendor() {
   const { user } = useAuth();
 
   const vendorId = user?.vendorProfile?.id;
-
   useEffect(() => {
     if (!vendorId) return;
-
     setLoading(true);
     getProducts
       .execute(vendorId, 10, pagination.page)
