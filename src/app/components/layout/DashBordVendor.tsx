@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   Package,
@@ -18,6 +18,7 @@ import {
   Home,
   Clock,
   Sparkles,
+  Video, // ✅ Ajout de l'icône Video
 } from "lucide-react";
 import { IvendorProfile, User as VendorProfile } from "@/app/lib/globals.type";
 
@@ -40,7 +41,7 @@ export default function NavbarDashbordVendor({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showTrialBanner, setShowTrialBanner] = useState(true);
-  const pathname = usePathname(); // Hook pour obtenir l'URL actuelle
+  const pathname = usePathname();
 
   const Url = `/products/ui/page/${vendorProfile?.id}`;
   const imageLogo = vendorProfile?.logoUrl ?? "/images/bj.png";
@@ -66,9 +67,15 @@ export default function NavbarDashbordVendor({
     },
     {
       href: "/admin/customer",
-      label: "Mes abonnées",
+      label: "Mes abonnés",
       shortLabel: "Clients",
       icon: Users,
+    },
+    {
+      href: "/admin/template/page",
+      label: "Créateur de vidéos",
+      shortLabel: "Vidéos",
+      icon: Video, // ✅ Icône mise à jour
     },
   ];
 
@@ -79,8 +86,6 @@ export default function NavbarDashbordVendor({
 
   return (
     <>
-      {/* Bannière d'essai gratuit - Desktop (sous le header) */}
-
       {/* Sidebar Desktop */}
       <aside
         className={`hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white transition-all duration-300 ease-in-out z-40 shadow-2xl ${
@@ -125,6 +130,7 @@ export default function NavbarDashbordVendor({
             </button>
           </div>
         </div>
+
         {/* Badge essai gratuit dans sidebar (version collapsed) */}
         {!isCollapsed && (
           <div className="mx-3 mt-4 mb-2 bg-gradient-to-r from-amber-600/20 to-orange-600/20 border border-amber-500/30 rounded-lg p-3">
@@ -210,6 +216,7 @@ export default function NavbarDashbordVendor({
             </Link>
           </div>
         </nav>
+
         {/* Informations du vendeur */}
         <div className="p-4 border-t border-gray-700 bg-gray-800/50">
           {!isCollapsed ? (
@@ -238,6 +245,7 @@ export default function NavbarDashbordVendor({
           )}
         </div>
       </aside>
+
       {/* Header Mobile */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-xl">
         <div className="flex items-center justify-between px-4 py-3">
@@ -271,7 +279,6 @@ export default function NavbarDashbordVendor({
         </div>
       </div>
 
-      {/* Bannière d'essai gratuit - Mobile (en haut) */}
       {/* Navigation Mobile Bottom - Style App */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-gray-900 to-gray-800 border-t border-gray-700 shadow-2xl">
         <div className="grid grid-cols-5 h-16">
@@ -307,23 +314,23 @@ export default function NavbarDashbordVendor({
             )}
           </Link>
 
-          {/* Catégories */}
+          {/* ✅ Créateur de vidéos */}
           <Link
-            href="/admin/categories"
+            href="/admin/template/page"
             className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
-              isActive("/admin/categories")
+              isActive("/admin/template/page")
                 ? "text-teal-400"
                 : "text-gray-400 hover:text-teal-300"
             }`}
           >
-            <AlignVerticalDistributeEnd className="w-6 h-6" />
-            <span className="text-[10px] font-medium">Catégories</span>
-            {isActive("/admin/categories") && (
+            <Video className="w-6 h-6" />
+            <span className="text-[10px] font-medium">Vidéos</span>
+            {isActive("/admin/template/page") && (
               <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
             )}
           </Link>
 
-          {/* Voir ma boutique (remplace Clients) */}
+          {/* Voir ma boutique */}
           <Link
             href={Url}
             className="flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative text-gray-400 hover:text-teal-300"
@@ -342,6 +349,7 @@ export default function NavbarDashbordVendor({
           </button>
         </div>
       </nav>
+
       {/* Modal Menu Mobile */}
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/60 animate-in fade-in duration-200">
@@ -442,7 +450,21 @@ export default function NavbarDashbordVendor({
                   Actions rapides
                 </p>
 
-                {/* Mes abonnés (déplacé depuis la bottom nav) */}
+                {/* ✅ Créateur de vidéos (NOUVEAU) */}
+                <Link
+                  href="/admin/template/page"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <button className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl shadow-lg transition-all duration-200 font-medium">
+                    <div className="flex items-center gap-3">
+                      <Video className="w-5 h-5" />
+                      <span>Créateur de vidéos</span>
+                    </div>
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </Link>
+
+                {/* Mes abonnés */}
                 <Link
                   href="/admin/customer"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -451,6 +473,20 @@ export default function NavbarDashbordVendor({
                     <div className="flex items-center gap-3">
                       <Users className="w-5 h-5" />
                       <span>Mes abonnés</span>
+                    </div>
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </Link>
+
+                {/* Catégories (déplacé ici depuis bottom nav) */}
+                <Link
+                  href="/admin/categories"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <button className="w-full flex items-center justify-between px-4 py-4 bg-gray-700/50 hover:bg-gray-700 text-white rounded-xl transition-all duration-200 font-medium">
+                    <div className="flex items-center gap-3">
+                      <AlignVerticalDistributeEnd className="w-5 h-5" />
+                      <span>Catégories</span>
                     </div>
                     <ChevronRight className="w-5 h-5" />
                   </button>

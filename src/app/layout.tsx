@@ -5,7 +5,6 @@ import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { NotificationProvider } from "./lib/useFCMnotification";
 import PWAInstallBanner from "./components/features/PWAInstallBanner";
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -143,7 +142,6 @@ export default function RootLayout({
           <NotificationProvider>
             {children}
             <PWAInstallBanner style="premium" />
-
             {/* ✅ Toaster pour les notifications */}
             <Toaster
               position="top-right"

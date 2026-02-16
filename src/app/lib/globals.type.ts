@@ -1,12 +1,7 @@
-// export enum Role {
-//   USER = "USER",
-//   ADMIN = "ADMIN",
-//   CUSTOMER = "CUSTOMER",
-//   VENDEUR = "VENDEUR",
-
 import { UserRole } from "../users/domain/enums/role.enum";
+import { api } from "./api";
 
-// }
+
 export interface IvendorProfile {
   id: string;
   userId: string;
@@ -59,6 +54,56 @@ export interface ICustomer {
   cityId: string;
   user: User[];
 }
+
+
+// ✅ Créer l'instance Axios
+
+export interface VideoGenerationRequest {
+  images: string[];
+  prices: number[];
+  shopName: string;
+  audioUrl?: string;
+  bpm?: number;
+}
+
+export interface VideoGenerationResponse {
+  success: boolean;
+  url: string;
+  fileName: string;
+  message: string;
+}
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+export class VideoApiService {
+  static async generateVideo(
+    data: VideoGenerationRequest,
+  ): Promise<VideoGenerationResponse> {
+    try {
+      // ✅ Axios envoie automatiquement data correctement
+      const response = await api.post("/video/generate", data);
+      return response.data;
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Erreur lors de la génération";
+      throw new Error(message);
+    }
+  }
+
+  static async checkVideoStatus(fileName: string) {
+    try {
+      const response = await api.get(`/video/status/${fileName}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error("Erreur lors de la vérification du statut");
+    }
+  }
+  static getDownloadUrl(fileName: string): string {
+    return `${API_BASE_URL}/video/download/${fileName}`;
+  }
+}
+
 export const cityName = "NoBoutik";
 export const logoNoBoutik = "/images/bj.png";
 export const photoCouv = "/images/photo.jpg";
