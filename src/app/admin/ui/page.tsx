@@ -127,7 +127,6 @@ export default function AdminPage() {
         cityName={user?.cityName}
         vendorProfile={user?.vendorProfile}
       />
-
       {/* Conteneur principal avec gestion du spacing de la navbar */}
       <main className="flex-1 w-full pt-20 md:pt-2 mb-20 md:mb-1">
         <DashbordVendor />
