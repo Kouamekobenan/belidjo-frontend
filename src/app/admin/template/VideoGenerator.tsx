@@ -471,10 +471,10 @@ export default function VideoGenerator() {
             </div>
             {/* BOUTON GÉNÉRER */}
             <button
-              onClick={handleGenerate}
-              disabled={isGenerating || selectedImages.length === 0}
+              // onClick={handleGenerate}
+              // disabled={isGenerating || selectedImages.length === 0}
 
-              // onClick={() => alert("Bientôt disponible ✈️✈️✈️✈️✈️")}
+              onClick={() => alert("Bientôt disponible ✈️✈️✈️✈️✈️")}
               className="w-full bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 text-white py-5 rounded-2xl font-bold shadow-2xl hover:shadow-teal-300 disabled:from-gray-300 disabled:via-gray-400 disabled:to-gray-300 disabled:shadow-none transition-all transform hover:scale-[1.02] active:scale-[0.98] text-lg group overflow-hidden relative"
             >
               <span className="relative z-10 flex flex-col items-center justify-center gap-2">
