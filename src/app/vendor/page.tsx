@@ -9,6 +9,7 @@ import {
   Store,
   LayoutDashboard,
   User,
+  ShoppingBag,
 } from "lucide-react";
 import VendorPage from "./ui/pages/Vendor";
 import Link from "next/link";
@@ -27,8 +28,11 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useAuth();
 
-  // Vérification sécurisée du rôle admin
+  // Détection dynamique des rôles
   const isAdmin = user?.role === UserRole.ADMIN;
+  const isVendor = user?.role === UserRole.VENDEUR; // Remplace par ton enum exact
+  const isClient = user?.role === UserRole.CUSTOMER; // Remplace par ton enum exact
+  const isAuthenticated = !!user;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
@@ -38,16 +42,49 @@ const Navbar = () => {
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-  // Sous-composant pour les boutons d'action (Connexion ou Admin)
+  // Configuration dynamique selon le rôle
+  const getRoleConfig = () => {
+    if (isAdmin)
+      return {
+        label: "Mode Admin",
+        href: "/super-admin",
+        color: "text-green-600",
+        bg: "bg-green-50",
+        dot: "bg-green-500",
+        icon: <LayoutDashboard size={18} />,
+      };
+    if (isVendor)
+      return {
+        label: "Mode Vendeur",
+        href: "/admin/ui",
+        color: "text-orange-600",
+        bg: "bg-orange-50",
+        dot: "bg-orange-500",
+        icon: <Store size={18} />,
+      };
+    if (isClient)
+      return {
+        label: "Mode Client",
+        href: "/vendor",
+        color: "text-blue-600",
+        bg: "bg-blue-50",
+        dot: "bg-blue-500",
+        icon: <User size={18} />,
+      };
+    return null;
+  };
+
+  const roleConfig = getRoleConfig();
+  // Sous-composant pour les boutons d'action
   const AuthButtons = ({ mobile = false }) => {
-    if (isAdmin) {
+    if (isAuthenticated && roleConfig) {
       return (
         <Link
-          href="/super-admin"
-          className={`group inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-teal-600 to-teal-600 rounded-xl shadow-md hover:shadow-indigo-200 transition-all ${mobile ? "w-full justify-center py-4" : ""}`}
+          href={roleConfig.href}
+          className={`group inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-xl shadow-md transition-all ${mobile ? "w-full justify-center py-4" : ""}`}
         >
-          <LayoutDashboard size={18} />
-          <span>Espace Admin</span>
+          {roleConfig.icon}
+          <span>{roleConfig.label}</span>
         </Link>
       );
     }
@@ -61,7 +98,7 @@ const Navbar = () => {
           size={18}
           className="group-hover:translate-x-0.5 transition-transform"
         />
-        <span>Connexion Vendeur</span>
+        <span>Connexion</span>
       </Link>
     );
   };
@@ -70,11 +107,7 @@ const Navbar = () => {
     <>
       {/* --- DESKTOP NAVBAR --- */}
       <nav
-        className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled
-            ? "bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-100 py-2"
-            : "bg-transparent py-4"
-        }`}
+        className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-100 py-2" : "bg-transparent py-4"}`}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <Link href="/vendor" className="flex items-center gap-3 group">
@@ -97,7 +130,21 @@ const Navbar = () => {
           </Link>
 
           <div className="flex items-center gap-4">
-            {/* Tu peux ajouter des liens de nav ici */}
+            {/* Badge de mode sur Desktop (Optionnel) */}
+            {isAuthenticated && roleConfig && (
+              <div
+                className={`hidden lg:flex items-center gap-2 ${roleConfig.bg} px-3 py-1.5 rounded-full border border-gray-100`}
+              >
+                <div
+                  className={`w-2 h-2 ${roleConfig.dot} rounded-full animate-pulse`}
+                />
+                <span
+                  className={`text-[11px] font-bold ${roleConfig.color} uppercase tracking-wider`}
+                >
+                  {roleConfig.label}
+                </span>
+              </div>
+            )}
             <AuthButtons />
           </div>
         </div>
@@ -105,19 +152,23 @@ const Navbar = () => {
 
       {/* --- MOBILE HEADER (TOP) --- */}
       <header
-        className={`md:hidden fixed top-0 left-0 right-0 z-50 transition-all ${
-          isScrolled
-            ? "bg-white/90 backdrop-blur-md shadow-sm"
-            : "bg-white/50 backdrop-blur-sm"
-        }`}
+        className={`md:hidden fixed top-0 left-0 right-0 z-50 transition-all ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-white/50 backdrop-blur-sm"}`}
       >
         <div className="px-4 py-3 flex justify-between items-center">
           <span className="text-xl font-black text-gray-900">{cityName}</span>
-          {isAdmin && (
-            <div className="flex items-center gap-2 bg-indigo-50 px-3 py-1 rounded-full">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-[10px] font-bold text-green-600 uppercase">
-                Mode Admin
+
+          {/* Badge Dynamique : Admin, Vendeur ou Client */}
+          {isAuthenticated && roleConfig && (
+            <div
+              className={`flex items-center gap-2 ${roleConfig.bg} px-3 py-1 rounded-full`}
+            >
+              <div
+                className={`w-2 h-2 ${roleConfig.dot} rounded-full animate-pulse`}
+              />
+              <span
+                className={`text-[10px] font-bold ${roleConfig.color} uppercase`}
+              >
+                {roleConfig.label}
               </span>
             </div>
           )}
@@ -129,11 +180,12 @@ const Navbar = () => {
         <div className="grid grid-cols-3 h-16">
           <Link
             href="/vendor"
-            className="flex flex-col items-center justify-center text-gray-400 hover:text-teal-600 transition-colors"
+            className="flex flex-col items-center justify-center text-gray-400 hover:text-teal-600"
           >
             <Home size={22} />
             <span className="text-[10px] mt-1 font-medium">Accueil</span>
           </Link>
+
           <button
             onClick={toggleMobileMenu}
             className="flex flex-col items-center justify-center text-gray-400"
@@ -145,21 +197,27 @@ const Navbar = () => {
               Explorer
             </span>
           </button>
+
           <Link
-            href={isAdmin ? "/super-admin" : "/users/ui/login"}
+            href={
+              isAuthenticated && roleConfig
+                ? roleConfig.href
+                : "/users/ui/login"
+            }
             className="flex flex-col items-center justify-center text-gray-400 hover:text-teal-600"
           >
-            {isAdmin ? (
-              <LayoutDashboard size={22} className="text-green-600" />
+            {isAuthenticated && roleConfig ? (
+              <div className={roleConfig.color}>{roleConfig.icon}</div>
             ) : (
               <User size={22} />
             )}
             <span className="text-[10px] mt-1 font-medium">
-              {isAdmin ? "Admin" : "Compte"}
+              {isAuthenticated ? "Mon Profil" : "Compte"}
             </span>
           </Link>
         </div>
       </nav>
+
       {/* --- MOBILE MENU MODAL --- */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-[60]">
@@ -169,7 +227,6 @@ const Navbar = () => {
           />
           <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] p-6 shadow-2xl animate-in slide-in-from-bottom duration-300">
             <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
-
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-gray-900">Navigation</h3>
@@ -180,7 +237,6 @@ const Navbar = () => {
                   <X size={20} />
                 </button>
               </div>
-
               <div className="grid grid-cols-1 gap-3">
                 <Link
                   href="/"
@@ -198,10 +254,9 @@ const Navbar = () => {
                   <div className="p-2 bg-orange-100 text-orange-600 rounded-lg">
                     <Phone size={20} />
                   </div>
-                  <span className="font-semibold">Contactez le support</span>
+                  <span className="font-semibold">Support technique</span>
                 </Link>
               </div>
-
               <div className="pt-2">
                 <AuthButtons mobile />
               </div>
@@ -209,8 +264,6 @@ const Navbar = () => {
           </div>
         </div>
       )}
-
-      {/* Spacers */}
       <div className="md:hidden h-14" />
     </>
   );

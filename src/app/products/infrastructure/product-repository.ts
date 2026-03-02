@@ -33,14 +33,12 @@ export class ProductRepository implements IProductRepository {
         const productPayload = this.mapper.toApp(dto);
         response = await api.post(url, productPayload);
       }
-
       return this.mapper.toEntity(response.data);
     } catch (error: any) {
       console.error(
         "❌ Erreur Infrastructure (Repository) lors de la création du produit:",
         error,
       );
-
       // ✅ Extraire le message d'erreur du backend
       let errorMessage = "Erreur de connexion à l'API lors de la création.";
       let statusCode = error?.response?.status;

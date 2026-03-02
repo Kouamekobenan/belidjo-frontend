@@ -73,12 +73,12 @@ export default function RegisterForm() {
           error = "Le nom doit contenir au moins 3 caractères";
         }
         break;
-      case "email":
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-          error = "Email invalide";
-        }
-        break;
+      // case "email":
+      //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      //   if (!emailRegex.test(value)) {
+      //     error = "Email invalide";
+      //   }
+      //   break;
       case "password":
         if (value.length < 6) {
           error = "Le mot de passe doit contenir au moins 6 caractères";
@@ -103,7 +103,7 @@ export default function RegisterForm() {
 
   // Gestion des changements de champs (inchangée)
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -160,7 +160,7 @@ export default function RegisterForm() {
 
       setTimeout(() => {
         setMessage(
-          `Bienvenue ${formData.name} ! Votre compte a été créé avec succès.`
+          `Bienvenue ${formData.name} ! Votre compte a été créé avec succès.`,
         );
         setFormData({
           name: "",
@@ -257,20 +257,26 @@ export default function RegisterForm() {
               )}
             </div>
             {/* Email */}
-            <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Adresse email
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Adresse email (optionnelle, mais recommandée pour la
+                récupération de compte)
               </label>
-              <Mail className="absolute left-3 top-[37px] w-5 h-5 text-gray-400" />
-              <input
-                type="email"
-                name="email"
-                placeholder="john@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                className={inputClass("email")}
-                required
-              />
+
+              <div className="relative group">
+                {/* L'icône est maintenant centrée verticalement par rapport à l'input uniquement */}
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="john@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`${inputClass("email")} pl-10 w-full`}
+                />
+              </div>
+
               {errors.email && (
                 <p className="mt-1 text-xs text-red-600 flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
                   <AlertCircle className="w-4 h-4" />

@@ -174,7 +174,6 @@ export default function VideoGenerator() {
             <div className="hidden md:block md:w-[140px]"></div>
           </div>
         </div>
-
         {generatedVideoUrl && (
           <div className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-2xl p-6 shadow-lg animate-fade-in">
             <div className="flex items-start gap-4">
@@ -232,7 +231,6 @@ export default function VideoGenerator() {
           </div>
         )}
         {/* Stats Cards */}
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
@@ -362,7 +360,6 @@ export default function VideoGenerator() {
                     })}
                   </div>
                 )}
-
                 {/* PAGINATION */}
                 {totalPages > 1 && !isLoading && (
                   <div className="mt-8 pt-6 border-t border-gray-100">
@@ -426,7 +423,6 @@ export default function VideoGenerator() {
                               );
                             })}
                         </div>
-
                         <button
                           onClick={() => goToPage(currentPage + 1)}
                           disabled={currentPage === totalPages}
