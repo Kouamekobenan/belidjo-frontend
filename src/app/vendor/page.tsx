@@ -88,7 +88,6 @@ const Navbar = () => {
         </Link>
       );
     }
-
     return (
       <Link
         href="/users/ui/login"

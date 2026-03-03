@@ -8,6 +8,7 @@ import {
   Phone,
   Home,
   LogOut,
+  ChevronRight,
 } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
@@ -22,15 +23,31 @@ export default function NavBarAdmin() {
     logout();
   };
 
-  const NavItem = ({ href, icon: Icon, children }: any) => (
-    <Link
-      href={href}
-      className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-teal-50 hover:text-teal-700 rounded-xl transition-all duration-200 group"
-    >
-      <Icon className="w-5 h-5 transition-transform group-hover:scale-110" />
-      <span className="font-medium">{children}</span>
-    </Link>
-  );
+  const NavItem = ({ href, icon: Icon, children }: any) => {
+    const isActive = pathname === href;
+    return (
+      <Link
+        href={href}
+        className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group overflow-hidden
+          ${
+            isActive
+              ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/10 text-cyan-400 border border-cyan-500/20"
+              : "text-slate-400 hover:text-slate-100 hover:bg-white/5 border border-transparent"
+          }`}
+      >
+        {isActive && (
+          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-cyan-400 rounded-full" />
+        )}
+        <Icon
+          className={`w-4 h-4 flex-shrink-0 transition-all duration-200 group-hover:scale-110 ${isActive ? "text-cyan-400" : ""}`}
+        />
+        <span className="text-sm font-medium tracking-wide">{children}</span>
+        {isActive && (
+          <ChevronRight className="w-3 h-3 ml-auto text-cyan-400/60" />
+        )}
+      </Link>
+    );
+  };
 
   const MobileNavItem = ({ href, icon: Icon, label }: any) => {
     const isActive = pathname === href;
@@ -39,12 +56,14 @@ export default function NavBarAdmin() {
         href={href}
         className={`flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 ${
           isActive
-            ? "text-teal-600 bg-teal-50"
-            : "text-slate-500 hover:text-teal-600"
+            ? "text-cyan-400 bg-cyan-500/10"
+            : "text-slate-500 hover:text-slate-300"
         }`}
       >
-        <Icon className={`w-6 h-6 ${isActive ? "scale-110" : ""}`} />
-        <span className="text-xs font-medium">{label}</span>
+        <Icon className={`w-5 h-5 ${isActive ? "scale-110" : ""}`} />
+        <span className="text-[10px] font-semibold tracking-wider uppercase">
+          {label}
+        </span>
       </Link>
     );
   };
@@ -52,78 +71,129 @@ export default function NavBarAdmin() {
   return (
     <>
       {/* SIDEBAR DESKTOP */}
-      <aside className="hidden lg:block fixed top-0 left-0 h-full bg-white border-r border-slate-100 w-72 z-40">
-        <div className="flex flex-col h-full p-6">
-          {/* LOGO / TITRE */}
+      <aside
+        className="hidden lg:flex fixed top-0 left-0 h-full flex-col w-72 z-40"
+        style={{
+          background: "linear-gradient(180deg, #0d1117 0%, #0f1923 100%)",
+          borderRight: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        {/* Top accent line */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+
+        <div className="flex flex-col h-full p-5">
+          {/* LOGO */}
           <Link href="/vendor">
-            <div className="mb-10 px-4">
-              <h2 className="text-xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
-                Admin Panel
-              </h2>
-              <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mt-1">
-                Gestion de NoBoutik
-              </p>
+            <div className="mb-8 px-2 py-3">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)",
+                  }}
+                >
+                  <LayoutDashboard className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <h2
+                    className="text-sm font-bold tracking-wider uppercase"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, #e2e8f0 0%, #94a3b8 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    NoBoutik
+                  </h2>
+                  <p className="text-[10px] text-teal-500/70 uppercase tracking-widest font-semibold">
+                    Admin Panel
+                  </p>
+                </div>
+              </div>
             </div>
           </Link>
-
+          {/* SECTION LABEL */}
+          <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold px-4 mb-3">
+            Navigation
+          </p>
           {/* NAVIGATION */}
-          <nav className="flex-1 space-y-2">
+          <nav className="flex-1 space-y-1">
             <NavItem href="/vendor" icon={Home}>
               Accueil
             </NavItem>
             <NavItem href="/super-admin" icon={LayoutDashboard}>
               Tableau de bord
             </NavItem>
-
             <NavItem href="/super-admin/city" icon={MapPin}>
               Gestion des villes
             </NavItem>
             <NavItem href="/super-admin/notification" icon={Bell}>
-              Gestion de notifications
+              Notifications
+            </NavItem>
+            <NavItem href="/super-admin/users" icon={User}>
+              Utilisateurs
             </NavItem>
           </nav>
-
-          {/* INFO UTILISATEUR (BAS DE SIDEBAR) */}
-          <div className="mt-auto pt-6 border-t border-slate-100">
-            <div className="bg-slate-50 rounded-2xl p-4">
+          {/* USER INFO */}
+          <div className="mt-auto pt-5">
+            <div
+              className="rounded-2xl p-4"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.07)",
+              }}
+            >
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-teal-600 rounded-full flex items-center justify-center text-white font-bold">
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)",
+                  }}
+                >
                   {user?.name?.charAt(0)}
                 </div>
                 <div className="overflow-hidden">
-                  <p className="text-sm font-bold text-slate-900 truncate">
+                  <p className="text-sm font-semibold text-slate-200 truncate">
                     {user?.name}
                   </p>
-                  <p className="text-xs text-teal-600 font-medium capitalize">
+                  <p className="text-[11px] text-teal-400 font-medium uppercase tracking-wider">
                     Administrateur
                   </p>
                 </div>
               </div>
-              <div className="space-y-3 text-[13px] text-slate-500">
+              <div className="space-y-2 text-xs text-slate-500 mb-3">
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-slate-400" />
+                  <MapPin className="w-3 h-3 text-slate-600" />
                   <span>{user?.cityName || "N/A"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-slate-400" />
+                  <Phone className="w-3 h-3 text-slate-600" />
                   <span>{user?.phone}</span>
                 </div>
-                <div className="">
-                  <button
-                    onClick={handleLogout}
-                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Se déconnecter</span>
-                  </button>
-                </div>
               </div>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-red-400/80 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 border border-transparent hover:border-red-500/20"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="font-medium">Se déconnecter</span>
+              </button>
             </div>
           </div>
         </div>
       </aside>
       {/* BOTTOM NAVIGATION MOBILE */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 safe-area-bottom">
+      <nav
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom"
+        style={{
+          background: "rgba(13, 17, 23, 0.95)",
+          backdropFilter: "blur(20px)",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
         <div className="flex items-center justify-around px-2 py-2">
           <MobileNavItem href="/vendor" icon={Home} label="Home" />
           <MobileNavItem
@@ -139,18 +209,21 @@ export default function NavBarAdmin() {
           <MobileNavItem
             href="/super-admin/notification"
             icon={Bell}
-            label="Notifications"
+            label="Alerts"
           />
+          <MobileNavItem href="/super-admin/users" icon={User} label="Users" />
           <button
             onClick={() => setShowUserModal(!showUserModal)}
             className={`flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 ${
               showUserModal
-                ? "text-teal-600 bg-teal-50"
-                : "text-slate-500 hover:text-teal-600"
+                ? "text-cyan-400 bg-cyan-500/10"
+                : "text-slate-500 hover:text-slate-300"
             }`}
           >
-            <User className={`w-6 h-6 ${showUserModal ? "scale-110" : ""}`} />
-            <span className="text-xs font-medium">Profil</span>
+            <User className={`w-5 h-5 ${showUserModal ? "scale-110" : ""}`} />
+            <span className="text-[10px] font-semibold tracking-wider uppercase">
+              Profil
+            </span>
           </button>
         </div>
       </nav>
@@ -158,45 +231,72 @@ export default function NavBarAdmin() {
       {showUserModal && (
         <>
           <div
-            className="lg:hidden fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-40"
+            className="lg:hidden fixed inset-0 z-40"
+            style={{
+              background: "rgba(0,0,0,0.7)",
+              backdropFilter: "blur(4px)",
+            }}
             onClick={() => setShowUserModal(false)}
           />
-          <div className="lg:hidden fixed bottom-16 left-4 right-4 bg-white rounded-2xl shadow-xl z-50 p-4 border border-slate-100">
+          <div
+            className="lg:hidden fixed bottom-16 left-4 right-4 rounded-2xl z-50 p-5"
+            style={{
+              background: "#0d1117",
+              border: "1px solid rgba(255,255,255,0.08)",
+              boxShadow: "0 -20px 60px rgba(0,0,0,0.5)",
+            }}
+          >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-teal-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)",
+                }}
+              >
                 {user?.name?.charAt(0)}
               </div>
-              <div className="flex-1">
-                <p className="text-base font-bold text-slate-900">
+              <div>
+                <p className="text-base font-bold text-slate-100">
                   {user?.name}
                 </p>
-                <p className="text-sm text-teal-600 font-medium capitalize">
+                <p className="text-xs text-cyan-400 font-semibold uppercase tracking-wider">
                   Administrateur
                 </p>
               </div>
             </div>
-            <div className="space-y-3 text-sm text-slate-600 bg-slate-50 rounded-xl p-3">
+            <div
+              className="space-y-3 text-sm text-slate-500 rounded-xl p-3 mb-3"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.05)",
+              }}
+            >
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-slate-400" />
+                <MapPin className="w-4 h-4 text-slate-600" />
                 <span>{user?.cityName || "N/A"}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-slate-400" />
+                <Phone className="w-4 h-4 text-slate-600" />
                 <span>{user?.phone}</span>
               </div>
-              <button
-                onClick={handleLogout}
-                className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Se déconnecter</span>
-              </button>
             </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-500/10 transition-all duration-200 border border-red-500/20"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="font-medium">Se déconnecter</span>
+            </button>
           </div>
         </>
       )}
-      {/* AJUSTEMENT DU CONTENU PRINCIPAL */}
-      <div className="lg:ml-72 min-h-screen bg-slate-50/50 pb-20 lg:pb-0">
+
+      {/* CONTENU PRINCIPAL */}
+      <div
+        className="lg:ml-72 min-h-screen pb-20 lg:pb-0"
+        style={{ background: "#090d13" }}
+      >
         {/* Ton contenu de page viendra ici */}
       </div>
     </>

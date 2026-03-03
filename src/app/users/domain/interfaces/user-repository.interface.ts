@@ -4,5 +4,5 @@ import { User } from "../entities/user.entity";
 export interface IUserRepository {
   create(dto: RegisterDto): Promise<RegisterResponse>;
   updateRole(id: string): Promise<void>;
-  findAll(): Promise<User>;
+  findAll(): Promise<User[]>;
 }
