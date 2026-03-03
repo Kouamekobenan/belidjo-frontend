@@ -27,7 +27,6 @@ export default function VendorVisitModal({
         <BarChart3 size={13} />
         <span className="hidden sm:inline">Statistiques</span>
       </button>
-
       {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto">

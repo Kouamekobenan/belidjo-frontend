@@ -23,7 +23,7 @@ export class UserRepository implements IUserRepository {
     const url = `users/role/${id}`;
     await api.patch(url);
   }
-  async findAll(): Promise<User> {
+  async findAll(): Promise<User[]> {
     const url = "/users";
     const users = await api.get(url);
     return users.data;
