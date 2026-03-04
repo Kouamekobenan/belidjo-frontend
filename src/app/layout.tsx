@@ -74,6 +74,10 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: "82g5U_dAM6cNpBMDgsZBcwitt7TtJdoEaveCMTgaulM", // ✅ Ajoute cette ligne
+  },
+
   // ✅ Pour PWA
   applicationName: "noBoutik",
   appleWebApp: {
@@ -118,21 +122,16 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
-
         ✅ PWA Manifest
         <link rel="manifest" href="/manifest.json" />
-
         {/* ✅ Apple Touch Icon (déjà géré par metadata.icons, mais on peut le laisser) */}
         <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
-
         {/* ✅ Meta theme-color (déjà dans viewport, mais certains navigateurs le préfèrent ici) */}
         <meta name="theme-color" content="#000000" />
-
         {/* ✅ Meta pour iOS */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="noBoutik" />
-
         {/* ✅ Meta pour Windows */}
         <meta name="msapplication-TileColor" content="#000000" />
       </head>
