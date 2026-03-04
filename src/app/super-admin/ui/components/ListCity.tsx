@@ -9,8 +9,9 @@ import {
   Save,
   MapPin,
   Search,
-  Loader2,
+  RefreshCw,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface CityType {
   id: string;
@@ -20,7 +21,6 @@ interface CityType {
 export default function ListCity() {
   const [cities, setCities] = useState<CityType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,11 +37,10 @@ export default function ListCity() {
   const fetchCities = async () => {
     try {
       setLoading(true);
-      setError(null);
       const res = await api.get("/city");
       setCities(res.data.data);
     } catch (err) {
-      setError("Erreur lors du chargement des villes");
+      toast.error("Erreur lors du chargement des villes");
     } finally {
       setLoading(false);
     }
@@ -67,13 +66,17 @@ export default function ListCity() {
       setIsSubmitting(true);
       if (modalMode === "create") {
         await api.post("/city", { name: cityName });
+        toast.success("Ville créée avec succès");
       } else if (currentCity) {
         await api.patch(`/city/${currentCity.id}`, { name: cityName });
+        toast.success("Ville modifiée avec succès");
       }
       await fetchCities();
       setIsModalOpen(false);
+      setCityName("");
+      setCurrentCity(null);
     } catch (err) {
-      alert("Une erreur est survenue");
+      toast.error("Une erreur est survenue lors de la sauvegarde");
     } finally {
       setIsSubmitting(false);
     }
@@ -82,10 +85,11 @@ export default function ListCity() {
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/city/${id}`);
+      toast.success("Ville supprimée");
       await fetchCities();
       setDeleteConfirm(null);
     } catch (err) {
-      alert("Erreur de suppression");
+      toast.error("Erreur lors de la suppression");
     }
   };
 
@@ -93,197 +97,347 @@ export default function ListCity() {
     city.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#09090b] flex flex-col items-center justify-center">
-        <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mb-4" />
-        <p className="text-zinc-400 font-medium animate-pulse">
-          Initialisation du tableau de bord...
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100 py-10 px-4 sm:px-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 bg-emerald-500/10 rounded-lg">
-                <MapPin className="w-5 h-5 text-emerald-500" />
-              </div>
-              <span className="text-emerald-500 font-semibold tracking-wider text-xs uppercase">
-                Administration
-              </span>
+    <div className="min-h-screen pb-28" style={{ background: "#090d13" }}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        {/* ── HEADER ── */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{
+                background: "rgba(6,182,212,0.1)",
+                border: "1px solid rgba(6,182,212,0.2)",
+              }}
+            >
+              <MapPin className="w-5 h-5" style={{ color: "#06b6d4" }} />
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-white">
-              Gestion des Villes
-            </h1>
-            <p className="text-zinc-500 mt-1">
-              Gérez le répertoire géographique de la plateforme.
-            </p>
-          </div>
-
-          <button
-            onClick={handleCreate}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all duration-200 font-medium shadow-[0_0_20px_rgba(16,185,129,0.2)]"
-          >
-            <Plus className="w-5 h-5" />
-            <span>Ajouter une ville</span>
-          </button>
-        </div>
-
-        {/* Search & Stats Bar */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
-          <div className="lg:col-span-3 relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-emerald-500 transition-colors w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Rechercher une ville par nom..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-[#121214] border border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-zinc-200 placeholder:text-zinc-600"
-            />
-          </div>
-          <div className="bg-[#121214] border border-zinc-800 rounded-xl flex items-center justify-center p-3">
-            <span className="text-zinc-400 text-sm">
-              Total : <b className="text-white ml-1">{cities.length}</b>
-            </span>
-          </div>
-        </div>
-
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl mb-6 flex items-center gap-3">
-            <X className="w-5 h-5" /> {error}
-          </div>
-        )}
-
-        {/* Cities Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredCities.length === 0 ? (
-            <div className="col-span-full py-20 bg-[#121214] border border-dashed border-zinc-800 rounded-2xl text-center">
-              <Search className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
-              <p className="text-zinc-500">
-                Aucun résultat trouvé pour votre recherche.
+            <div>
+              <h1 className="text-2xl font-bold text-slate-100 tracking-tight">
+                Villes de Côte d&apos;Ivoire
+              </h1>
+              <p className="text-slate-500 text-sm mt-0.5">
+                {cities.length} ville{cities.length > 1 ? "s" : ""} répertoriée
+                {cities.length > 1 ? "s" : ""}
               </p>
             </div>
-          ) : (
-            filteredCities.map((city) => (
-              <div
-                key={city.id}
-                className="group bg-[#121214] border border-zinc-800 rounded-2xl p-5 hover:border-emerald-500/30 hover:bg-[#18181b] transition-all duration-300"
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              onClick={fetchCities}
+              disabled={loading}
+              className="w-10 h-10 inline-flex items-center justify-center rounded-xl transition-all border"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                color: "#64748b",
+                borderColor: "rgba(255,255,255,0.07)",
+              }}
+            >
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+            </button>
+            <button
+              onClick={handleCreate}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border"
+              style={{
+                background: "rgba(6,182,212,0.1)",
+                color: "#67e8f9",
+                borderColor: "rgba(6,182,212,0.25)",
+              }}
+            >
+              <Plus size={15} />
+              Nouvelle ville
+            </button>
+          </div>
+        </div>
+
+        {/* ── SEARCH ── */}
+        <div className="relative">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Rechercher une ville..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-10 py-2.5 text-sm text-slate-200 placeholder-slate-600 rounded-xl outline-none transition-all"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+            onFocus={(e) =>
+              (e.target.style.borderColor = "rgba(6,182,212,0.35)")
+            }
+            onBlur={(e) =>
+              (e.target.style.borderColor = "rgba(255,255,255,0.08)")
+            }
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+
+        {/* ── LOADING ── */}
+        {loading ? (
+          <div className="py-24 flex flex-col items-center gap-3">
+            <div
+              className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
+              style={{ borderColor: "#06b6d4", borderTopColor: "transparent" }}
+            />
+            <span className="text-sm text-slate-500">Chargement...</span>
+          </div>
+        ) : filteredCities.length === 0 ? (
+          /* ── EMPTY ── */
+          <div
+            className="py-24 flex flex-col items-center gap-4 rounded-2xl border border-white/[0.05]"
+            style={{ background: "rgba(255,255,255,0.02)" }}
+          >
+            <div
+              className="w-14 h-14 rounded-2xl flex items-center justify-center"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <MapPin size={24} className="text-slate-600" />
+            </div>
+            <p className="text-sm text-slate-500 font-medium">
+              {searchTerm ? "Aucune ville trouvée" : "Aucune ville enregistrée"}
+            </p>
+            {!searchTerm && (
+              <button
+                onClick={handleCreate}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border mt-1 transition-all"
+                style={{
+                  background: "rgba(6,182,212,0.08)",
+                  color: "#67e8f9",
+                  borderColor: "rgba(6,182,212,0.2)",
+                }}
               >
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 flex items-center justify-center bg-zinc-900 rounded-xl border border-zinc-800 group-hover:border-emerald-500/50 group-hover:bg-emerald-500/5 transition-all">
-                      <MapPin className="w-5 h-5 text-zinc-400 group-hover:text-emerald-500" />
+                <Plus size={14} /> Ajouter une ville
+              </button>
+            )}
+          </div>
+        ) : (
+          /* ── GRID ── */
+          <>
+            {searchTerm && (
+              <p className="text-xs text-slate-500">
+                <span className="text-slate-300 font-semibold">
+                  {filteredCities.length}
+                </span>{" "}
+                résultat{filteredCities.length > 1 ? "s" : ""} pour «{" "}
+                {searchTerm} »
+              </p>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {filteredCities.map((city) => (
+                <div
+                  key={city.id}
+                  className="group rounded-2xl border border-white/[0.06] overflow-hidden transition-all duration-200"
+                  style={{ background: "rgba(255,255,255,0.025)" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.borderColor = "rgba(6,182,212,0.2)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.borderColor =
+                      "rgba(255,255,255,0.06)")
+                  }
+                >
+                  {/* City row */}
+                  <div className="px-4 pt-4 pb-3 flex items-center gap-3">
+                    <div
+                      className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
+                      style={{ background: "rgba(6,182,212,0.08)" }}
+                    >
+                      <MapPin size={15} style={{ color: "#06b6d4" }} />
                     </div>
-                    <h3 className="font-bold text-lg text-zinc-100 group-hover:text-white">
+                    <h3 className="font-semibold text-sm text-slate-200 truncate group-hover:text-cyan-400 transition-colors">
                       {city.name}
                     </h3>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => handleEdit(city)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg transition-colors text-sm font-medium"
-                  >
-                    <Edit className="w-4 h-4" /> Modifier
-                  </button>
+                  <div className="mx-4 border-t border-white/[0.04]" />
 
-                  {deleteConfirm === city.id ? (
-                    <div className="flex-[1.5] flex items-center gap-1">
-                      <button
-                        onClick={() => handleDelete(city.id)}
-                        className="flex-1 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold"
-                      >
-                        Confirmer
-                      </button>
-                      <button
-                        onClick={() => setDeleteConfirm(null)}
-                        className="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 rounded-lg"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ) : (
+                  {/* Actions */}
+                  <div className="px-4 py-3 flex items-center gap-2">
                     <button
-                      onClick={() => setDeleteConfirm(city.id)}
-                      className="p-2 bg-zinc-800/50 hover:bg-red-500/10 text-zinc-500 hover:text-red-500 rounded-lg transition-all"
+                      onClick={() => handleEdit(city)}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all border"
+                      style={{
+                        background: "rgba(16,185,129,0.08)",
+                        color: "#6ee7b7",
+                        borderColor: "rgba(16,185,129,0.15)",
+                      }}
                     >
-                      <Trash2 className="w-5 h-5" />
+                      <Edit size={12} /> Modifier
                     </button>
-                  )}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
 
-      {/* Modern Dark Modal */}
+                    {deleteConfirm === city.id ? (
+                      <div className="flex-1 flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleDelete(city.id)}
+                          className="flex-1 px-3 py-2 rounded-xl text-xs font-bold transition-all border"
+                          style={{
+                            background: "rgba(239,68,68,0.12)",
+                            color: "#f87171",
+                            borderColor: "rgba(239,68,68,0.25)",
+                          }}
+                        >
+                          Confirmer
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm(null)}
+                          className="w-8 h-8 flex items-center justify-center rounded-xl transition-all border"
+                          style={{
+                            background: "rgba(255,255,255,0.04)",
+                            color: "#64748b",
+                            borderColor: "rgba(255,255,255,0.07)",
+                          }}
+                        >
+                          <X size={13} />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setDeleteConfirm(city.id)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all border"
+                        style={{
+                          background: "transparent",
+                          color: "#f87171",
+                          borderColor: "rgba(239,68,68,0.2)",
+                        }}
+                      >
+                        <Trash2 size={12} /> Supprimer
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+      {/* ── MODAL ── */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <>
           <div
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-40"
+            style={{
+              background: "rgba(0,0,0,0.75)",
+              backdropFilter: "blur(6px)",
+            }}
             onClick={() => setIsModalOpen(false)}
           />
-          <div className="relative bg-[#121214] border border-zinc-800 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">
-                {modalMode === "create" ? "Ajouter une ville" : "Mettre à jour"}
-              </h2>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-zinc-500 hover:text-white"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div
+              className="w-full max-w-md rounded-2xl p-6 border border-white/[0.08]"
+              style={{
+                background: "#0d1117",
+                boxShadow: "0 30px 80px rgba(0,0,0,0.7)",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center"
+                    style={{ background: "rgba(6,182,212,0.1)" }}
+                  >
+                    <MapPin size={15} style={{ color: "#06b6d4" }} />
+                  </div>
+                  <h2 className="text-base font-bold text-slate-100">
+                    {modalMode === "create"
+                      ? "Nouvelle ville"
+                      : "Modifier la ville"}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    color: "#64748b",
+                  }}
+                >
+                  <X size={15} />
+                </button>
+              </div>
 
-            <div className="p-6">
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+              {/* Input */}
+              <div className="space-y-2 mb-6">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                   Nom de la ville
                 </label>
                 <input
-                  autoFocus
                   type="text"
                   value={cityName}
                   onChange={(e) => setCityName(e.target.value)}
-                  placeholder="ex: Yamoussoukro"
-                  className="w-full px-4 py-3 bg-[#09090b] border border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 text-white"
+                  placeholder="Ex: Abidjan"
+                  autoFocus
+                  className="w-full px-4 py-3 text-sm text-slate-200 placeholder-slate-600 rounded-xl outline-none transition-all"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
+                  onFocus={(e) =>
+                    (e.target.style.borderColor = "rgba(6,182,212,0.4)")
+                  }
+                  onBlur={(e) =>
+                    (e.target.style.borderColor = "rgba(255,255,255,0.08)")
+                  }
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 />
               </div>
 
+              {/* Buttons */}
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition-all font-medium"
+                  disabled={isSubmitting}
+                  className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium transition-all border"
+                  style={{
+                    background: "transparent",
+                    color: "#64748b",
+                    borderColor: "rgba(255,255,255,0.07)",
+                  }}
                 >
                   Annuler
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={!cityName.trim() || isSubmitting}
-                  className="flex-[2] flex items-center justify-center gap-2 px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border disabled:opacity-40 disabled:cursor-not-allowed"
+                  style={{
+                    background: "rgba(6,182,212,0.1)",
+                    color: "#67e8f9",
+                    borderColor: "rgba(6,182,212,0.25)",
+                  }}
                 >
                   {isSubmitting ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <div
+                      className="w-4 h-4 rounded-full border-2 border-t-transparent animate-spin"
+                      style={{
+                        borderColor: "#67e8f9",
+                        borderTopColor: "transparent",
+                      }}
+                    />
                   ) : (
                     <>
-                      <Save className="w-5 h-5" /> Confirmer
+                      <Save size={14} />
+                      {modalMode === "create" ? "Créer" : "Enregistrer"}
                     </>
                   )}
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

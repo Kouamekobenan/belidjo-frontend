@@ -12,10 +12,8 @@ export default function VendorVisitModal({
   vendorName,
 }: VendorVisitModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-
   return (
     <>
       {/* Bouton pour ouvrir le modal */}

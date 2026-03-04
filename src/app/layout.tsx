@@ -5,10 +5,11 @@ import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { NotificationProvider } from "./lib/useFCMnotification";
 import PWAInstallBanner from "./components/features/PWAInstallBanner";
+import { GoogleTagManager } from "@next/third-parties/google";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: "swap", // ✅ Améliore le chargement des polices
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -118,7 +119,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
 
-        {/* ✅ PWA Manifest */}
+        ✅ PWA Manifest
         <link rel="manifest" href="/manifest.json" />
 
         {/* ✅ Apple Touch Icon (déjà géré par metadata.icons, mais on peut le laisser) */}
@@ -135,6 +136,7 @@ export default function RootLayout({
         {/* ✅ Meta pour Windows */}
         <meta name="msapplication-TileColor" content="#000000" />
       </head>
+      <GoogleTagManager gtmId="GTM-PZSL8J8F" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
