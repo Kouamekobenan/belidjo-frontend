@@ -12,7 +12,6 @@ import {
   Search,
   Star,
   StarOff,
-  TrendingUp,
   MapPin,
 } from "lucide-react";
 import { ApproveVendorUseCase } from "@/app/vendor/application/usecases/approve-vendor.usecase";
@@ -100,20 +99,25 @@ export default function SuperAdmin() {
   const darkCard = `${cardBase} border-white/[0.06]`;
 
   return (
-    <div className="min-h-screen" style={{ background: "#090d13" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-28 space-y-6">
+    <div
+      className="min-h-screen w-full overflow-x-hidden"
+      style={{ background: "#090d13" }}
+    >
+      {/* FIX: overflow-x-hidden + w-full sur le conteneur racine */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 pb-28 space-y-5 w-full box-border">
         {/* ── HEADER ── */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-100 tracking-tight">
+        {/* FIX: flex-col forcé sur mobile, gap réduit, search full-width mobile */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight truncate">
               Tableau de bord
             </h1>
             <p className="text-slate-500 text-sm mt-1">
               Gérez vos boutiques partenaires et leurs accès.
             </p>
           </div>
-          {/* Search */}
-          <div className="relative sm:w-72">
+          {/* FIX: w-full sur mobile, sm:w-72 sur desktop */}
+          <div className="relative w-full sm:w-72 flex-shrink-0">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
             <input
               type="text"
@@ -136,47 +140,54 @@ export default function SuperAdmin() {
         </div>
 
         {/* ── STATS CARDS ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* FIX: grid-cols-3 directement mais avec padding/text réduit sur mobile */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
           {[
             {
               icon: Users,
-              label: "Total Partenaires",
+              label: "Total",
+              labelFull: "Total Partenaires",
               value: stats.total,
               color: "#06b6d4",
               bg: "rgba(6,182,212,0.08)",
             },
             {
               icon: CheckCircle,
-              label: "Boutiques Actives",
+              label: "Actives",
+              labelFull: "Boutiques Actives",
               value: stats.approved,
               color: "#10b981",
               bg: "rgba(16,185,129,0.08)",
             },
             {
               icon: Star,
-              label: "En Vedette",
+              label: "Vedette",
+              labelFull: "En Vedette",
               value: stats.featured,
               color: "#f59e0b",
               bg: "rgba(245,158,11,0.08)",
             },
-          ].map(({ icon: Icon, label, value, color, bg }) => (
+          ].map(({ icon: Icon, label, labelFull, value, color, bg }) => (
             <div
               key={label}
-              className={darkCard}
+              className={`rounded-2xl border border-white/[0.06] transition-all duration-200 p-3 sm:p-5`}
               style={{ background: "rgba(255,255,255,0.025)" }}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                {/* FIX: icône plus petite sur mobile */}
                 <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                  className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: bg }}
                 >
-                  <Icon className="w-5 h-5" style={{ color }} />
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color }} />
                 </div>
-                <div>
-                  <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">
-                    {label}
+                <div className="min-w-0">
+                  {/* FIX: label court sur mobile, complet sur desktop */}
+                  <p className="text-[10px] sm:text-[11px] font-semibold text-slate-500 uppercase tracking-widest truncate">
+                    <span className="sm:hidden">{label}</span>
+                    <span className="hidden sm:inline">{labelFull}</span>
                   </p>
-                  <p className="text-3xl font-bold text-slate-100 mt-0.5 leading-none">
+                  <p className="text-2xl sm:text-3xl font-bold text-slate-100 mt-0.5 leading-none">
                     {value}
                   </p>
                 </div>
@@ -190,7 +201,6 @@ export default function SuperAdmin() {
           className="hidden md:block rounded-2xl overflow-hidden border border-white/[0.06]"
           style={{ background: "rgba(255,255,255,0.025)" }}
         >
-          {/* Table header bar */}
           <div
             className="px-6 py-4 flex justify-between items-center border-b border-white/[0.05]"
             style={{ background: "rgba(255,255,255,0.02)" }}
@@ -269,7 +279,6 @@ export default function SuperAdmin() {
                             : "rgba(255,255,255,0.01)")
                       }
                     >
-                      {/* Boutique */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           {v.isFeatured && (
@@ -292,7 +301,6 @@ export default function SuperAdmin() {
                         </div>
                       </td>
 
-                      {/* Propriétaire */}
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-slate-300">
                           {v.user?.name}
@@ -315,7 +323,6 @@ export default function SuperAdmin() {
                         </div>
                       </td>
 
-                      {/* Statuts */}
                       <td className="px-6 py-4">
                         <div className="flex flex-col items-center gap-2">
                           {v.isApproved ? (
@@ -361,12 +368,10 @@ export default function SuperAdmin() {
                         </div>
                       </td>
 
-                      {/* Actions */}
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
                           <PreviewBadgeModal vendor={v} />
 
-                          {/* Vedette */}
                           <button
                             onClick={() =>
                               handleToggleFeatureStatus(v.id, v.isFeatured)
@@ -397,7 +402,6 @@ export default function SuperAdmin() {
                             )}
                           </button>
 
-                          {/* Approbation */}
                           <button
                             onClick={() => handleToggleStatus(v.id)}
                             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 border"
@@ -458,7 +462,7 @@ export default function SuperAdmin() {
               )}
             </h3>
             <span
-              className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg"
+              className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg flex-shrink-0"
               style={{
                 background: "rgba(6,182,212,0.1)",
                 color: "#06b6d4",
@@ -487,11 +491,13 @@ export default function SuperAdmin() {
               {filteredVendors.map((v) => (
                 <div
                   key={v.id}
-                  className="rounded-2xl overflow-hidden border border-white/[0.06]"
+                  /* FIX: overflow-hidden pour empêcher le débordement des enfants */
+                  className="rounded-2xl overflow-hidden border border-white/[0.06] w-full"
                   style={{ background: "rgba(255,255,255,0.025)" }}
                 >
                   {/* Card top */}
-                  <div className="px-4 pt-4 pb-3 flex items-start justify-between gap-3">
+                  <div className="px-3 pt-4 pb-3 flex items-start justify-between gap-2">
+                    {/* FIX: min-w-0 + flex-1 pour que le texte se tronque correctement */}
                     <div className="flex items-start gap-2 flex-1 min-w-0">
                       {v.isFeatured && (
                         <Star
@@ -503,8 +509,9 @@ export default function SuperAdmin() {
                         <p className="text-sm font-bold text-slate-200 truncate">
                           {v.name}
                         </p>
-                        <div className="flex items-center gap-1 text-[11px] text-slate-600 mt-0.5">
+                        <div className="flex items-center gap-1 text-[11px] text-slate-600 mt-0.5 min-w-0">
                           <Globe size={10} className="flex-shrink-0" />
+                          {/* FIX: truncate sur le domaine */}
                           <span className="truncate">
                             {v.site?.domain || "Pas de domaine"}
                           </span>
@@ -512,10 +519,10 @@ export default function SuperAdmin() {
                       </div>
                     </div>
 
-                    {/* Status badges */}
-                    <div className="flex flex-col gap-1 flex-shrink-0">
+                    {/* FIX: flex-shrink-0 + max-w pour les badges */}
+                    <div className="flex flex-col gap-1 flex-shrink-0 items-end">
                       <span
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wide"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wide whitespace-nowrap"
                         style={
                           v.isApproved
                             ? {
@@ -539,7 +546,7 @@ export default function SuperAdmin() {
                       </span>
                       {v.isFeatured && (
                         <span
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wide"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wide whitespace-nowrap"
                           style={{
                             background: "rgba(245,158,11,0.1)",
                             color: "#fbbf24",
@@ -552,23 +559,23 @@ export default function SuperAdmin() {
                     </div>
                   </div>
 
-                  {/* Separator */}
-                  <div className="mx-4 border-t border-white/[0.04]" />
+                  <div className="mx-3 border-t border-white/[0.04]" />
 
                   {/* Owner info */}
-                  <div className="px-4 py-3">
-                    <div className="flex items-center justify-between flex-wrap gap-2">
-                      <div>
-                        <p className="text-xs font-semibold text-slate-300">
+                  <div className="px-3 py-3">
+                    {/* FIX: flex-wrap + min-w-0 pour éviter le débordement du nom/tel */}
+                    <div className="flex items-center justify-between flex-wrap gap-2 min-w-0">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-slate-300 truncate">
                           {v.user?.name}
                         </p>
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-600 mt-0.5">
                           <Phone size={10} className="flex-shrink-0" />
-                          <span>{v.user?.phone}</span>
+                          <span className="truncate">{v.user?.phone}</span>
                         </div>
                       </div>
                       <span
-                        className="px-2.5 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1"
+                        className="px-2.5 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1 flex-shrink-0 whitespace-nowrap"
                         style={{
                           background: "rgba(16,185,129,0.08)",
                           color: "#6ee7b7",
@@ -580,13 +587,13 @@ export default function SuperAdmin() {
                     </div>
                   </div>
 
-                  {/* Separator */}
-                  <div className="mx-4 border-t border-white/[0.04]" />
+                  <div className="mx-3 border-t border-white/[0.04]" />
 
-                  {/* Stats + actions */}
-                  <div className="px-4 py-3 space-y-2.5">
+                  {/* Actions */}
+                  <div className="px-3 py-3 space-y-2">
                     <VendorVisitModal vendorId={v.id} vendorName={v.name} />
 
+                    {/* FIX: grid-cols-2 avec boutons à taille fixe, pas de débordement */}
                     <div className="grid grid-cols-2 gap-2">
                       <PreviewBadgeModal vendor={v} />
 
@@ -595,7 +602,7 @@ export default function SuperAdmin() {
                         onClick={() =>
                           handleToggleFeatureStatus(v.id, v.isFeatured)
                         }
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-all border active:scale-95"
+                        className="inline-flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl text-[11px] font-semibold transition-all border active:scale-95 whitespace-nowrap overflow-hidden"
                         style={
                           v.isFeatured
                             ? {
@@ -612,39 +619,40 @@ export default function SuperAdmin() {
                       >
                         {v.isFeatured ? (
                           <>
-                            <StarOff size={12} /> Retirer
+                            <StarOff size={12} className="flex-shrink-0" />{" "}
+                            Retirer
                           </>
                         ) : (
                           <>
-                            <Star size={12} /> Vedette
+                            <Star size={12} className="flex-shrink-0" /> Vedette
                           </>
                         )}
                       </button>
-
-                      {/* Approbation — full width on last row */}
-                      <button
-                        onClick={() => handleToggleStatus(v.id)}
-                        className="col-span-2 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-all border active:scale-95"
-                        style={
-                          v.isApproved
-                            ? {
-                                background: "transparent",
-                                color: "#f87171",
-                                borderColor: "rgba(239,68,68,0.25)",
-                              }
-                            : {
-                                background: "rgba(6,182,212,0.08)",
-                                color: "#67e8f9",
-                                borderColor: "rgba(6,182,212,0.2)",
-                              }
-                        }
-                      >
-                        <ShieldCheck size={12} />
-                        {v.isApproved
-                          ? "Révoquer l'accès"
-                          : "Approuver la boutique"}
-                      </button>
                     </div>
+
+                    {/* FIX: bouton Approbation sur une ligne complète séparée */}
+                    <button
+                      onClick={() => handleToggleStatus(v.id)}
+                      className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-all border active:scale-95"
+                      style={
+                        v.isApproved
+                          ? {
+                              background: "transparent",
+                              color: "#f87171",
+                              borderColor: "rgba(239,68,68,0.25)",
+                            }
+                          : {
+                              background: "rgba(6,182,212,0.08)",
+                              color: "#67e8f9",
+                              borderColor: "rgba(6,182,212,0.2)",
+                            }
+                      }
+                    >
+                      <ShieldCheck size={12} className="flex-shrink-0" />
+                      {v.isApproved
+                        ? "Révoquer l'accès"
+                        : "Approuver la boutique"}
+                    </button>
                   </div>
                 </div>
               ))}

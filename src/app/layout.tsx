@@ -21,45 +21,45 @@ const geistMono = Geist_Mono({
 // 🎯 SEO Optimisé pour noBoutik
 export const metadata: Metadata = {
   title: {
-    default: "noBoutik | Achetez et vendez en toute simplicité",
-    template: "%s | noBoutik",
+    default: "NoBoutik | Achetez et vendez en toute simplicité",
+    template: "%s | NoBoutik",
   },
   description:
-    "La plateforme de mise en relation entre vendeurs locaux et clients. Trouvez les meilleurs produits ou ouvrez votre boutique gratuitement sur noBoutik.",
+    "La plateforme de mise en relation entre vendeurs locaux et clients. Trouvez les meilleurs produits ou ouvrez votre boutique gratuitement sur NoBoutik.",
   keywords: [
     "marketplace",
     "vente en ligne",
     "boutique locale",
     "ecommerce",
-    "noBoutik",
+    "NoBoutik",
     "achat local",
     "vendeur proche",
   ],
-  authors: [{ name: "noBoutik" }],
-  creator: "noBoutik",
-  publisher: "noBoutik",
-  metadataBase: new URL("https://belidjo-frontend.vercel.app"), // ⚠️ Remplace par ton vrai domaine en production
+  authors: [{ name: "NoBoutik" }],
+  creator: "NoBoutik",
+  publisher: "NoBoutik",
+  metadataBase: new URL("https://noboutik.vercel.app"), // ⚠️ Remplace par ton vrai domaine en production
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "noBoutik | Achetez et vendez en toute simplicité",
+    title: "NoBoutik | Achetez et vendez en toute simplicité",
     description: "Connectez-vous avec les meilleurs vendeurs de votre région.",
     type: "website",
     locale: "fr_FR",
-    siteName: "noBoutik",
+    siteName: "NoBoutik",
     images: [
       {
-        url: "/logo.png", // ✅ Image pour les partages sociaux
+        url: "/images/bj.png", // ✅ Image pour les partages sociaux
         width: 1200,
         height: 630,
-        alt: "noBoutik - Marketplace locale",
+        alt: "NoBoutik - Marketplace locale",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "noBoutik | Achetez et vendez en toute simplicité",
+    title: "NoBoutik | Achetez et vendez en toute simplicité",
     description: "Connectez-vous avec les meilleurs vendeurs de votre région.",
     images: ["/images/android-chrome-512x512.png"],
   },
