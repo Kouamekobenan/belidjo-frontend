@@ -9,7 +9,7 @@ export class GetProductsByVendorUseCase {
   async execute(
     vendorId: string,
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
   ): Promise<IPaginatedResponse<IProduct>> {
     return this.productRepo.getAll(vendorId, page, limit);
   }

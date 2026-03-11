@@ -5,7 +5,6 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { api } from "@/app/lib/api";
 import VendorNavBar from "@/app/components/layout/Vendor-NavBar";
 import Image from "next/image";
-import CategoriesList from "@/app/categories/ui/components/FindCategory";
 import { VendorFooter } from "@/app/components/layout/Vendor-Footer";
 import {
   Check,
@@ -591,7 +590,6 @@ export default function VendorProductsClient({
                     )}
                   </div>
                 )}
-
                 {/* Description */}
                 {site?.description && (
                   <div className="mt-6 p-6 bg-gradient-to-br from-slate-50 to-blue-50/50 rounded-2xl border-2 border-slate-200 shadow-sm">
@@ -604,13 +602,10 @@ export default function VendorProductsClient({
             </div>
           </div>
         </div>
-
         {/* Listes des produits */}
-        <CategoriesList vendorId={vendorId} />
         <VendorProducts vendorId={vendorId} />
         <VendorFooter name={name} site={site} user={vendor.user} />
       </div>
-
       <style jsx global>{`
         @keyframes rotate-slow {
           from {
@@ -620,15 +615,12 @@ export default function VendorProductsClient({
             transform: rotate(360deg);
           }
         }
-
         .profile-image-rotate {
           animation: rotate-slow 20s linear infinite;
         }
-
         .profile-image-container:hover .profile-image-rotate {
           animation: rotate-slow 8s linear infinite;
         }
-
         @keyframes pulse-scale {
           0%,
           100% {

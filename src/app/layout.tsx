@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   authors: [{ name: "NoBoutik" }],
   creator: "NoBoutik",
   publisher: "NoBoutik",
-  metadataBase: new URL("https://noboutik.vercel.app"), // ⚠️ Remplace par ton vrai domaine en production
+  metadataBase: new URL("https://noboutik.vercel.app"), 
   alternates: {
     canonical: "/",
   },
@@ -79,11 +79,11 @@ export const metadata: Metadata = {
   },
 
   // ✅ Pour PWA
-  applicationName: "noBoutik",
+  applicationName: "NoBoutik",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "noBoutik",
+    title: "NoBoutik",
   },
   formatDetection: {
     telephone: false,
@@ -122,7 +122,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
-        ✅ PWA Manifest
+       
         <link rel="manifest" href="/manifest.json" />
         {/* ✅ Apple Touch Icon (déjà géré par metadata.icons, mais on peut le laisser) */}
         <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
