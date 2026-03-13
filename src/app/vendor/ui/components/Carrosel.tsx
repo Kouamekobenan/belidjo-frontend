@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Vendor } from "../../domain/entities/vendor.entity";
 import { VendorRepository } from "../../infrastructure/api/vendor.api";
 import { FindAllFeaturedUseCase } from "../../application/usecases/find-all-featured.usecase";
 import Image from "next/image";
-import { ArrowRight, ChevronLeft, ChevronRight, Store } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Store, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 const vendorRepo = new VendorRepository();
@@ -15,12 +15,12 @@ export default function Carrosel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [loading, setLoading] = useState(true);
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchVendors = async () => {
     try {
       setLoading(true);
       const vendors = await findAllFeaturedUseCase.execute();
-      console.log("featured vendors", vendors);
       setVendors(vendors);
     } catch (error) {
       console.error("Erreur lors du chargement des vendeurs", error);
@@ -33,44 +33,49 @@ export default function Carrosel() {
     fetchVendors();
   }, []);
 
-  // Auto-défilement toutes les 5 secondes
-  useEffect(() => {
+  const resetAutoScroll = () => {
+    if (autoScrollRef.current) clearInterval(autoScrollRef.current);
     if (vendors.length <= 1) return;
-
-    const interval = setInterval(() => {
+    autoScrollRef.current = setInterval(() => {
       handleNext();
     }, 5000);
+  };
 
-    return () => clearInterval(interval);
+  useEffect(() => {
+    resetAutoScroll();
+    return () => {
+      if (autoScrollRef.current) clearInterval(autoScrollRef.current);
+    };
   }, [vendors.length, currentIndex]);
 
   const handleNext = () => {
     if (isAnimating || vendors.length === 0) return;
     setIsAnimating(true);
     setCurrentIndex((prev) => (prev + 1) % vendors.length);
-    setTimeout(() => setIsAnimating(false), 500);
+    setTimeout(() => setIsAnimating(false), 600);
   };
 
   const handlePrev = () => {
     if (isAnimating || vendors.length === 0) return;
     setIsAnimating(true);
     setCurrentIndex((prev) => (prev - 1 + vendors.length) % vendors.length);
-    setTimeout(() => setIsAnimating(false), 500);
+    setTimeout(() => setIsAnimating(false), 600);
   };
 
   const goToSlide = (index: number) => {
     if (isAnimating || index === currentIndex) return;
     setIsAnimating(true);
     setCurrentIndex(index);
-    setTimeout(() => setIsAnimating(false), 500);
+    resetAutoScroll();
+    setTimeout(() => setIsAnimating(false), 600);
   };
 
   if (loading) {
     return (
-      <div className="w-full max-w-7xl mx-auto px-4 py-12">
-        <div className="animate-pulse">
-          <div className="h-10 bg-gradient-to-r from-slate-200 to-slate-300 rounded-2xl w-72 mb-10"></div>
-          <div className="h-[500px] bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 rounded-3xl"></div>
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <div className="animate-pulse space-y-8">
+          <div className="h-8 bg-slate-100 rounded-xl w-64"></div>
+          <div className="h-[520px] bg-slate-50 rounded-3xl border border-slate-100"></div>
         </div>
       </div>
     );
@@ -78,14 +83,11 @@ export default function Carrosel() {
 
   if (vendors.length === 0) {
     return (
-      <div className="w-full max-w-7xl mx-auto px-4 py-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-8 bg-gradient-to-r from-teal-600 via-teal-500 to-blue-600 bg-clip-text text-transparent">
-          Vendeurs de la semaine
-        </h2>
-        <div className="text-center py-20 text-slate-500 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-          <Store className="w-16 h-16 mx-auto mb-4 text-slate-300" />
-          <p className="text-lg font-medium">
-            Aucun vendeur vedette disponible pour le moment.
+      <div className="w-full max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center py-24 rounded-3xl border border-dashed border-slate-200 bg-slate-50/50">
+          <Store className="w-12 h-12 mx-auto mb-4 text-slate-300" />
+          <p className="text-slate-400 font-medium">
+            Aucun vendeur vedette disponible.
           </p>
         </div>
       </div>
@@ -93,200 +95,271 @@ export default function Carrosel() {
   }
 
   const currentVendor = vendors[currentIndex];
+  const otherVendors = vendors.filter((_, i) => i !== currentIndex);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-12 md:py-16">
-      {/* En-tête */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
-        <div className="flex flex-col gap-3 sm:gap-4 group">
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-tight tracking-tight transition-all duration-300 group-hover:text-slate-700">
-            <span className="inline-flex items-center gap-3">
-              Vendeurs en vedette
-              <span className="inline-flex h-2.5 w-2.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 animate-pulse shadow-lg shadow-amber-500/50" />
-            </span>
-          </h2>
-          <div className="flex items-center gap-2">
-            <div className="h-1 w-12 bg-gradient-to-r from-amber-500 to-transparent rounded-full" />
-            <p className="text-slate-600 text-sm md:text-base lg:text-lg font-medium leading-relaxed">
-              Découvrez nos meilleurs partenaires commerciaux
-            </p>
+    <section className="w-full max-w-7xl mx-auto px-4 py-16 md:py-20 space-y-16">
+      {/* ── HEADER ── */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+        <div className="space-y-2">
+          {/* Label */}
+          <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.2em] uppercase text-teal-600">
+            <span className="w-4 h-px bg-teal-500"></span>
+            Sélection de la semaine
           </div>
+          <h2 className="text-4xl md:text-5xl font-black text-slate-900 leading-none tracking-tight">
+            Vendeurs
+            <br />
+            <span className="text-teal-500">en vedette</span>
+          </h2>
         </div>
+
         <Link
           href="/vendor/vendorform"
-          className="group flex items-center justify-center gap-3 bg-gradient-to-r from-teal-900 to-teal-800 text-white px-6 md:px-8 py-4 md:py-5 rounded-2xl hover:from-slate-600 hover:to-slate-500 transition-all duration-500 shadow-xl shadow-slate-900/25 hover:shadow-teal-500/30 hover:scale-105 active:scale-100"
+          className="group self-start sm:self-auto inline-flex items-center gap-2.5 bg-slate-900 text-white text-sm font-semibold px-6 py-3.5 rounded-xl hover:bg-teal-600 transition-colors duration-300"
         >
-          <Store className="w-5 h-5 text-teal-400 group-hover:text-white transition-colors" />
-          <span className="font-bold whitespace-nowrap">
-            Démarrer ma boutique
-          </span>
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+          <Store className="w-4 h-4" />
+          Démarrer ma boutique
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
 
-      {/* Carrousel */}
-      <div className="relative">
-        {/* Carte principale */}
-        <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200/50">
-          {/* Arrière-plan décoratif */}
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-50/50 via-blue-50/30 to-purple-50/50"></div>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-teal-400/10 to-blue-400/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-400/10 to-pink-400/10 rounded-full blur-3xl"></div>
+      {/* ── MAIN CARD ── */}
+      <div className="relative group/card">
+        <div
+          key={currentIndex}
+          className="relative rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-xl shadow-slate-200/60"
+          style={{ animation: "fadeSlide 0.5s ease both" }}
+        >
+          <div className="flex flex-col lg:flex-row">
+            {/* Image */}
+            <div className="relative w-full lg:w-[55%] aspect-[4/3] lg:aspect-auto lg:min-h-[480px] overflow-hidden bg-slate-100 flex-shrink-0">
+              <Image
+                src={currentVendor.site.logoUrl}
+                alt={currentVendor.name}
+                fill
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                className="object-cover transition-transform duration-700 group-hover/card:scale-[1.03]"
+                priority
+              />
+              {/* Subtle dark vignette */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/10 lg:to-white/30 pointer-events-none" />
 
-          <div className="relative flex flex-col md:flex-row md:items-center gap-0 md:gap-8">
-            {/* Image du vendeur - Format bannière sur mobile */}
-            <div className="relative w-full md:w-1/2">
-              {/* Sur mobile: bannière pleine largeur */}
-              <div className="relative w-full aspect-[16/9] md:aspect-square md:rounded-none overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-teal-600/20 via-blue-600/10 to-purple-600/20 z-10"></div>
-                <Image
-                  src={currentVendor.site.logoUrl}
-                  alt={currentVendor.name}
-                  width={800}
-                  height={600}
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                  priority
-                />
-
-                {/* Overlay gradient en bas pour mobile */}
-                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/60 to-transparent md:hidden z-10"></div>
+              {/* Badge */}
+              <div className="absolute top-5 left-5 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm text-amber-600 text-xs font-bold px-3.5 py-2 rounded-full shadow-md">
+                <Sparkles className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                Vedette
               </div>
 
-              {/* Badge "Vendeur Vedette" */}
-              <div className="absolute top-4 right-4 md:top-6 md:right-6 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-4 md:px-6 py-2 md:py-3 rounded-full shadow-lg transform rotate-3 md:rotate-12 font-bold text-xs md:text-sm z-20 flex items-center gap-2">
-                <span className="text-lg">⭐</span>
-                <span>Vedette</span>
+              {/* Counter pill on mobile */}
+              <div className="absolute bottom-5 right-5 lg:hidden bg-black/50 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                {currentIndex + 1} / {vendors.length}
               </div>
             </div>
 
-            {/* Informations du vendeur */}
-            <div className="flex-1 p-6 md:p-12 text-center md:text-left space-y-6">
-              <div className="space-y-4">
-                {/* Badge compteur */}
-                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-teal-100 to-blue-100 text-teal-700 rounded-full text-sm font-bold shadow-sm">
-                  <span className="w-2 h-2 bg-teal-500 rounded-full mr-2 animate-pulse"></span>
-                  Vendeur {currentIndex + 1} sur {vendors.length}
-                </div>
+            {/* Content */}
+            <div className="flex-1 flex flex-col justify-between p-8 md:p-12 lg:p-14">
+              <div className="space-y-5">
+                {/* Counter desktop */}
+                <p className="hidden lg:block text-xs font-bold tracking-widest uppercase text-slate-400">
+                  {String(currentIndex + 1).padStart(2, "0")} —{" "}
+                  {String(vendors.length).padStart(2, "0")}
+                </p>
 
-                {/* Nom du vendeur */}
-                <h3 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-4 leading-tight">
+                <h3 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 leading-tight">
                   {currentVendor.name}
                 </h3>
 
-                {/* Description du vendeur */}
                 {currentVendor.site?.description && (
-                  <p className="text-slate-700 text-base md:text-lg font-medium leading-relaxed max-w-2xl mx-auto md:mx-0">
+                  <p className="text-slate-500 text-base md:text-lg leading-relaxed max-w-md">
                     {currentVendor.site.description}
                   </p>
                 )}
 
-                {/* Message d'accroche */}
-                <div className="inline-block bg-gradient-to-r from-green-50 to-teal-50 border border-green-200/50 px-6 py-3 rounded-2xl shadow-sm">
-                  <p className="text-slate-700 text-sm md:text-base font-medium leading-relaxed flex items-center gap-2">
-                    <span className="text-green-500 text-xl">✨</span>
+                <div className="flex items-start gap-3 bg-teal-50 border border-teal-100 rounded-2xl p-4 max-w-md">
+                  <span className="text-teal-500 text-lg mt-0.5">✦</span>
+                  <p className="text-slate-600 text-sm leading-relaxed">
                     Découvrez une sélection unique de produits soigneusement
                     choisis pour vous.
                   </p>
                 </div>
               </div>
 
-              {/* Bouton d'action */}
-              <Link
-                href={`/products/ui/page/${currentVendor.id}`}
-                className="inline-flex items-center justify-center gap-3 px-8 md:px-12 py-4 md:py-5 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-teal-600 hover:to-teal-500 text-white font-bold rounded-2xl transition-all duration-300 shadow-2xl shadow-slate-900/25 hover:shadow-teal-500/40 group transform hover:-translate-y-1 active:scale-95 w-full md:w-auto"
-              >
-                <Store className="w-5 h-5" />
-                <span>Visiter la boutique</span>
-                <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-2" />
-              </Link>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-8">
+                <Link
+                  href={`/products/ui/page/${currentVendor.id}`}
+                  className="group/btn inline-flex items-center gap-3 bg-slate-900 hover:bg-teal-600 text-white font-semibold text-sm px-7 py-4 rounded-xl transition-colors duration-300"
+                >
+                  <Store className="w-4 h-4" />
+                  Visiter la boutique
+                  <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                </Link>
+
+                {/* Pagination dots */}
+                {vendors.length > 1 && (
+                  <div className="flex items-center gap-2">
+                    {vendors.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => goToSlide(i)}
+                        className={`rounded-full transition-all duration-300 ${
+                          i === currentIndex
+                            ? "w-8 h-2.5 bg-teal-500"
+                            : "w-2.5 h-2.5 bg-slate-200 hover:bg-slate-400"
+                        }`}
+                        aria-label={`Vendeur ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Boutons de navigation */}
+        {/* Nav arrows — appear on hover, positioned outside card on large screens */}
         {vendors.length > 1 && (
           <>
             <button
-              onClick={handlePrev}
+              onClick={() => {
+                handlePrev();
+                resetAutoScroll();
+              }}
               disabled={isAnimating}
-              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 bg-white/95 backdrop-blur-sm hover:bg-teal-500 text-slate-900 hover:text-white rounded-full shadow-xl transition-all duration-300 flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed z-30 hover:scale-110 active:scale-95 border border-slate-200"
-              aria-label="Vendeur précédent"
+              className="absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-slate-200 shadow-lg rounded-full flex items-center justify-center text-slate-700 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed opacity-0 group-hover/card:opacity-100 z-20"
+              aria-label="Précédent"
             >
-              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.5}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
             </button>
-
             <button
-              onClick={handleNext}
+              onClick={() => {
+                handleNext();
+                resetAutoScroll();
+              }}
               disabled={isAnimating}
-              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 bg-white/95 backdrop-blur-sm hover:bg-teal-500 text-slate-900 hover:text-white rounded-full shadow-xl transition-all duration-300 flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed z-30 hover:scale-110 active:scale-95 border border-slate-200"
-              aria-label="Vendeur suivant"
+              className="absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-slate-200 shadow-lg rounded-full flex items-center justify-center text-slate-700 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed opacity-0 group-hover/card:opacity-100 z-20"
+              aria-label="Suivant"
             >
-              <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.5}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </button>
           </>
         )}
       </div>
 
-      {/* Indicateurs de pagination */}
-      {vendors.length > 1 && (
-        <div className="flex justify-center items-center gap-2 md:gap-3 mt-8">
-          {vendors.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              disabled={isAnimating}
-              className={`transition-all duration-300 rounded-full ${
-                index === currentIndex
-                  ? "w-10 md:w-12 h-3 bg-gradient-to-r from-teal-500 via-teal-400 to-blue-500 shadow-lg shadow-teal-500/50"
-                  : "w-3 h-3 bg-slate-300 hover:bg-slate-400 hover:scale-125"
-              }`}
-              aria-label={`Aller au vendeur ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
+      {/* ── AUTO-SCROLL TICKER ── */}
+      {otherVendors.length > 0 && (
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
+            <span className="w-1 h-5 bg-teal-500 rounded-full"></span>
+            <h3 className="text-base font-bold text-slate-800 tracking-tight">
+              Autres vendeurs vedettes
+            </h3>
+          </div>
 
-      {/* Aperçu des autres vendeurs */}
-      {vendors.length > 1 && (
-        <div className="mt-12 md:mt-16">
-          <h3 className="text-xl md:text-2xl font-bold text-slate-800 mb-6 md:mb-8 text-center flex items-center justify-center gap-3">
-            <span className="w-12 h-0.5 bg-gradient-to-r from-transparent to-teal-500"></span>
-            Autres vendeurs vedettes
-            <span className="w-12 h-0.5 bg-gradient-to-l from-transparent to-teal-500"></span>
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {vendors.map(
-              (vendor, index) =>
-                index !== currentIndex && (
+          {/* Ticker wrapper — masks overflow and adds edge fades */}
+          <div className="relative overflow-hidden">
+            {/* Left fade */}
+            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+            {/* Right fade */}
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+            {/* Ticker track — duplicated for seamless loop */}
+            <div className="flex gap-4 ticker-track">
+              {[...otherVendors, ...otherVendors].map((vendor, idx) => {
+                const originalIndex = vendors.findIndex(
+                  (v) => v.id === vendor.id,
+                );
+                return (
                   <button
-                    key={vendor.id}
-                    onClick={() => goToSlide(index)}
-                    className="group relative aspect-square rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-transparent hover:border-teal-500"
+                    key={`${vendor.id}-${idx}`}
+                    onClick={() => goToSlide(originalIndex)}
+                    className="group/thumb flex-none w-52 md:w-60 relative rounded-2xl overflow-hidden bg-slate-100 border border-slate-100 hover:border-teal-400 transition-all duration-300 hover:shadow-lg hover:shadow-teal-500/10 hover:-translate-y-1"
                   >
-                    <Image
-                      src={vendor.site.logoUrl}
-                      alt={vendor.name}
-                      width={300}
-                      height={300}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                        <p className="text-white font-bold text-sm md:text-base mb-1">
-                          {vendor.name}
-                        </p>
-                        <div className="flex items-center gap-2 text-teal-400 text-xs md:text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span>Voir la boutique</span>
-                          <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
-                        </div>
+                    <div className="aspect-[4/3] relative overflow-hidden">
+                      <Image
+                        src={vendor.site.logoUrl}
+                        alt={vendor.name}
+                        fill
+                        sizes="240px"
+                        className="object-cover transition-transform duration-500 group-hover/thumb:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    </div>
+
+                    <div className="absolute bottom-0 left-0 right-0 p-4 text-left">
+                      <p className="text-white font-bold text-sm leading-tight truncate">
+                        {vendor.name}
+                      </p>
+                      <div className="flex items-center gap-1 mt-1 text-teal-300 text-xs font-semibold opacity-0 group-hover/thumb:opacity-100 transition-opacity duration-300">
+                        <span>Voir la boutique</span>
+                        <ArrowRight className="w-3 h-3" />
                       </div>
                     </div>
+
+                    <div className="absolute top-3 right-3 w-2 h-2 rounded-full bg-teal-400 opacity-0 group-hover/thumb:opacity-100 transition-opacity" />
                   </button>
-                ),
-            )}
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
-    </div>
+
+      {/* Animation keyframes */}
+      <style jsx>{`
+        @keyframes fadeSlide {
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes ticker {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
+        }
+        .ticker-track {
+          animation: ticker 30s linear infinite;
+          width: max-content;
+        }
+        .ticker-track:hover {
+          animation-play-state: paused;
+        }
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    </section>
   );
 }
