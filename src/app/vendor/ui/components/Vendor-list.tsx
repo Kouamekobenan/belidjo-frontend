@@ -98,19 +98,16 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
   const comboboxRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Trouver le nom de la ville sélectionnée
   const selectedCityName =
     selectedCity === "all"
       ? "Toutes les localisations"
       : cityOptions?.find((city: any) => city?.id === selectedCity)?.name || "";
 
-  // Filtrer les villes selon la recherche
   const filteredCities =
     cityOptions?.filter((city: any) =>
       city?.name?.toLowerCase().includes(searchQuery.toLowerCase()),
     ) || [];
 
-  // Bloquer le scroll du body quand le dropdown est ouvert
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -122,7 +119,6 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
     };
   }, [isOpen]);
 
-  // Fermer le combobox en cliquant à l'extérieur
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -133,19 +129,16 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
         setSearchQuery("");
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Gérer la navigation au clavier
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
       setIsOpen(true);
       return;
     }
-
     if (isOpen) {
       switch (e.key) {
         case "Escape":
@@ -188,10 +181,18 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 rounded-2xl sm:rounded-[32px] p-4 sm:p-6 md:p-12 mb-8 sm:mb-12 shadow-2xl border border-white/5">
-      {/* Décoration d'arrière-plan */}
-      <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-teal-500/20 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-[-30%] left-[-15%] w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl"></div>
+    /*
+     * FIX: "overflow-hidden" retiré du wrapper principal.
+     * Il coupait le dropdown desktop qui sort en dehors de la carte.
+     * Les décorations d'arrière-plan (blobs) sont déplacées dans un div
+     * enfant avec overflow-hidden pour ne pas affecter le combobox.
+     */
+    <div className="relative bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 rounded-2xl sm:rounded-[32px] p-4 sm:p-6 md:p-12 mb-8 sm:mb-12 shadow-2xl border border-white/5">
+      {/* Décorations — isolées dans leur propre overflow-hidden */}
+      <div className="absolute inset-0 rounded-2xl sm:rounded-[32px] overflow-hidden pointer-events-none">
+        <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-teal-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-[-30%] left-[-15%] w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl" />
+      </div>
 
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 lg:gap-8">
         {/* Titre */}
@@ -221,7 +222,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                 }
               }}
               onKeyDown={handleKeyDown}
-              className="w-full pl-12 sm:pl-14 md:pl-16 pr-11 sm:pr-12 md:pr-14 py-3.5 sm:py-4 md:py-5 lg:py-6 bg-white/10 backdrop-blur-xl border-2 border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl text-left hover:bg-white/15 hover:border-teal-400/50 focus:bg-white/15 focus:border-teal-400 focus:outline-none transition-all duration-300 shadow-lg hover:shadow-teal-500/20 group active:scale-[0.98]"
+              className="w-full pl-12 sm:pl-14 md:pl-16 pr-11 sm:pr-12 md:pr-14 py-3.5 sm:py-4 md:py-5 lg:py-6 bg-white/10 backdrop-blur-xl border-2 border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl text-left hover:bg-white/15 hover:border-teal-400/50 focus:bg-white/15 focus:border-teal-400 focus:outline-none transition-all duration-300 shadow-lg hover:shadow-teal-500/20 active:scale-[0.98]"
               aria-haspopup="listbox"
               aria-expanded={isOpen}
             >
@@ -235,7 +236,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
             />
           </div>
 
-          {/* Overlay sombre pour mobile */}
+          {/* Overlay mobile */}
           {isOpen && (
             <div
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
@@ -246,12 +247,10 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
             />
           )}
 
-          {/* Dropdown - Version Mobile (plein écran) et Desktop */}
           {isOpen && (
             <>
-              {/* Version Mobile - Modal plein écran */}
+              {/* ── MOBILE : bottom sheet ── */}
               <div className="fixed inset-x-0 bottom-0 lg:hidden bg-slate-900 rounded-t-3xl shadow-2xl z-50 animate-in slide-in-from-bottom duration-300 max-h-[85vh] flex flex-col">
-                {/* Header avec indicateur */}
                 <div className="flex-shrink-0 pt-3 pb-2 px-4">
                   <div className="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-4" />
                   <h3 className="text-lg font-black text-white text-center mb-1">
@@ -264,7 +263,6 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                   </p>
                 </div>
 
-                {/* Barre de recherche */}
                 <div className="flex-shrink-0 p-4 border-b border-white/10">
                   <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-teal-400" />
@@ -294,17 +292,11 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                   </div>
                 </div>
 
-                {/* Liste scrollable */}
                 <div className="flex-1 overflow-y-auto overscroll-contain">
-                  {/* Option "Toutes les localisations" */}
                   <button
                     type="button"
                     onClick={() => handleSelectCity("all")}
-                    className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${
-                      selectedCity === "all"
-                        ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400"
-                        : "text-white active:bg-white/10"
-                    }`}
+                    className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${selectedCity === "all" ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400" : "text-white active:bg-white/10"}`}
                   >
                     <span className="flex items-center gap-3">
                       <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
@@ -314,19 +306,13 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                       )}
                     </span>
                   </button>
-
-                  {/* Villes filtrées */}
                   {filteredCities.length > 0 ? (
                     filteredCities.map((city: any, index: number) => (
                       <button
                         key={city?.id || `city-${index}`}
                         type="button"
                         onClick={() => handleSelectCity(city?.id)}
-                        className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${
-                          selectedCity === city?.id
-                            ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400"
-                            : "text-white active:bg-white/10"
-                        }`}
+                        className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${selectedCity === city?.id ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400" : "text-white active:bg-white/10"}`}
                       >
                         <span className="flex items-center gap-3">
                           <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
@@ -352,7 +338,6 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                   )}
                 </div>
 
-                {/* Footer avec bouton fermer */}
                 <div className="flex-shrink-0 p-4 border-t border-white/10">
                   <button
                     onClick={() => {
@@ -366,9 +351,8 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                 </div>
               </div>
 
-              {/* Version Desktop - Dropdown normal */}
+              {/* ── DESKTOP : dropdown ── */}
               <div className="hidden lg:block absolute top-full mt-3 w-full bg-slate-800/95 backdrop-blur-xl border-2 border-teal-400/30 rounded-3xl shadow-2xl shadow-teal-500/10 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                {/* Barre de recherche */}
                 <div className="p-4 border-b border-white/10 bg-slate-900/50">
                   <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-teal-400" />
@@ -398,20 +382,12 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                   </div>
                 </div>
 
-                {/* Liste des options */}
                 <div className="max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-teal-500/30 scrollbar-track-transparent">
-                  {/* Option "Toutes les localisations" */}
                   <button
                     type="button"
                     onClick={() => handleSelectCity("all")}
                     onMouseEnter={() => setHighlightedIndex(-1)}
-                    className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${
-                      selectedCity === "all"
-                        ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400"
-                        : highlightedIndex === -1
-                          ? "bg-white/10 text-white"
-                          : "text-white hover:bg-white/5"
-                    }`}
+                    className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${selectedCity === "all" ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400" : highlightedIndex === -1 ? "bg-white/10 text-white" : "text-white hover:bg-white/5"}`}
                     role="option"
                     aria-selected={selectedCity === "all"}
                   >
@@ -421,7 +397,6 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                     </span>
                   </button>
 
-                  {/* Villes filtrées */}
                   {filteredCities.length > 0 ? (
                     filteredCities.map((city: any, index: number) => (
                       <button
@@ -429,13 +404,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                         type="button"
                         onClick={() => handleSelectCity(city?.id)}
                         onMouseEnter={() => setHighlightedIndex(index)}
-                        className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${
-                          selectedCity === city?.id
-                            ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400"
-                            : highlightedIndex === index
-                              ? "bg-white/10 text-white"
-                              : "text-white hover:bg-white/5"
-                        }`}
+                        className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${selectedCity === city?.id ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400" : highlightedIndex === index ? "bg-white/10 text-white" : "text-white hover:bg-white/5"}`}
                         role="option"
                         aria-selected={selectedCity === city?.id}
                       >
