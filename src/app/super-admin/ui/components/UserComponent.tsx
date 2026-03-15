@@ -47,7 +47,7 @@ const ROLE_CONFIG: Record<
 };
 
 function RoleBadge({ role }: { role: string }) {
-  const cfg = ROLE_CONFIG[role?.toLowerCase()] ?? ROLE_CONFIG["user"];
+  const cfg = ROLE_CONFIG[role?.toLowerCase()] ?? ROLE_CONFIG["customer"];
   const Icon =
     role?.toLowerCase() === "vendeur"
       ? Store
@@ -56,7 +56,7 @@ function RoleBadge({ role }: { role: string }) {
         : UserIcon;
   return (
     <span
-      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide"
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide flex-shrink-0"
       style={{
         background: cfg.bg,
         color: cfg.color,
@@ -89,6 +89,48 @@ function Avatar({ name }: { name: string }) {
   );
 }
 
+// ── SelectFilter encapsulé ────────────────────────────────────────────────────
+function SelectFilter({
+  value,
+  onChange,
+  options,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  placeholder: string;
+}) {
+  return (
+    <div className="relative flex-1 min-w-0">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        // w-full pour qu'il prenne toute la place dispo sans dépasser
+        className="w-full appearance-none pl-3 pr-7 py-2 text-xs font-medium text-slate-300 rounded-xl outline-none cursor-pointer transition-all truncate"
+        style={{
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        <option value="all" style={{ background: "#0d1117" }}>
+          {placeholder}
+        </option>
+        {options.map((o) => (
+          <option
+            key={o}
+            value={o.toLowerCase()}
+            style={{ background: "#0d1117" }}
+          >
+            {o}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+    </div>
+  );
+}
+
 export default function UserComponent() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
@@ -102,7 +144,7 @@ export default function UserComponent() {
       const data = await findAll.execute();
       setUsers(data);
       toast.success(`${data.length} utilisateurs chargés`);
-    } catch (error) {
+    } catch {
       toast.error("Impossible de charger les utilisateurs");
     } finally {
       setLoading(false);
@@ -113,15 +155,15 @@ export default function UserComponent() {
     handleFetchUsers();
   }, []);
 
-  const roles = useMemo(() => {
-    const r = Array.from(new Set(users.map((u) => u.role).filter(Boolean)));
-    return r;
-  }, [users]);
+  const roles = useMemo(
+    () => Array.from(new Set(users.map((u) => u.role).filter(Boolean))),
+    [users],
+  );
 
-  const cities = useMemo(() => {
-    const c = Array.from(new Set(users.map((u) => u.cityName).filter(Boolean)));
-    return c;
-  }, [users]);
+  const cities = useMemo(
+    () => Array.from(new Set(users.map((u) => u.cityName).filter(Boolean))),
+    [users],
+  );
 
   const filtered = useMemo(() => {
     return users.filter((u) => {
@@ -149,46 +191,17 @@ export default function UserComponent() {
     [users],
   );
 
-  const SelectFilter = ({
-    value,
-    onChange,
-    options,
-    placeholder,
-  }: {
-    value: string;
-    onChange: (v: string) => void;
-    options: string[];
-    placeholder: string;
-  }) => (
-    <div className="relative">
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="appearance-none pl-3 pr-8 py-2 text-xs font-medium text-slate-300 rounded-xl outline-none cursor-pointer transition-all"
-        style={{
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.08)",
-        }}
-      >
-        <option value="all" style={{ background: "#0d1117" }}>
-          {placeholder}
-        </option>
-        {options.map((o) => (
-          <option
-            key={o}
-            value={o.toLowerCase()}
-            style={{ background: "#0d1117" }}
-          >
-            {o}
-          </option>
-        ))}
-      </select>
-      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
-    </div>
-  );
   return (
-    <div className="min-h-screen" style={{ background: "#090d13" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-28 space-y-6">
+    // overflow-x-hidden sur le root pour tuer tout débordement horizontal
+    <div
+      className="min-h-screen overflow-x-hidden"
+      style={{ background: "#090d13" }}
+    >
+      {/*
+        px-4 sur mobile (au lieu de px-4 sm:px-2 qui réduisait trop sur sm)
+        w-full + max-w-7xl pour ne jamais dépasser la largeur viewport
+      */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-28 space-y-6">
         {/* ── HEADER ── */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -214,7 +227,10 @@ export default function UserComponent() {
           </button>
         </div>
 
-        {/* ── STATS ── */}
+        {/* ── STATS ──
+            grid-cols-2 sur mobile, 4 sur sm+
+            Texte tronqué sur petits écrans pour éviter le wrap
+        */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             {
@@ -248,21 +264,21 @@ export default function UserComponent() {
           ].map(({ label, value, color, bg, icon: Icon }) => (
             <div
               key={label}
-              className="rounded-2xl p-4 border border-white/[0.06]"
+              className="rounded-2xl p-3 sm:p-4 border border-white/[0.06]"
               style={{ background: "rgba(255,255,255,0.025)" }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: bg }}
                 >
                   <Icon className="w-4 h-4" style={{ color }} />
                 </div>
-                <div>
-                  <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest">
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest truncate">
                     {label}
                   </p>
-                  <p className="text-2xl font-bold text-slate-100 leading-none mt-0.5">
+                  <p className="text-xl sm:text-2xl font-bold text-slate-100 leading-none mt-0.5">
                     {value}
                   </p>
                 </div>
@@ -271,14 +287,19 @@ export default function UserComponent() {
           ))}
         </div>
 
-        {/* ── FILTERS ── */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          {/* Search */}
-          <div className="relative flex-1">
+        {/* ── FILTERS ──
+            Sur mobile : colonne unique
+              - barre de recherche pleine largeur
+              - les 2 selects côte à côte, chacun flex-1 (50% - gap)
+            Sur sm+ : tout sur une ligne
+        */}
+        <div className="flex flex-col gap-3">
+          {/* Search — toujours pleine largeur */}
+          <div className="relative w-full">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
             <input
               type="text"
-              placeholder="Rechercher par nom, email, téléphone..."
+              placeholder="Nom, email, téléphone…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-10 py-2.5 text-sm text-slate-200 placeholder-slate-600 rounded-xl outline-none transition-all"
@@ -296,7 +317,9 @@ export default function UserComponent() {
               </button>
             )}
           </div>
-          <div className="flex gap-2">
+
+          {/* Selects — côte à côte même sur mobile, flex-1 évite le débordement */}
+          <div className="flex gap-2 w-full">
             <SelectFilter
               value={roleFilter}
               onChange={setRoleFilter}
@@ -307,7 +330,7 @@ export default function UserComponent() {
               value={cityFilter}
               onChange={(v) => setCityFilter(v)}
               options={cities as string[]}
-              placeholder="Toutes les villes"
+              placeholder="Toutes villes"
             />
           </div>
         </div>
@@ -366,7 +389,7 @@ export default function UserComponent() {
                     <td colSpan={4} className="py-24 text-center">
                       <div className="flex flex-col items-center gap-3">
                         <div
-                          className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
+                          className="w-8 h-8 rounded-full border-2 animate-spin"
                           style={{
                             borderColor: "#06b6d4",
                             borderTopColor: "transparent",
@@ -470,13 +493,20 @@ export default function UserComponent() {
             </table>
           </div>
         </div>
-        {/* ── MOBILE CARDS ── */}
+
+        {/* ── MOBILE CARDS ──
+            Corrections clés :
+            - min-w-0 sur le conteneur de texte pour autoriser le truncate
+            - truncate sur email, nom, téléphone
+            - RoleBadge avec flex-shrink-0 (déjà dans le composant)
+            - gap réduit pour laisser de la place
+        */}
         <div className="md:hidden space-y-3">
           {loading ? (
             <div className="py-20 text-center">
               <div className="flex flex-col items-center gap-3">
                 <div
-                  className="w-7 h-7 rounded-full border-2 border-t-transparent animate-spin"
+                  className="w-7 h-7 rounded-full border-2 animate-spin"
                   style={{
                     borderColor: "#06b6d4",
                     borderTopColor: "transparent",
@@ -492,25 +522,33 @@ export default function UserComponent() {
                 className="rounded-2xl overflow-hidden border border-white/[0.06]"
                 style={{ background: "rgba(255,255,255,0.025)" }}
               >
+                {/* Ligne principale : avatar + nom/email + badge rôle */}
                 <div className="px-4 pt-4 pb-3 flex items-start gap-3">
                   <Avatar name={u.name} />
+                  {/* min-w-0 indispensable pour que truncate fonctionne dans un flex child */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-sm font-bold text-slate-200 truncate">
+                      <p className="text-sm font-bold text-slate-200 truncate min-w-0">
                         {u.name}
                       </p>
                       <RoleBadge role={u.role} />
                     </div>
                     <p className="text-xs text-slate-600 mt-0.5 truncate flex items-center gap-1">
-                      <Mail size={10} /> {u.email}
+                      <Mail size={10} className="flex-shrink-0" />
+                      <span className="truncate">{u.email}</span>
                     </p>
                   </div>
                 </div>
+
                 <div className="mx-4 border-t border-white/[0.04]" />
+
+                {/* Ligne secondaire : téléphone + ville */}
                 <div className="px-4 py-3 flex items-center justify-between gap-3">
-                  <span className="text-xs text-slate-400 flex items-center gap-1.5">
-                    <Phone size={11} className="text-slate-600" />
-                    {u.phone || (
+                  <span className="text-xs text-slate-400 flex items-center gap-1.5 min-w-0 truncate">
+                    <Phone size={11} className="text-slate-600 flex-shrink-0" />
+                    {u.phone ? (
+                      <span className="truncate">{u.phone}</span>
+                    ) : (
                       <span className="text-slate-600 italic">
                         Non renseigné
                       </span>

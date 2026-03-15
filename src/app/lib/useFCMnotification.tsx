@@ -25,13 +25,10 @@ export const useFCMNotifications = () => {
             "BG7FnzUwqpjoax5sZcznsZxnzybmoFgDaHl0qHEJmIPtauUrpsgn4pwfheOyPW2u5I91pU1D2qym4K1ngjfo0mQ",
         });
 
-        console.log("✅ FCM Token obtenu:", fcmToken);
-
-        console.log("✅ Token FCM enregistré dans le backend");
 
         // 🔔 ÉCOUTER LES NOTIFICATIONS EN PREMIER PLAN
         onMessage(messaging, (payload) => {
-          console.log("📩 Message reçu en premier plan:", payload);
+          // console.log("📩 Message reçu en premier plan:", payload);
 
           // Afficher une notification personnalisée
           if (payload.notification) {

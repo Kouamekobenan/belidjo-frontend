@@ -238,7 +238,7 @@ const Navbar = () => {
               </div>
               <div className="grid grid-cols-1 gap-3">
                 <Link
-                  href="/"
+                  href="/page"
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl"
                 >
                   <div className="p-2 bg-teal-100 text-teal-600 rounded-lg">
@@ -246,15 +246,15 @@ const Navbar = () => {
                   </div>
                   <span className="font-semibold">À propos de nous</span>
                 </Link>
-                <Link
-                  href="/"
+                <a
+                  href="tel:+2250506832678"
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl"
                 >
                   <div className="p-2 bg-orange-100 text-orange-600 rounded-lg">
                     <Phone size={20} />
                   </div>
-                  <span className="font-semibold">Support technique</span>
-                </Link>
+                  <span className="font-semibold">Appelez nous!</span>
+                </a>
               </div>
               <div className="pt-2">
                 <AuthButtons mobile />

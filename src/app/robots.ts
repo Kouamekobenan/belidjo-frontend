@@ -15,6 +15,6 @@ export default function robots(): MetadataRoute.Robots {
       ],
     },
     // Remplace par l'URL réelle de ton site quand elle sera en ligne
-    sitemap: "https://www.noboutik.com/sitemap.xml",
+    sitemap: "https://noboutik.vercel.app",
   };
 }

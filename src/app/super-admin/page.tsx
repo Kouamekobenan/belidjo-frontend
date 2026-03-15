@@ -31,14 +31,20 @@ export default function SuperAdminPage() {
       </div>
     );
   }
-  return (
-    <div className="flex min-h-screen bg-gradient-to-br from-teal-50 via-white to-green-50">
-      <NavBarAdmin />
-      <main className="flex-1 transition-all duration-300">
-        <div className="mt-14 lg:mt-0">
-          <SuperAdmin />
-        </div>
-      </main>
-    </div>
-  );
+   return (
+     <div className="flex min-h-screen" style={{ background: "#090d13" }}>
+       <NavBarAdmin />
+       {/*
+          min-w-0 : empêche le flex child de dépasser la largeur disponible
+          overflow-x-hidden : filet de sécurité contre tout débordement horizontal
+          w-0 flex-1 : pattern correct pour qu'un flex child prenne le reste de l'espace
+                        sans jamais pousser hors du viewport
+        */}
+       <main className="w-0 flex-1 min-w-0 overflow-x-hidden pb-24 transition-all duration-300">
+         <div className="mt-14 lg:mt-0">
+           <SuperAdmin />
+         </div>
+       </main>
+     </div>
+   );
 }
