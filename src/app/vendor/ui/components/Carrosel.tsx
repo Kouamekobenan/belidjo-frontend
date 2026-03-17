@@ -100,8 +100,8 @@ function VendorTicker({ otherVendors, vendors, goToSlide }: VendorTickerProps) {
 
       <div className="relative overflow-hidden group">
         {/* Gradients de fondu sur les bords */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-gray-600 via-white/80 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-3 bg-gradient-to-l from-gray-600 via-white/80 to-transparent z-10 pointer-events-none" />
 
         {/* Le conteneur qui défile sans fin */}
         <div className="flex gap-5 animate-infinite-scroll group-hover:pause-animation">
@@ -209,8 +209,8 @@ export default function Carrosel() {
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 text-xs font-black tracking-widest uppercase text-teal-600">
-            <span className="w-6 h-0.5 bg-teal-500" />
-            Noboutik Picks
+            <span className="w-6 h-0.5 bg-teal-500 font-serif" />
+            Noboutik 
           </div>
           <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-none">
             Vendeurs <span className="text-teal-500">Vedettes</span>
@@ -255,7 +255,7 @@ export default function Carrosel() {
               href={`/products/ui/page/${currentVendor.id}`}
               className="group/btn inline-flex items-center justify-center gap-3 bg-slate-900 hover:bg-teal-600 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300"
             >
-              <Store className="w-5 h-5" />
+              <Store className="w-10 h-5" />
               Visiter maintenant
               <ArrowUpRight className="w-5 h-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
             </Link>
