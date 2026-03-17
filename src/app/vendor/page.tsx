@@ -9,7 +9,6 @@ import {
   Store,
   LayoutDashboard,
   User,
-  ShoppingBag,
 } from "lucide-react";
 import VendorPage from "./ui/pages/Vendor";
 import Link from "next/link";
@@ -216,7 +215,6 @@ const Navbar = () => {
           </Link>
         </div>
       </nav>
-
       {/* --- MOBILE MENU MODAL --- */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-[60]">
