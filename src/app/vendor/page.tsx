@@ -22,7 +22,7 @@ import { UserRole } from "../users/domain/enums/role.enum";
 const LOGO_SRC = "/images/bj.png";
 const SCROLL_THRESHOLD = 20;
 
-const Navbar = () => {
+export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useAuth();
@@ -64,7 +64,7 @@ const Navbar = () => {
     if (isClient)
       return {
         label: "Mode Client",
-        href: "/vendor",
+        href: "/profile",
         color: "text-blue-600",
         bg: "bg-blue-50",
         dot: "bg-blue-500",

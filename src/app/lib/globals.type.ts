@@ -1,7 +1,6 @@
 import { UserRole } from "../users/domain/enums/role.enum";
 import { api } from "./api";
 
-
 export interface IvendorProfile {
   id: string;
   userId: string;
@@ -23,7 +22,7 @@ export interface User {
   role: UserRole;
   refreshToken: string;
   cityId: string;
-  createdAt: Date;
+  createdAt: string;
   updatedAt: Date;
   vendorProfile: IvendorProfile;
   cityName: string;
@@ -54,7 +53,6 @@ export interface ICustomer {
   cityId: string;
   user: User[];
 }
-
 
 // ✅ Créer l'instance Axios
 

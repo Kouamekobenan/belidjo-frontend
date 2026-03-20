@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { CreateUserUseCase } from "@/app/users/application/usecases/create-user.usecase";
 import { UserMapper } from "@/app/users/domain/mappers/user.mapper";
 import { UserRepository } from "@/app/users/infrastructure/user-repository.impl";
@@ -15,14 +16,17 @@ import {
   MapPin,
   Eye,
   EyeOff,
-  CheckCircle,
   AlertCircle,
   Loader2,
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+
 export default function RegisterForm() {
+  // ✅ Ajout du router pour la redirection
+  const router = useRouter();
+
   const [formData, setFormData] = useState<RegisterDto>({
     name: "",
     email: "",
@@ -34,16 +38,15 @@ export default function RegisterForm() {
   const [city, setCity] = useState<ICity[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingCities, setLoadingCities] = useState(true);
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState<"success" | "error" | "">("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<
     Partial<Record<keyof RegisterDto, string>>
   >({});
 
-  // Instanciation du Repository et UseCase (Gardé pour la fonctionnalité)
+  // Instanciation du Repository et UseCase
   const userRepo = new UserRepository(new UserMapper());
   const createUserUseCase = new CreateUserUseCase(userRepo);
+
   // Récupération des villes
   useEffect(() => {
     const fetchCity = async () => {
@@ -63,7 +66,7 @@ export default function RegisterForm() {
     fetchCity();
   }, []);
 
-  // Validation en temps réel (inchangée)
+  // Validation en temps réel
   const validateField = (name: keyof RegisterDto, value: string) => {
     let error = "";
 
@@ -73,12 +76,6 @@ export default function RegisterForm() {
           error = "Le nom doit contenir au moins 3 caractères";
         }
         break;
-      // case "email":
-      //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      //   if (!emailRegex.test(value)) {
-      //     error = "Email invalide";
-      //   }
-      //   break;
       case "password":
         if (value.length < 6) {
           error = "Le mot de passe doit contenir au moins 6 caractères";
@@ -101,25 +98,19 @@ export default function RegisterForm() {
     return error === "";
   };
 
-  // Gestion des changements de champs (inchangée)
+  // Gestion des changements de champs
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if (message) {
-      setMessage("");
-      setMessageType("");
-    }
     validateField(name as keyof RegisterDto, value);
   };
 
-  // Soumission du formulaire (inchangée)
+  // Soumission du formulaire
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
-    setMessageType("");
 
     const isNameValid = validateField("name", formData.name);
     const isEmailValid = validateField("email", formData.email);
@@ -138,6 +129,7 @@ export default function RegisterForm() {
       setLoading(false);
       return;
     }
+
     try {
       const dto: RegisterDto = {
         name: formData.name.trim(),
@@ -145,44 +137,32 @@ export default function RegisterForm() {
         password: formData.password,
         phone: formData.phone?.trim() ?? "",
         role: formData.role,
-        // refreshToken: formData.refreshToken,
         cityId: formData.cityId,
       };
+
       const response = await createUserUseCase.execute(dto);
+
+      // ✅ Stockage des tokens si présents
       if (response.token) {
-        localStorage.setItem("accessToken", response.token.accessToken);
-        localStorage.setItem("refreshToken", response.token.refreshToken);
+        localStorage.setItem("access_token", response.token.accessToken);
+        localStorage.setItem("refresh_token", response.token.refreshToken);
       }
 
-      // ✅ Utiliser formData au lieu de user
+      // ✅ Toast de bienvenue puis redirection vers /profile
       toast.success(`Bienvenue ${formData.name} ! Votre compte est créé.`);
-      setMessageType("success");
-
-      setTimeout(() => {
-        setMessage(
-          `Bienvenue ${formData.name} ! Votre compte a été créé avec succès.`,
-        );
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          phone: "",
-          role: UserRole.CUSTOMER,
-          cityId: "",
-        });
-      }, 500);
+      router.push("/profile");
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error
           ? error.message
           : "Une erreur est survenue lors de l'inscription";
       toast.error(errorMessage);
-      setMessageType("error");
     } finally {
       setLoading(false);
     }
   };
-  // Classes de style (inchangées)
+
+  // Classes de style
   const inputClass = (name: keyof RegisterDto) => `
     w-full pl-11 pr-4 text-gray-800 py-3 border rounded-xl 
     focus:ring-2 focus:ring-teal-500 focus:border-teal-500 
@@ -208,13 +188,10 @@ export default function RegisterForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-100 to-purple-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      {/* Modification : Rendre le max-w plus petit sur mobile (sm:max-w-md -> max-w-xs ou sm:max-w-sm) */}
       <div className="w-full max-w-sm sm:max-w-md">
-        {/* Conteneur principal (suppression du hover:scale pour le tactile) */}
         <div className="bg-white rounded-3xl shadow-2xl p-4 sm:p-8 transition-all duration-300 border border-gray-100">
           {/* Header */}
           <div className="text-center mb-4">
-            {/* LOGO AMÉLIORÉ et OPTIMISÉ pour le responsive */}
             <div className="inline-block mb-3">
               <div className="flex justify-center items-center pb-6">
                 <Link
@@ -232,7 +209,8 @@ export default function RegisterForm() {
               Créez votre compte client en quelques secondes
             </p>
           </div>
-          {/* Formulaire : Réduction de l'espace vertical (space-y-3 au lieu de space-y-6) */}
+
+          {/* Formulaire */}
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Nom complet */}
             <div className="relative">
@@ -256,17 +234,15 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
+
             {/* Email */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
                 Adresse email (optionnelle, mais recommandée pour la
                 récupération de compte)
               </label>
-
               <div className="relative group">
-                {/* L'icône est maintenant centrée verticalement par rapport à l'input uniquement */}
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-
                 <input
                   type="email"
                   name="email"
@@ -276,7 +252,6 @@ export default function RegisterForm() {
                   className={`${inputClass("email")} pl-10 w-full`}
                 />
               </div>
-
               {errors.email && (
                 <p className="mt-1 text-xs text-red-600 flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
                   <AlertCircle className="w-4 h-4" />
@@ -284,6 +259,7 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
+
             {/* Téléphone */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -305,6 +281,7 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
+
             {/* Mot de passe */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -343,6 +320,7 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
+
             {/* Ville */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -376,11 +354,11 @@ export default function RegisterForm() {
                 </p>
               )}
             </div>
-            {/* Bouton de soumission (Simplification du dégradé pour la clarté) */}
+
+            {/* Bouton de soumission */}
             <button
               type="submit"
               disabled={loading || loadingCities}
-              // Suppression du dégradé complexe, utilisation du teal-600 avec hover
               className="w-full bg-teal-600 cursor-pointer text-white py-3 rounded-xl font-semibold text-base sm:text-lg
                 hover:bg-teal-700 focus:ring-4 focus:ring-teal-200 transition-all duration-300 
                 shadow-lg shadow-teal-300/50 hover:shadow-xl hover:shadow-teal-400/60
@@ -396,23 +374,6 @@ export default function RegisterForm() {
               )}
             </button>
           </form>
-          {/* Message de retour */}
-          {message && (
-            <div
-              className={`mt-4 p-3 rounded-xl flex items-start gap-3 transition-all duration-500 animate-in fade-in slide-in-from-top-1 ${
-                messageType === "success"
-                  ? "bg-green-50 text-green-800 border-l-4 border-green-400"
-                  : "bg-red-50 text-red-800 border-l-4 border-red-400"
-              }`}
-            >
-              {messageType === "success" ? (
-                <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-green-500" />
-              ) : (
-                <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-500" />
-              )}
-              <p className="text-sm font-medium">{message}</p>
-            </div>
-          )}
 
           {/* Lien de connexion */}
           <div className="mt-4 text-center">
@@ -420,7 +381,6 @@ export default function RegisterForm() {
               Vous avez déjà un compte ?{" "}
               <Link
                 href="/users/ui/login"
-                // Couleur ajustée pour l'harmonie avec le Teal
                 className="text-teal-600 hover:text-teal-700 font-semibold hover:underline transition-colors"
               >
                 Se connecter
@@ -428,16 +388,17 @@ export default function RegisterForm() {
             </p>
           </div>
         </div>
-        {/* Footer - Mentions Légales */}
+
+        {/* Footer */}
         <p className="text-center text-xs text-gray-500 mt-4 max-w-sm mx-auto">
-          En créant un compte, vous acceptez nos
+          En créant un compte, vous acceptez nos{" "}
           <a
             href="#"
             className="text-teal-600 hover:underline transition-colors"
           >
             Conditions d'utilisation
-          </a>
-          et notre
+          </a>{" "}
+          et notre{" "}
           <a
             href="#"
             className="text-teal-600 hover:underline transition-colors"
