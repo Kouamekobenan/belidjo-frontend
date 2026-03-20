@@ -22,7 +22,7 @@ import { UserRole } from "../users/domain/enums/role.enum";
 const LOGO_SRC = "/images/bj.png";
 const SCROLL_THRESHOLD = 20;
 
-export const Navbar = () => {
+const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useAuth();
