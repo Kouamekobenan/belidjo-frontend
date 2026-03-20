@@ -102,7 +102,6 @@ function VendorTicker({ otherVendors, vendors, goToSlide }: VendorTickerProps) {
         {/* Gradients de fondu sur les bords */}
         <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-gray-600 via-white/80 to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-3 bg-gradient-to-l from-gray-600 via-white/80 to-transparent z-10 pointer-events-none" />
-
         {/* Le conteneur qui défile sans fin */}
         <div className="flex gap-5 animate-infinite-scroll group-hover:pause-animation">
           {tripleVendors.map((vendor, idx) => {
