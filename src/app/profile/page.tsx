@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { Navbar } from "../vendor/page";
 import ProfileComponent from "../components/features/Profile";
 
 export default function Profile() {
