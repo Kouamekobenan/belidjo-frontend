@@ -10,16 +10,15 @@ import Link from "next/link";
 const vendorRepo = new VendorRepository();
 const findAllFeaturedUseCase = new FindAllFeaturedUseCase(vendorRepo);
 
-const LINE_H = 20;
+// ── ANIMATED CTA BUTTON ──────────────────────────────────────────────────────
 
-// ── CONFIGURATION DES PHRASES & COULEURS ──────────────────────────────────────
+const LINE_H = 24; // Hauteur de ligne précise
 const phrases = [
-  { text: "Démarrer ma boutique", color: "text-white", bg: "bg-slate-900" },
-  { text: "Devenez vendeur", color: "text-white", bg: "bg-green-600" },
-  { text: "et faites du profit", color: "text-white", bg: "bg-teal-600" },
+  { text: "Vendre sur NoBoutik", bg: "from-orange-500 to-orange-600" },
+  { text: "Ouvrir ma boutique", bg: "from-teal-500 to-teal-600" },
+  { text: "Boostez vos revenus", bg: "from-indigo-600 to-blue-700" },
 ];
 
-// ── ANIMATED CTA BUTTON ──────────────────────────────────────────────────────
 function AnimatedShopButton() {
   const [idx, setIdx] = useState(0);
   const [sliding, setSliding] = useState(false);
@@ -30,8 +29,8 @@ function AnimatedShopButton() {
       setTimeout(() => {
         setIdx((prev) => (prev + 1) % phrases.length);
         setSliding(false);
-      }, 400);
-    }, 3000);
+      }, 600); 
+    }, 4000); 
     return () => clearInterval(timer);
   }, []);
 
@@ -40,44 +39,65 @@ function AnimatedShopButton() {
   return (
     <Link
       href="/vendor/vendorform"
-      className={`group self-start sm:self-auto inline-flex items-center gap-2.5 text-sm font-semibold px-6 py-3.5 rounded-xl transition-all duration-700 overflow-hidden shadow-lg ${phrases[idx].bg}`}
-      style={{ minWidth: 230 }}
+      className={`
+        relative group overflow-hidden
+        inline-flex items-center gap-3
+        px-7 py-4 rounded-2xl
+        transition-all duration-500 ease-out
+        shadow-[0_10px_20px_-10px_rgba(0,0,0,0.3)]
+        hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.4)]
+        hover:-translate-y-1 active:scale-95
+        bg-gradient-to-r ${phrases[idx].bg}
+      `}
+      style={{ minWidth: 260 }}
     >
-      <Store className="w-4 h-4 flex-shrink-0 text-white" />
+      {/* Effet de reflet "Glossy" (Style Jumia/Premium) */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-      <span
-        className="relative flex-1 select-none overflow-hidden"
+      {/* Icône de gauche avec pulsation légère */}
+      <div className="relative z-10 flex items-center justify-center w-8 h-8 bg-white/20 rounded-lg backdrop-blur-sm group-hover:rotate-12 transition-transform duration-300">
+        <Store className="w-4 h-4 text-white" />
+      </div>
+
+      {/* Zone de texte coulissante */}
+      <div
+        className="relative z-10 flex-1 overflow-hidden pointer-events-none"
         style={{ height: LINE_H }}
       >
-        <span
+        <div
           className="flex flex-col"
           style={{
             transform: sliding ? `translateY(-${LINE_H}px)` : "translateY(0px)",
             transition: sliding
-              ? "transform 0.4s cubic-bezier(0.4,0,0.2,1)"
+              ? "transform 0.6s cubic-bezier(0.65, 0, 0.35, 1)"
               : "none",
           }}
         >
           <span
-            className={`block whitespace-nowrap leading-5 text-white`}
+            className="flex items-center gap-2 text-sm font-extrabold text-white tracking-wide uppercase"
             style={{ height: LINE_H }}
           >
             {phrases[idx].text}
           </span>
           <span
-            className={`block whitespace-nowrap leading-5 text-white`}
+            className="flex items-center gap-2 text-sm font-extrabold text-white tracking-wide uppercase"
             style={{ height: LINE_H }}
           >
             {phrases[next].text}
           </span>
-        </span>
-      </span>
+        </div>
+      </div>
 
-      <ArrowRight className="w-4 h-4 flex-shrink-0 text-white group-hover:translate-x-1 transition-transform" />
+      {/* Flèche animée avec éclat */}
+      <div className="relative z-10">
+        <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-2 transition-transform duration-300 ease-out" />
+      </div>
+
+      {/* Animation d'étincelles discrète au survol */}
+      <Sparkles className="absolute right-2 top-2 w-3 h-3 text-white/40 opacity-0 group-hover:opacity-100 group-hover:animate-pulse" />
     </Link>
   );
 }
-
 // ── VENDOR TICKER (INFINITE SCROLL) ──────────────────────────────────────────
 interface VendorTickerProps {
   otherVendors: Vendor[];
@@ -140,7 +160,6 @@ function VendorTicker({ otherVendors, vendors, goToSlide }: VendorTickerProps) {
     </div>
   );
 }
-
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function Carrosel() {
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -209,7 +228,7 @@ export default function Carrosel() {
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 text-xs font-black tracking-widest uppercase text-teal-600">
             <span className="w-6 h-0.5 bg-teal-500 font-serif" />
-            Noboutik 
+            Noboutik
           </div>
           <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-none">
             Vendeurs <span className="text-teal-500">Vedettes</span>
@@ -219,7 +238,7 @@ export default function Carrosel() {
       </div>
 
       {/* Main Card */}
-      <div className="relative overflow-hidden rounded-[2.5rem] bg-white border border-slate-100 shadow-2xl shadow-slate-200/50">
+      <div className="relative overflow-hidden rounded-[2rem] bg-white border border-slate-100 shadow-2xl shadow-slate-200/50">
         <div
           key={currentIndex}
           className="flex flex-col lg:flex-row animate-fade-in"
@@ -239,7 +258,6 @@ export default function Carrosel() {
               </span>
             </div>
           </div>
-
           <div className="flex-1 p-10 md:p-16 flex flex-col justify-center space-y-8">
             <h3 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
               {currentVendor.name}
@@ -261,7 +279,6 @@ export default function Carrosel() {
           </div>
         </div>
       </div>
-
       {/* Infinite Ticker Section */}
       {otherVendors.length > 0 && (
         <VendorTicker
@@ -302,7 +319,6 @@ export default function Carrosel() {
             transform: translateY(0);
           }
         }
-
         .animate-fade-in {
           animation: fade-in 0.6s ease-out forwards;
         }
