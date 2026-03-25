@@ -27,6 +27,7 @@ export interface IProduct {
   updatedAt: string;
   comment: IComment[];
   vendor: IVendor;
+  categoryName: string;
 }
 
 // Interface pour le produit lors de l'édition (peut inclure l'ID)
@@ -38,10 +39,10 @@ export interface IProductToEdit extends CreateProductDto {
 export const initialFormData: CreateProductDto = {
   name: "",
   description: "",
-  categoryId: "", 
+  categoryId: "",
   price: 0,
   quantity: 0,
-  imageUrl:"",
+  imageUrl: "",
   vendorId: "",
 };
 
@@ -59,6 +60,6 @@ export class Product {
     public readonly createdAt: string,
     public readonly updatedAt: string,
     public comment: IComment[],
-    public vendor: IVendor
+    public vendor: IVendor,
   ) {}
 }

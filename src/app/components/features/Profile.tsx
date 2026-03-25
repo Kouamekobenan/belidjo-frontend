@@ -23,7 +23,6 @@ function Avatar({ name }: { name: string }) {
     .slice(0, 2)
     .join("")
     .toUpperCase();
-
   return (
     <div className="relative inline-flex">
       {/* Anneau animé */}
@@ -290,7 +289,6 @@ export default function ProfileComponent() {
                 </p>
               </div>
             </Link>
-
             <Link
               href="/vendor"
               className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-teal-300 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
@@ -312,7 +310,7 @@ export default function ProfileComponent() {
 
         {/* Footer discret */}
         <p className="text-center text-xs text-gray-400 pb-4">
-          Dernière connexion aujourd'hui •{" "}
+          Dernière connexion aujourd'hui •
           <Link
             href="/users/ui/login"
             className="text-teal-500 hover:underline"
@@ -321,8 +319,6 @@ export default function ProfileComponent() {
           </Link>
         </p>
       </div>
-
-      {/* Animation spin lent pour l'avatar — injecté via style global */}
       <style jsx global>{`
         @keyframes spin-slow {
           from {
