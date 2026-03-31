@@ -13,8 +13,8 @@ import {
   CheckCircle,
   Settings,
   ShoppingBag,
+  Edit,
 } from "lucide-react";
-
 // ─── Composant Avatar avec initiales ───────────────────────────────────────
 function Avatar({ name }: { name: string }) {
   const initials = name
@@ -190,11 +190,11 @@ export default function ProfileComponent() {
               Accueil
             </Link>
             <Link
-              href="/vendor"
+              href={`/profile/${user.id}`}
               className="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm font-medium transition-colors"
             >
-              <Settings className="w-4 h-4" />
-              Paramètres
+              <Edit className="w-4 h-4" />
+              Modifier mon profil
             </Link>
           </div>
           {/* Identité dans la bannière */}
@@ -290,7 +290,7 @@ export default function ProfileComponent() {
               </div>
             </Link>
             <Link
-              href="/vendor"
+              href={`/profile/${user.id}`}
               className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-teal-300 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
             >
               <div className="w-10 h-10 rounded-xl bg-gray-50 text-gray-500 flex items-center justify-center group-hover:bg-teal-500 group-hover:text-white transition-colors">
