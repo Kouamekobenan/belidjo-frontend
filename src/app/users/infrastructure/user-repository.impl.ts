@@ -6,6 +6,7 @@ import {
 import { User } from "../domain/entities/user.entity";
 import { IUserRepository } from "../domain/interfaces/user-repository.interface";
 import { UserMapper } from "../domain/mappers/user.mapper";
+import { UpdateUserDto } from "../application/dtos/update-user.dto";
 
 export class UserRepository implements IUserRepository {
   constructor(public readonly mapper: UserMapper) {}
@@ -27,5 +28,10 @@ export class UserRepository implements IUserRepository {
     const url = "/users";
     const users = await api.get(url);
     return users.data;
+  }
+  async update(id: string, dto: UpdateUserDto): Promise<User> {
+    const url = `/auth/update/${id}`;
+    const user = await api.patch(url, dto);
+    return user.data;
   }
 }
