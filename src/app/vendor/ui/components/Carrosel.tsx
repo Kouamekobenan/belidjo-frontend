@@ -224,9 +224,21 @@ export default function Carrosel() {
   return (
     <section className="w-full py-16 md:py-24 space-y-20">
       {/* Header - full bleed, sans marge gauche/droite */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-teal-900 shadow-2xl shadow-slate-900/30">
-        {/* Texture + glows décoratifs (cohérents avec la bannière du site) */}
-        <div className="absolute inset-0 opacity-[0.07] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
+      <div className="relative overflow-hidden shadow-2xl shadow-slate-900/30">
+        {/* Photo de fond */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/bannière-photo.jpeg"
+            alt="Bannière Noboutik"
+            fill
+            priority
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-slate-900/70 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-teal-900/70" />
+        </div>
+
+        {/* Glows décoratifs (cohérents avec la bannière du site) */}
         <div className="absolute -top-24 -right-24 w-72 h-72 bg-teal-500/20 rounded-full blur-3xl" />
         <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-orange-500/10 rounded-full blur-3xl" />
 

@@ -157,27 +157,19 @@ const Navbar = () => {
       <header
         className={`md:hidden fixed top-0 left-0 right-0 z-50 transition-all ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-white/50 backdrop-blur-sm"}`}
       >
-        <div className="px-4 py-3 flex justify-between items-center">
-          <span className="text-xl font-black text-gray-900">{cityName}</span>
+        <div className="px-4 py-3 flex items-center gap-3">
+          <ProductSearch variant="bar" triggerClassName="relative flex-1" />
 
-          <div className="flex items-center gap-2">
-            <ProductSearch triggerClassName="p-2 rounded-xl text-gray-500 hover:text-teal-600 hover:bg-teal-50 transition-colors" />
-            {/* Badge Dynamique : Admin, Vendeur ou Client */}
-            {isAuthenticated && roleConfig && (
-              <div
-                className={`flex items-center gap-2 ${roleConfig.bg} px-3 py-1 rounded-full`}
-              >
-                <div
-                  className={`w-2 h-2 ${roleConfig.dot} rounded-full animate-pulse`}
-                />
-                <span
-                  className={`text-[10px] font-bold ${roleConfig.color} uppercase`}
-                >
-                  {roleConfig.label}
-                </span>
-              </div>
-            )}
-          </div>
+          {/* Badge Dynamique : Admin, Vendeur ou Client (icône seule pour laisser la place à la recherche) */}
+          {isAuthenticated && roleConfig && (
+            <Link
+              href={roleConfig.href}
+              aria-label={roleConfig.label}
+              className={`flex items-center justify-center w-9 h-9 ${roleConfig.bg} ${roleConfig.color} rounded-full shrink-0`}
+            >
+              {roleConfig.icon}
+            </Link>
+          )}
         </div>
       </header>
 
