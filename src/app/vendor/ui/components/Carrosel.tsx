@@ -41,15 +41,15 @@ function AnimatedShopButton() {
       href="/vendor/vendorform"
       className={`
         relative group overflow-hidden
-        inline-flex items-center gap-3
-        px-7 py-4 rounded-2xl
+        flex w-full sm:inline-flex sm:w-auto items-center gap-3
+        px-8 py-4 rounded-2xl
         transition-all duration-500 ease-out
         shadow-[0_10px_20px_-10px_rgba(0,0,0,0.3)]
         hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.4)]
         hover:-translate-y-1 active:scale-95
         bg-gradient-to-r ${phrases[idx].bg}
       `}
-      style={{ minWidth: 260 }}
+      style={{ minWidth: 300 }}
     >
       {/* Effet de reflet "Glossy" (Style Jumia/Premium) */}
       <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -74,13 +74,13 @@ function AnimatedShopButton() {
           }}
         >
           <span
-            className="flex items-center gap-2 text-sm font-extrabold text-white tracking-wide uppercase"
+            className="flex items-center gap-2 text-sm font-extrabold text-white tracking-wide uppercase whitespace-nowrap"
             style={{ height: LINE_H }}
           >
             {phrases[idx].text}
           </span>
           <span
-            className="flex items-center gap-2 text-sm font-extrabold text-white tracking-wide uppercase"
+            className="flex items-center gap-2 text-sm font-extrabold text-white tracking-wide uppercase whitespace-nowrap"
             style={{ height: LINE_H }}
           >
             {phrases[next].text}
@@ -222,71 +222,85 @@ export default function Carrosel() {
   const otherVendors = vendors.filter((_, i) => i !== currentIndex);
 
   return (
-    <section className="w-full max-w-7xl mx-auto px-4 py-16 md:py-24 space-y-20">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 text-xs font-black tracking-widest uppercase text-teal-600">
-            <span className="w-6 h-0.5 bg-teal-500 font-serif" />
-            Noboutik
+    <section className="w-full py-16 md:py-24 space-y-20">
+      {/* Header - full bleed, sans marge gauche/droite */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-teal-900 shadow-2xl shadow-slate-900/30">
+        {/* Texture + glows décoratifs (cohérents avec la bannière du site) */}
+        <div className="absolute inset-0 opacity-[0.07] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
+        <div className="absolute -top-24 -right-24 w-72 h-72 bg-teal-500/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-orange-500/10 rounded-full blur-3xl" />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-14 py-12 md:py-16 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-black tracking-widest uppercase text-teal-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+              Noboutik
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-none whitespace-nowrap">
+              Vendeurs <span className="text-teal-400">Vedettes</span>
+            </h2>
+            <p className="hidden sm:block text-slate-300 text-base md:text-lg max-w-md font-medium">
+              Découvrez les boutiques les plus populaires du moment et lancez la vôtre dès aujourd'hui.
+            </p>
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-slate-900 leading-none">
-            Vendeurs <span className="text-teal-500">Vedettes</span>
-          </h2>
+          <div className="shrink-0 lg:self-center">
+            <AnimatedShopButton />
+          </div>
         </div>
-        <AnimatedShopButton />
       </div>
 
-      {/* Main Card */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-white border border-slate-100 shadow-2xl shadow-slate-200/50">
-        <div
-          key={currentIndex}
-          className="flex flex-col lg:flex-row animate-fade-in"
-        >
-          <div className="relative w-full lg:w-3/5 aspect-video lg:aspect-auto lg:min-h-[520px] overflow-hidden">
-            <Image
-              src={currentVendor.site.logoUrl}
-              alt={currentVendor.name}
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute top-6 left-6 flex items-center gap-2 bg-white/95 backdrop-blur px-4 py-2 rounded-full shadow-xl">
-              <Sparkles className="w-4 h-4 text-amber-500 fill-amber-500" />
-              <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
-                Top Shop
-              </span>
+      <div className="max-w-7xl mx-auto px-4 space-y-20">
+        {/* Main Card */}
+        <div className="relative overflow-hidden rounded-[2rem] bg-white border border-slate-100 shadow-2xl shadow-slate-200/50">
+          <div
+            key={currentIndex}
+            className="flex flex-col lg:flex-row animate-fade-in"
+          >
+            <div className="relative w-full lg:w-3/5 aspect-video lg:aspect-auto lg:min-h-[520px] overflow-hidden">
+              <Image
+                src={currentVendor.site.logoUrl}
+                alt={currentVendor.name}
+                fill
+                className="object-cover"
+                priority
+              />
+              <div className="absolute top-6 left-6 flex items-center gap-2 bg-white/95 backdrop-blur px-4 py-2 rounded-full shadow-xl">
+                <Sparkles className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                  Top Shop
+                </span>
+              </div>
+            </div>
+            <div className="flex-1 p-10 md:p-16 flex flex-col justify-center space-y-8">
+              <h3 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
+                {currentVendor.name}
+              </h3>
+              <p className="text-slate-500 text-lg leading-relaxed italic">
+                "
+                {currentVendor.site?.description ||
+                  "Une expérience shopping unique à découvrir sur Noboutik."}
+                "
+              </p>
+              <Link
+                href={`/products/ui/page/${currentVendor.id}`}
+                className="group/btn inline-flex items-center justify-center gap-3 bg-slate-900 hover:bg-teal-600 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300"
+              >
+                <Store className="w-10 h-5" />
+                Visiter maintenant
+                <ArrowUpRight className="w-5 h-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+              </Link>
             </div>
           </div>
-          <div className="flex-1 p-10 md:p-16 flex flex-col justify-center space-y-8">
-            <h3 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
-              {currentVendor.name}
-            </h3>
-            <p className="text-slate-500 text-lg leading-relaxed italic">
-              "
-              {currentVendor.site?.description ||
-                "Une expérience shopping unique à découvrir sur Noboutik."}
-              "
-            </p>
-            <Link
-              href={`/products/ui/page/${currentVendor.id}`}
-              className="group/btn inline-flex items-center justify-center gap-3 bg-slate-900 hover:bg-teal-600 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300"
-            >
-              <Store className="w-10 h-5" />
-              Visiter maintenant
-              <ArrowUpRight className="w-5 h-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-            </Link>
-          </div>
         </div>
+        {/* Infinite Ticker Section */}
+        {otherVendors.length > 0 && (
+          <VendorTicker
+            otherVendors={otherVendors}
+            vendors={vendors}
+            goToSlide={goToSlide}
+          />
+        )}
       </div>
-      {/* Infinite Ticker Section */}
-      {otherVendors.length > 0 && (
-        <VendorTicker
-          otherVendors={otherVendors}
-          vendors={vendors}
-          goToSlide={goToSlide}
-        />
-      )}
 
       {/* CSS ANIMATIONS */}
       <style jsx global>{`

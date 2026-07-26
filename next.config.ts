@@ -9,7 +9,7 @@ const withPWA = require("@ducanh2912/next-pwa").default({
   buildExcludes: [/app-build-manifest\.json$/, /middleware-manifest\.json$/],
 
   // 🔧 Cache uniquement les ressources de votre domaine
-  publicExcludes: ["!robots.txt", "!sitemap.xml"],
+  publicExcludes: ["!robots.txt", "!sitemap.xml", "!ffmpeg/**"],
 
   // 🔧 Configuration cache réseau
   runtimeCaching: [
