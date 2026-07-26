@@ -134,6 +134,45 @@ export class ProductRepository implements IProductRepository {
     const product = await api.get(`products/product/${productId}`);
     return product.data.data;
   }
+  async findByCatId(
+    catId: string,
+    limit: number,
+    page: number,
+    vendorId?: string,
+  ): Promise<IPaginatedResponse<IProduct>> {
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+    });
+    if (vendorId) params.set("vendorId", vendorId);
+    const res = await api.get(`/products/cat/${catId}?${params.toString()}`);
+    return {
+      data: res.data.data,
+      total: res.data.total,
+      totalPages: res.data.totalPages,
+      limit: res.data.limit,
+      page: res.data.page,
+    };
+  }
+  async searchProducts(
+    term: string,
+    limit: number,
+    page: number,
+  ): Promise<IPaginatedResponse<IProduct>> {
+    const params = new URLSearchParams({
+      q: term,
+      page: String(page),
+      limit: String(limit),
+    });
+    const res = await api.get(`/products/search?${params.toString()}`);
+    return {
+      data: res.data.data,
+      total: res.data.total,
+      totalPages: res.data.totalPages,
+      limit: res.data.limit,
+      page: res.data.page,
+    };
+  }
   async delete(productId: string): Promise<void> {
     await api.delete(`/products/${productId}`);
   }
