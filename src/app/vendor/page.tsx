@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import Carrosel from "./ui/components/Carrosel";
 import { useAuth } from "../context/AuthContext";
 import { UserRole } from "../users/domain/enums/role.enum";
+import ProductSearch from "../products/ui/components/ProductSearch";
 
 const LOGO_SRC = "/images/bj.png";
 const SCROLL_THRESHOLD = 20;
@@ -107,8 +108,8 @@ const Navbar = () => {
       <nav
         className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-100 py-2" : "bg-transparent py-4"}`}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <Link href="/vendor" className="flex items-center gap-3 group">
+        <div className="max-w-7xl mx-auto px-6 flex items-center gap-6">
+          <Link href="/vendor" className="flex items-center gap-3 group shrink-0">
             <div className="relative w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center overflow-hidden border border-gray-50">
               <Image
                 src={LOGO_SRC}
@@ -127,7 +128,11 @@ const Navbar = () => {
             </span>
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex-1 flex justify-center">
+            <ProductSearch variant="bar" triggerClassName="relative w-full max-w-md" />
+          </div>
+
+          <div className="flex items-center gap-4 shrink-0">
             {/* Badge de mode sur Desktop (Optionnel) */}
             {isAuthenticated && roleConfig && (
               <div
@@ -155,21 +160,24 @@ const Navbar = () => {
         <div className="px-4 py-3 flex justify-between items-center">
           <span className="text-xl font-black text-gray-900">{cityName}</span>
 
-          {/* Badge Dynamique : Admin, Vendeur ou Client */}
-          {isAuthenticated && roleConfig && (
-            <div
-              className={`flex items-center gap-2 ${roleConfig.bg} px-3 py-1 rounded-full`}
-            >
+          <div className="flex items-center gap-2">
+            <ProductSearch triggerClassName="p-2 rounded-xl text-gray-500 hover:text-teal-600 hover:bg-teal-50 transition-colors" />
+            {/* Badge Dynamique : Admin, Vendeur ou Client */}
+            {isAuthenticated && roleConfig && (
               <div
-                className={`w-2 h-2 ${roleConfig.dot} rounded-full animate-pulse`}
-              />
-              <span
-                className={`text-[10px] font-bold ${roleConfig.color} uppercase`}
+                className={`flex items-center gap-2 ${roleConfig.bg} px-3 py-1 rounded-full`}
               >
-                {roleConfig.label}
-              </span>
-            </div>
-          )}
+                <div
+                  className={`w-2 h-2 ${roleConfig.dot} rounded-full animate-pulse`}
+                />
+                <span
+                  className={`text-[10px] font-bold ${roleConfig.color} uppercase`}
+                >
+                  {roleConfig.label}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 

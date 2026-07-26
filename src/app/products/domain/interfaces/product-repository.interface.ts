@@ -9,12 +9,17 @@ export interface IProductRepository {
     page: number
   ): Promise<IPaginatedResponse<IProduct>>;
   findById(productId: string): Promise<IProduct>;
-  // findByCatId(
-  //   catId: string,
-  //   limit: number,
-  //   page: number,
-  //   vendorId?:string
-  // ): Promise<IPaginatedResponse<IProduct>>;
+  findByCatId(
+    catId: string,
+    limit: number,
+    page: number,
+    vendorId?: string
+  ): Promise<IPaginatedResponse<IProduct>>;
+  searchProducts(
+    term: string,
+    limit: number,
+    page: number
+  ): Promise<IPaginatedResponse<IProduct>>;
   create(create: CreateProductDto, file?: File | null): Promise<Product>;
   delete(productId: string): Promise<void>;
   update(
