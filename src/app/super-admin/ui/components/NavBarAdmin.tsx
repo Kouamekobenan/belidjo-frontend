@@ -9,6 +9,7 @@ import {
   Home,
   LogOut,
   ChevronRight,
+  Store,
 } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
@@ -126,6 +127,9 @@ export default function NavBarAdmin() {
             <NavItem href="/super-admin" icon={LayoutDashboard}>
               Tableau de bord
             </NavItem>
+            <NavItem href="/super-admin/vendors" icon={Store}>
+              Boutiques
+            </NavItem>
             <NavItem href="/super-admin/city" icon={MapPin}>
               Gestion des villes
             </NavItem>
@@ -200,6 +204,11 @@ export default function NavBarAdmin() {
             href="/super-admin"
             icon={LayoutDashboard}
             label="Accueil"
+          />
+          <MobileNavItem
+            href="/super-admin/vendors"
+            icon={Store}
+            label="Boutiques"
           />
           <MobileNavItem
             href="/super-admin/city"

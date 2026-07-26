@@ -1,683 +1,252 @@
 "use client";
 import { Vendor } from "@/app/vendor/domain/entities/vendor.entity";
 import { VendorRepository } from "@/app/vendor/infrastructure/api/vendor.api";
+import { GetAllVendorUseCase } from "@/app/vendor/application/usecases/getAll-vendor.usecase";
+import { useAuth } from "@/app/context/AuthContext";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import {
+  Store,
+  MapPin,
+  Bell,
   Users,
   CheckCircle,
-  XCircle,
-  Globe,
-  Phone,
-  ShieldCheck,
-  Search,
   Star,
-  StarOff,
-  MapPin,
+  ChevronRight,
+  ShieldCheck,
+  TrendingUp,
 } from "lucide-react";
-import { ApproveVendorUseCase } from "@/app/vendor/application/usecases/approve-vendor.usecase";
-import toast from "react-hot-toast";
-import { GetAllVendorUseCase } from "@/app/vendor/application/usecases/getAll-vendor.usecase";
-import { UpdateFeatureStatusUsecase } from "@/app/vendor/application/usecases/update-feature-status.usecase";
-import VendorVisitModal from "./VendorVisitModal";
-import PreviewBadgeModal from "./PreviewBadgeModal";
 
 const repoVendor = new VendorRepository();
 const findAllVendorUseCase = new GetAllVendorUseCase(repoVendor);
-const approveVendorUseCase = new ApproveVendorUseCase(repoVendor);
-const updateFeatureStatusUseCase = new UpdateFeatureStatusUsecase(repoVendor);
+
+interface VendorStats {
+  total: number;
+  approved: number;
+  featured: number;
+  pending: number;
+}
 
 export default function SuperAdmin() {
-  const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [total, setTotal] = useState<number>(0);
+  const { user } = useAuth();
+  const [vendorStats, setVendorStats] = useState<VendorStats>({
+    total: 0,
+    approved: 0,
+    featured: 0,
+    pending: 0,
+  });
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const VENDOR_PER_PAGE = 50;
-
-  const fetchVendors = async () => {
-    try {
-      setLoading(true);
-      const res = await findAllVendorUseCase.execute(VENDOR_PER_PAGE, 1);
-      setVendors(res.data);
-      setTotal(res.total);
-    } catch (error) {
-      toast.error("Impossible de charger les partenaires");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchVendors();
+    const fetchStats = async () => {
+      try {
+        const res = await findAllVendorUseCase.execute(100, 1);
+        const data: Vendor[] = res.data;
+        setVendorStats({
+          total: res.total,
+          approved: data.filter((v) => v.isApproved).length,
+          featured: data.filter((v) => v.isFeatured).length,
+          pending: data.filter((v) => !v.isApproved).length,
+        });
+      } catch {
+        // silent — stats resteront à 0
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
   }, []);
 
-  const handleToggleFeatureStatus = async (
-    vendorId: string,
-    currentStatus: boolean,
-  ) => {
-    const loadingToast = toast.loading(
-      currentStatus ? "Retrait de la vedette..." : "Mise en vedette...",
-    );
-    try {
-      if (!vendorId) throw new Error("ID manquant");
-      await updateFeatureStatusUseCase.execute(vendorId, !currentStatus);
-      toast.success(
-        currentStatus ? "Retiré de la vedette !" : "Mis en vedette !",
-        { id: loadingToast },
-      );
-      await fetchVendors();
-    } catch (error) {
-      toast.error("Erreur lors de la modification", { id: loadingToast });
-    }
-  };
+  const sections = [
+    {
+      href: "/super-admin/vendors",
+      icon: Store,
+      label: "Boutiques",
+      description: "Approuver, révoquer et gérer les partenaires",
+      color: "#06b6d4",
+      bg: "rgba(6,182,212,0.08)",
+      border: "rgba(6,182,212,0.15)",
+    },
+    {
+      href: "/super-admin/users",
+      icon: Users,
+      label: "Utilisateurs",
+      description: "Consulter et filtrer les comptes",
+      color: "#c084fc",
+      bg: "rgba(192,132,252,0.08)",
+      border: "rgba(192,132,252,0.15)",
+    },
+    {
+      href: "/super-admin/city",
+      icon: MapPin,
+      label: "Villes",
+      description: "Ajouter et gérer les villes disponibles",
+      color: "#10b981",
+      bg: "rgba(16,185,129,0.08)",
+      border: "rgba(16,185,129,0.15)",
+    },
+    {
+      href: "/super-admin/notification",
+      icon: Bell,
+      label: "Notifications",
+      description: "Envoyer des messages aux utilisateurs",
+      color: "#f59e0b",
+      bg: "rgba(245,158,11,0.08)",
+      border: "rgba(245,158,11,0.15)",
+    },
+  ];
 
-  const handleToggleStatus = async (vendorId: string) => {
-    const loadingToast = toast.loading("Mise à jour du statut...");
-    try {
-      if (!vendorId) throw new Error("ID manquant");
-      await approveVendorUseCase.execute(vendorId);
-      toast.success("Statut mis à jour !", { id: loadingToast });
-      await fetchVendors();
-    } catch (error) {
-      toast.error("Erreur lors de la modification", { id: loadingToast });
-    }
-  };
-
-  const filteredVendors = vendors.filter(
-    (v) =>
-      v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      v.user?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      v.site?.domain?.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
-
-  const stats = {
-    total: total,
-    approved: vendors.filter((v) => v.isApproved).length,
-    featured: vendors.filter((v) => v.isFeatured).length,
-  };
-
-  const cardBase = "rounded-2xl p-5 border transition-all duration-200";
-  const darkCard = `${cardBase} border-white/[0.06]`;
+  const kpis = [
+    {
+      icon: Store,
+      label: "Total boutiques",
+      value: vendorStats.total,
+      color: "#06b6d4",
+      bg: "rgba(6,182,212,0.08)",
+    },
+    {
+      icon: CheckCircle,
+      label: "Boutiques actives",
+      value: vendorStats.approved,
+      color: "#10b981",
+      bg: "rgba(16,185,129,0.08)",
+    },
+    {
+      icon: ShieldCheck,
+      label: "En attente",
+      value: vendorStats.pending,
+      color: "#f59e0b",
+      bg: "rgba(245,158,11,0.08)",
+    },
+    {
+      icon: Star,
+      label: "En vedette",
+      value: vendorStats.featured,
+      color: "#a78bfa",
+      bg: "rgba(167,139,250,0.08)",
+    },
+  ];
 
   return (
     <div
       className="min-h-screen w-full overflow-x-hidden"
       style={{ background: "#090d13" }}
     >
-      {/* FIX: overflow-x-hidden + w-full sur le conteneur racine */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 pb-28 space-y-5 w-full box-border">
-        {/* ── HEADER ── */}
-        {/* FIX: flex-col forcé sur mobile, gap réduit, search full-width mobile */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight truncate">
-              Tableau de bord
-            </h1>
-            <p className="text-slate-500 text-sm mt-1">
-              Gérez vos boutiques partenaires et leurs accès.
-            </p>
-          </div>
-          {/* FIX: w-full sur mobile, sm:w-72 sur desktop */}
-          <div className="relative w-full sm:w-72 flex-shrink-0">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Rechercher une boutique..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-600 rounded-xl outline-none transition-all"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-              onFocus={(e) =>
-                (e.target.style.borderColor = "rgba(6,182,212,0.4)")
-              }
-              onBlur={(e) =>
-                (e.target.style.borderColor = "rgba(255,255,255,0.08)")
-              }
-            />
-          </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-28 space-y-8 w-full">
+        {/* HEADER */}
+        <div className="space-y-1">
+          <p className="text-slate-500 text-sm">Bienvenue,</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight">
+            {user?.name ?? "Administrateur"}
+          </h1>
+          <p className="text-slate-600 text-sm">
+            Vue d&apos;ensemble de votre plateforme NoBoutik.
+          </p>
         </div>
 
-        {/* ── STATS CARDS ── */}
-        {/* FIX: grid-cols-3 directement mais avec padding/text réduit sur mobile */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-4">
-          {[
-            {
-              icon: Users,
-              label: "Total",
-              labelFull: "Total Partenaires",
-              value: stats.total,
-              color: "#06b6d4",
-              bg: "rgba(6,182,212,0.08)",
-            },
-            {
-              icon: CheckCircle,
-              label: "Actives",
-              labelFull: "Boutiques Actives",
-              value: stats.approved,
-              color: "#10b981",
-              bg: "rgba(16,185,129,0.08)",
-            },
-            {
-              icon: Star,
-              label: "Vedette",
-              labelFull: "En Vedette",
-              value: stats.featured,
-              color: "#f59e0b",
-              bg: "rgba(245,158,11,0.08)",
-            },
-          ].map(({ icon: Icon, label, labelFull, value, color, bg }) => (
-            <div
-              key={label}
-              className={`rounded-2xl border border-white/[0.06] transition-all duration-200 p-3 sm:p-5`}
-              style={{ background: "rgba(255,255,255,0.025)" }}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                {/* FIX: icône plus petite sur mobile */}
+        {/* KPI CARDS */}
+        <div>
+          <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-3">
+            Aperçu boutiques
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {kpis.map(({ icon: Icon, label, value, color, bg }) => (
+              <div
+                key={label}
+                className="rounded-2xl p-4 border border-white/[0.06] transition-all duration-200"
+                style={{ background: "rgba(255,255,255,0.025)" }}
+              >
                 <div
-                  className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
                   style={{ background: bg }}
                 >
-                  <Icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color }} />
+                  <Icon className="w-4 h-4" style={{ color }} />
                 </div>
-                <div className="min-w-0">
-                  {/* FIX: label court sur mobile, complet sur desktop */}
-                  <p className="text-[10px] sm:text-[11px] font-semibold text-slate-500 uppercase tracking-widest truncate">
-                    <span className="sm:hidden">{label}</span>
-                    <span className="hidden sm:inline">{labelFull}</span>
-                  </p>
-                  <p className="text-2xl sm:text-3xl font-bold text-slate-100 mt-0.5 leading-none">
-                    {value}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* ── DESKTOP TABLE ── */}
-        <div
-          className="hidden md:block rounded-2xl overflow-hidden border border-white/[0.06]"
-          style={{ background: "rgba(255,255,255,0.025)" }}
-        >
-          <div
-            className="px-6 py-4 flex justify-between items-center border-b border-white/[0.05]"
-            style={{ background: "rgba(255,255,255,0.02)" }}
-          >
-            <h3 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-              Liste des boutiques
-              {searchQuery && (
-                <span className="text-xs text-slate-500 font-normal">
-                  — {filteredVendors.length} résultat
-                  {filteredVendors.length > 1 ? "s" : ""}
-                </span>
-              )}
-            </h3>
-            <span
-              className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg"
-              style={{
-                background: "rgba(6,182,212,0.1)",
-                color: "#06b6d4",
-                border: "1px solid rgba(6,182,212,0.2)",
-              }}
-            >
-              {filteredVendors.length} affichés
-            </span>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr
-                  className="text-[11px] text-slate-600 uppercase tracking-widest font-semibold border-b border-white/[0.04]"
-                  style={{ background: "rgba(255,255,255,0.01)" }}
-                >
-                  <th className="px-6 py-3.5">Boutique / Site</th>
-                  <th className="px-6 py-3.5">Propriétaire</th>
-                  <th className="px-6 py-3.5 text-center">Statuts</th>
-                  <th className="px-6 py-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan={4} className="py-24 text-center">
-                      <div className="flex flex-col items-center gap-3">
-                        <div
-                          className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
-                          style={{
-                            borderColor: "#06b6d4",
-                            borderTopColor: "transparent",
-                          }}
-                        />
-                        <span className="text-sm text-slate-500">
-                          Chargement des données...
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : filteredVendors.length > 0 ? (
-                  filteredVendors.map((v, i) => (
-                    <tr
-                      key={v.id}
-                      className="border-b border-white/[0.03] transition-colors group"
-                      style={{
-                        background:
-                          i % 2 === 0
-                            ? "transparent"
-                            : "rgba(255,255,255,0.01)",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.background =
-                          "rgba(6,182,212,0.04)")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.background =
-                          i % 2 === 0
-                            ? "transparent"
-                            : "rgba(255,255,255,0.01)")
-                      }
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          {v.isFeatured && (
-                            <Star
-                              size={14}
-                              className="text-amber-400 fill-amber-400 flex-shrink-0"
-                            />
-                          )}
-                          <div>
-                            <div className="text-sm font-semibold text-slate-200 group-hover:text-cyan-400 transition-colors">
-                              {v.name}
-                            </div>
-                            <div className="flex items-center gap-1.5 text-xs text-slate-600 mt-1">
-                              <Globe size={11} />
-                              <span className="truncate max-w-xs">
-                                {v.site?.domain || "Pas de domaine"}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-slate-300">
-                          {v.user?.name}
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-slate-600 mt-1.5 flex-wrap">
-                          <span className="flex items-center gap-1">
-                            <Phone size={10} />
-                            {v.user?.phone}
-                          </span>
-                          <span
-                            className="px-2 py-0.5 rounded-md text-[10px] font-semibold"
-                            style={{
-                              background: "rgba(16,185,129,0.1)",
-                              color: "#6ee7b7",
-                              border: "1px solid rgba(16,185,129,0.15)",
-                            }}
-                          >
-                            {v.city.name}
-                          </span>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col items-center gap-2">
-                          {v.isApproved ? (
-                            <span
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide"
-                              style={{
-                                background: "rgba(16,185,129,0.1)",
-                                color: "#6ee7b7",
-                                border: "1px solid rgba(16,185,129,0.2)",
-                              }}
-                            >
-                              <CheckCircle size={11} /> Actif
-                            </span>
-                          ) : (
-                            <span
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide"
-                              style={{
-                                background: "rgba(245,158,11,0.1)",
-                                color: "#fcd34d",
-                                border: "1px solid rgba(245,158,11,0.2)",
-                              }}
-                            >
-                              <XCircle size={11} /> Attente
-                            </span>
-                          )}
-                          {v.isFeatured && (
-                            <span
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide"
-                              style={{
-                                background: "rgba(245,158,11,0.1)",
-                                color: "#fbbf24",
-                                border: "1px solid rgba(245,158,11,0.2)",
-                              }}
-                            >
-                              <Star size={11} className="fill-current" />{" "}
-                              Vedette
-                            </span>
-                          )}
-                          <VendorVisitModal
-                            vendorId={v.id}
-                            vendorName={v.name}
-                          />
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-end gap-2">
-                          <PreviewBadgeModal vendor={v} />
-
-                          <button
-                            onClick={() =>
-                              handleToggleFeatureStatus(v.id, v.isFeatured)
-                            }
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 border"
-                            style={
-                              v.isFeatured
-                                ? {
-                                    background: "transparent",
-                                    color: "#fbbf24",
-                                    borderColor: "rgba(245,158,11,0.3)",
-                                  }
-                                : {
-                                    background: "rgba(245,158,11,0.1)",
-                                    color: "#fbbf24",
-                                    borderColor: "rgba(245,158,11,0.25)",
-                                  }
-                            }
-                          >
-                            {v.isFeatured ? (
-                              <>
-                                <StarOff size={13} /> Retirer
-                              </>
-                            ) : (
-                              <>
-                                <Star size={13} /> Vedette
-                              </>
-                            )}
-                          </button>
-
-                          <button
-                            onClick={() => handleToggleStatus(v.id)}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 border"
-                            style={
-                              v.isApproved
-                                ? {
-                                    background: "transparent",
-                                    color: "#f87171",
-                                    borderColor: "rgba(239,68,68,0.3)",
-                                  }
-                                : {
-                                    background: "rgba(6,182,212,0.1)",
-                                    color: "#67e8f9",
-                                    borderColor: "rgba(6,182,212,0.25)",
-                                  }
-                            }
-                          >
-                            <ShieldCheck size={13} />
-                            {v.isApproved ? "Révoquer" : "Approuver"}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="py-24 text-center">
-                      <div className="flex flex-col items-center gap-3">
-                        <div
-                          className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                          style={{ background: "rgba(255,255,255,0.03)" }}
-                        >
-                          <Search size={22} className="text-slate-600" />
-                        </div>
-                        <p className="text-sm font-medium text-slate-500">
-                          {searchQuery
-                            ? "Aucun résultat pour votre recherche"
-                            : "Aucun partenaire trouvé"}
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* ── MOBILE CARDS ── */}
-        <div className="md:hidden space-y-3">
-          <div className="flex justify-between items-center">
-            <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest">
-              Liste des boutiques
-              {searchQuery && (
-                <span className="text-slate-600 font-normal ml-1.5">
-                  ({filteredVendors.length})
-                </span>
-              )}
-            </h3>
-            <span
-              className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg flex-shrink-0"
-              style={{
-                background: "rgba(6,182,212,0.1)",
-                color: "#06b6d4",
-                border: "1px solid rgba(6,182,212,0.15)",
-              }}
-            >
-              {filteredVendors.length}
-            </span>
-          </div>
-
-          {loading ? (
-            <div className="py-20 text-center">
-              <div className="flex flex-col items-center gap-3">
-                <div
-                  className="w-7 h-7 rounded-full border-2 border-t-transparent animate-spin"
-                  style={{
-                    borderColor: "#06b6d4",
-                    borderTopColor: "transparent",
-                  }}
-                />
-                <span className="text-xs text-slate-500">Chargement...</span>
-              </div>
-            </div>
-          ) : filteredVendors.length > 0 ? (
-            <div className="space-y-3">
-              {filteredVendors.map((v) => (
-                <div
-                  key={v.id}
-                  /* FIX: overflow-hidden pour empêcher le débordement des enfants */
-                  className="rounded-2xl overflow-hidden border border-white/[0.06] w-full"
-                  style={{ background: "rgba(255,255,255,0.025)" }}
-                >
-                  {/* Card top */}
-                  <div className="px-3 pt-4 pb-3 flex items-start justify-between gap-2">
-                    {/* FIX: min-w-0 + flex-1 pour que le texte se tronque correctement */}
-                    <div className="flex items-start gap-2 flex-1 min-w-0">
-                      {v.isFeatured && (
-                        <Star
-                          size={13}
-                          className="text-amber-400 fill-amber-400 flex-shrink-0 mt-0.5"
-                        />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-slate-200 truncate">
-                          {v.name}
-                        </p>
-                        <div className="flex items-center gap-1 text-[11px] text-slate-600 mt-0.5 min-w-0">
-                          <Globe size={10} className="flex-shrink-0" />
-                          {/* FIX: truncate sur le domaine */}
-                          <span className="truncate">
-                            {v.site?.domain || "Pas de domaine"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* FIX: flex-shrink-0 + max-w pour les badges */}
-                    <div className="flex flex-col gap-1 flex-shrink-0 items-end">
-                      <span
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wide whitespace-nowrap"
-                        style={
-                          v.isApproved
-                            ? {
-                                background: "rgba(16,185,129,0.1)",
-                                color: "#6ee7b7",
-                                border: "1px solid rgba(16,185,129,0.2)",
-                              }
-                            : {
-                                background: "rgba(245,158,11,0.1)",
-                                color: "#fcd34d",
-                                border: "1px solid rgba(245,158,11,0.2)",
-                              }
-                        }
-                      >
-                        {v.isApproved ? (
-                          <CheckCircle size={9} />
-                        ) : (
-                          <XCircle size={9} />
-                        )}
-                        {v.isApproved ? "Actif" : "Attente"}
-                      </span>
-                      {v.isFeatured && (
-                        <span
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wide whitespace-nowrap"
-                          style={{
-                            background: "rgba(245,158,11,0.1)",
-                            color: "#fbbf24",
-                            border: "1px solid rgba(245,158,11,0.2)",
-                          }}
-                        >
-                          <Star size={9} className="fill-current" /> Vedette
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mx-3 border-t border-white/[0.04]" />
-
-                  {/* Owner info */}
-                  <div className="px-3 py-3">
-                    {/* FIX: flex-wrap + min-w-0 pour éviter le débordement du nom/tel */}
-                    <div className="flex items-center justify-between flex-wrap gap-2 min-w-0">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-slate-300 truncate">
-                          {v.user?.name}
-                        </p>
-                        <div className="flex items-center gap-1.5 text-[11px] text-slate-600 mt-0.5">
-                          <Phone size={10} className="flex-shrink-0" />
-                          <span className="truncate">{v.user?.phone}</span>
-                        </div>
-                      </div>
-                      <span
-                        className="px-2.5 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1 flex-shrink-0 whitespace-nowrap"
-                        style={{
-                          background: "rgba(16,185,129,0.08)",
-                          color: "#6ee7b7",
-                          border: "1px solid rgba(16,185,129,0.15)",
-                        }}
-                      >
-                        <MapPin size={9} /> {v.city.name}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mx-3 border-t border-white/[0.04]" />
-
-                  {/* Actions */}
-                  <div className="px-3 py-3 space-y-2">
-                    <VendorVisitModal vendorId={v.id} vendorName={v.name} />
-
-                    {/* FIX: grid-cols-2 avec boutons à taille fixe, pas de débordement */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <PreviewBadgeModal vendor={v} />
-
-                      {/* Vedette */}
-                      <button
-                        onClick={() =>
-                          handleToggleFeatureStatus(v.id, v.isFeatured)
-                        }
-                        className="inline-flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl text-[11px] font-semibold transition-all border active:scale-95 whitespace-nowrap overflow-hidden"
-                        style={
-                          v.isFeatured
-                            ? {
-                                background: "transparent",
-                                color: "#fbbf24",
-                                borderColor: "rgba(245,158,11,0.3)",
-                              }
-                            : {
-                                background: "rgba(245,158,11,0.08)",
-                                color: "#fbbf24",
-                                borderColor: "rgba(245,158,11,0.2)",
-                              }
-                        }
-                      >
-                        {v.isFeatured ? (
-                          <>
-                            <StarOff size={12} className="flex-shrink-0" />{" "}
-                            Retirer
-                          </>
-                        ) : (
-                          <>
-                            <Star size={12} className="flex-shrink-0" /> Vedette
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    {/* FIX: bouton Approbation sur une ligne complète séparée */}
-                    <button
-                      onClick={() => handleToggleStatus(v.id)}
-                      className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-all border active:scale-95"
-                      style={
-                        v.isApproved
-                          ? {
-                              background: "transparent",
-                              color: "#f87171",
-                              borderColor: "rgba(239,68,68,0.25)",
-                            }
-                          : {
-                              background: "rgba(6,182,212,0.08)",
-                              color: "#67e8f9",
-                              borderColor: "rgba(6,182,212,0.2)",
-                            }
-                      }
-                    >
-                      <ShieldCheck size={12} className="flex-shrink-0" />
-                      {v.isApproved
-                        ? "Révoquer l'accès"
-                        : "Approuver la boutique"}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="py-20 text-center">
-              <div className="flex flex-col items-center gap-3">
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.06)",
-                  }}
-                >
-                  <Search size={24} className="text-slate-600" />
-                </div>
-                <p className="text-sm text-slate-500 font-medium">
-                  {searchQuery
-                    ? "Aucun résultat pour votre recherche"
-                    : "Aucun partenaire trouvé"}
+                <p className="text-2xl font-bold text-slate-100 leading-none">
+                  {loading ? (
+                    <span
+                      className="inline-block w-8 h-6 rounded animate-pulse"
+                      style={{ background: "rgba(255,255,255,0.06)" }}
+                    />
+                  ) : (
+                    value
+                  )}
+                </p>
+                <p className="text-[11px] text-slate-500 mt-1.5 font-medium">
+                  {label}
                 </p>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
         </div>
+
+        {/* QUICK ACCESS */}
+        <div>
+          <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-3">
+            Gestion
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {sections.map(
+              ({ href, icon: Icon, label, description, color, bg, border }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="group rounded-2xl border border-white/[0.06] p-5 transition-all duration-200 hover:border-white/[0.12] hover:scale-[1.01] active:scale-[0.99]"
+                  style={{ background: "rgba(255,255,255,0.025)" }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
+                        style={{ background: bg, border: `1px solid ${border}` }}
+                      >
+                        <Icon className="w-5 h-5" style={{ color }} />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-sm text-slate-200 group-hover:text-slate-100 transition-colors">
+                          {label}
+                        </p>
+                        <p className="text-xs text-slate-600 mt-0.5">
+                          {description}
+                        </p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-700 group-hover:text-slate-400 transition-all group-hover:translate-x-0.5" />
+                  </div>
+                </Link>
+              ),
+            )}
+          </div>
+        </div>
+
+        {/* PENDING ALERT */}
+        {!loading && vendorStats.pending > 0 && (
+          <Link
+            href="/super-admin/vendors"
+            className="flex items-center gap-4 rounded-2xl p-4 border transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
+            style={{
+              background: "rgba(245,158,11,0.06)",
+              borderColor: "rgba(245,158,11,0.2)",
+            }}
+          >
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: "rgba(245,158,11,0.12)" }}
+            >
+              <TrendingUp className="w-5 h-5 text-amber-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-amber-300">
+                {vendorStats.pending} boutique
+                {vendorStats.pending > 1 ? "s" : ""} en attente d&apos;approbation
+              </p>
+              <p className="text-xs text-amber-500/70 mt-0.5">
+                Cliquer pour les gérer dans la section Boutiques
+              </p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-amber-500/60 flex-shrink-0" />
+          </Link>
+        )}
       </div>
     </div>
   );

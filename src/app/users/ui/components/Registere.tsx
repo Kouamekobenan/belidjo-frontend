@@ -24,7 +24,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function RegisterForm() {
-  // ✅ Ajout du router pour la redirection
+  //  Ajout du router pour la redirection
   const router = useRouter();
 
   const [formData, setFormData] = useState<RegisterDto>({
@@ -142,13 +142,13 @@ export default function RegisterForm() {
 
       const response = await createUserUseCase.execute(dto);
 
-      // ✅ Stockage des tokens si présents
+      // Stockage des tokens si présents
       if (response.token) {
         localStorage.setItem("access_token", response.token.accessToken);
         localStorage.setItem("refresh_token", response.token.refreshToken);
       }
 
-      // ✅ Toast de bienvenue puis redirection vers /profile
+      //  Toast de bienvenue puis redirection vers /profile
       toast.success(`Bienvenue ${formData.name} ! Votre compte est créé.`);
       router.push("/profile");
     } catch (error: unknown) {
