@@ -225,7 +225,7 @@ export default function ProductDetail() {
               </h1>
 
               <div className="flex items-baseline gap-2 mb-8">
-                <span className="text-4xl lg:text-5xl font-black text-teal-600">
+                <span className="text-4xl lg:text-5xl font-black text-teal-600 price">
                   {product.price.toLocaleString()}
                 </span>
                 <span className="text-xl font-bold text-gray-400">FCFA</span>
@@ -263,7 +263,7 @@ export default function ProductDetail() {
 
               <button
                 onClick={handleWhatsAppOrder}
-                className="hidden lg:flex mt-12 w-full bg-teal-600 hover:bg-teal-700 text-white py-6 rounded-3xl font-black text-xl items-center justify-center gap-4 transition-all hover:scale-[1.02] shadow-2xl shadow-teal-200"
+                className="hidden lg:flex mt-12 w-full bg-teal-600 hover:bg-teal-700 text-white py-6  font-black text-xl items-center justify-center gap-4 transition-all hover:scale-[1.02] shadow-2xl shadow-teal-200"
               >
                 <ShoppingCart className="w-7 h-7" />
                 Commander maintenant
@@ -271,7 +271,6 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
-
         {/* --- SECTION COMMENTAIRES --- */}
         <section className="mt-12 px-4 lg:px-0 max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">

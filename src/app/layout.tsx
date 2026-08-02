@@ -1,14 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Sora, Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import { NotificationProvider } from "./lib/useFCMnotification";
 import PWAInstallBanner from "./components/features/PWAInstallBanner";
 import { GoogleTagManager } from "@next/third-parties/google";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+
+// ✅ Sora : titres & identité de marque (logo, hero, CTA)
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+// ✅ Inter : texte courant / UI (déjà optimisée pour les écrans)
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -112,17 +123,6 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-       
         <link rel="manifest" href="/manifest.json" />
         {/* ✅ Apple Touch Icon (déjà géré par metadata.icons, mais on peut le laisser) */}
         <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
@@ -137,7 +137,7 @@ export default function RootLayout({
       </head>
       <GoogleTagManager gtmId="GTM-PZSL8J8F" />
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sora.variable} ${inter.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
           <NotificationProvider>

@@ -135,7 +135,7 @@ export default function ProductSearch({
                     {product.categoryName || "Sans catégorie"}
                   </p>
                 </div>
-                <p className="text-teal-600 font-black text-sm flex-shrink-0">
+                <p className="text-teal-600 font-black text-sm flex-shrink-0 price">
                   {product.price.toLocaleString()}{" "}
                   <span className="text-[10px] font-bold text-slate-400">
                     FCFA

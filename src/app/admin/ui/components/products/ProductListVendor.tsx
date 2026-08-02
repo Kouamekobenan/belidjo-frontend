@@ -376,7 +376,7 @@ export default function VendorProductList({ vendorId }: { vendorId: string }) {
                             {p.name}
                           </Link>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-base font-semibold text-teal-600">
+                        <td className="px-6 py-4 whitespace-nowrap text-base font-semibold text-teal-600 price">
                           {p.price.toLocaleString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -417,7 +417,7 @@ export default function VendorProductList({ vendorId }: { vendorId: string }) {
                           {p.name}
                         </h3>
                         <div className="flex flex-col mb-2">
-                          <span className="text-sm sm:text-xl font-extrabold text-teal-600">
+                          <span className="text-sm sm:text-xl font-extrabold text-teal-600 price">
                             {p.price.toLocaleString()} F
                           </span>
                           <div className="mt-1 scale-90 origin-left">

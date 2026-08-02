@@ -365,7 +365,9 @@ const ProductInfo: React.FC<{
               }}
             >
               <span style={{ fontSize: 50 }}>🔥</span>
-              {basePrice.toLocaleString()}
+              <span style={{ fontVariantNumeric: "tabular-nums", fontWeight: 700 }}>
+                {basePrice.toLocaleString()}
+              </span>
               <span style={{ fontSize: 48, fontWeight: 700 }}>FCFA</span>
             </div>
           </div>

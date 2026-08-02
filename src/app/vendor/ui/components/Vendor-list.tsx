@@ -36,7 +36,7 @@ const VendorListItem = ({
       <div className="flex flex-col sm:flex-row sm:items-center gap-6">
         {/* Logo Section : Centré sur mobile */}
         <div
-          className="relative w-full sm:w-28 h-48 sm:h-28 flex-shrink-0 bg-slate-50 rounded-[20px] overflow-hidden border border-slate-100 group-hover:border-teal-100 transition-colors cursor-pointer"
+          className="relative w-full sm:w-28 h-48 sm:h-28 flex-shrink-0 bg-slate-50  overflow-hidden border border-slate-100 group-hover:border-teal-100 transition-colors cursor-pointer"
           onClick={() => onClick(id, site?.domain)}
         >
           <img
@@ -77,7 +77,7 @@ const VendorListItem = ({
         <div className="w-full sm:w-auto pt-2 sm:pt-0">
           <Link
             href={`/products/ui/page/${id}`}
-            className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 bg-slate-900 hover:bg-teal-600 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-slate-200 hover:shadow-teal-500/20 group/btn"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 bg-slate-900 hover:bg-teal-600 text-white font-bold  transition-all duration-300 shadow-lg shadow-slate-200 hover:shadow-teal-500/20 group/btn"
           >
             Visiter
             <ArrowRight
