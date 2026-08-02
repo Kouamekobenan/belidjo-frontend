@@ -252,21 +252,21 @@ const DomainCopyButton = ({ domain }: DomainCopyButtonProps) => {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-2.5 px-4 py-2.5 bg-white border-2 border-slate-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 group shadow-sm hover:shadow-md"
+      className="flex flex-1 sm:flex-initial items-center gap-2.5 px-4 py-2.5 bg-white border-2 border-slate-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 group shadow-sm hover:shadow-md min-w-0"
       aria-label={`Copier le domaine ${domain}`}
     >
-      <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center group-hover:from-blue-100 group-hover:to-indigo-100 transition-all">
+      <div className="w-9 h-9 shrink-0 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center group-hover:from-blue-100 group-hover:to-indigo-100 transition-all">
         {isCopied ? (
           <Check className="w-5 h-5 text-teal-600 animate-bounce" />
         ) : (
           <Share2 className="w-5 h-5 text-green-600 group-hover:scale-110 transition-transform" />
         )}
       </div>
-      <div className="flex flex-col items-start">
+      <div className="flex flex-col items-start min-w-0">
         <span className="text-xs font-medium text-slate-500 group-hover:text-blue-600 transition-colors">
           {isCopied ? "Copié !" : "Partager"}
         </span>
-        <span className="text-sm font-semibold text-slate-700 group-hover:text-blue-700 transition-colors">
+        <span className="text-sm font-semibold text-slate-700 group-hover:text-blue-700 transition-colors truncate max-w-full">
           {domain}
         </span>
       </div>
@@ -367,7 +367,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
     return (
       <button
         onClick={() => toast.error("Veuillez vous connecter")}
-        className="flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+        className="flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
       >
         <Bell className="w-5 h-5" />
         <span>Se connecter</span>
@@ -379,7 +379,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
     <button
       onClick={handleSubscribe}
       disabled={isLoading}
-      className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 active:scale-95 ${
+      className={`flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 active:scale-95 ${
         isSubscribed
           ? "bg-white border-2 border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-slate-50 shadow-sm"
           : "bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 shadow-lg hover:shadow-xl"
@@ -472,10 +472,9 @@ export default function VendorProductsClient({
         vendorDescription={site?.description}
         vendorImage={bannerUrl}
       />
-
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* CARTE PROFIL PRINCIPALE */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-10 border border-slate-100">
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden mb-10 border border-slate-100">
           {/* BANNIÈRE DE COUVERTURE */}
           <div className="relative h-72 sm:h-96 w-full overflow-hidden bg-gradient-to-br from-slate-200 via-slate-100 to-blue-100">
             <Image
@@ -542,29 +541,32 @@ export default function VendorProductsClient({
                     </div>
                   )}
                 </div>
-
                 {/* Actions principales */}
-                <div className="flex flex-wrap items-center gap-3 mb-6">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 mb-6">
+                  {/* CTA principal : pleine largeur sur mobile pour maximiser la conversion */}
                   <SubscribeButton
                     vendorId={vendorId}
                     userId={currentUserId}
                     cityId={vendor.cityId}
                   />
 
-                  {site?.domain && <DomainCopyButton domain={site.domain} />}
+                  {/* Actions secondaires : partage + preuve sociale, groupées et compactes sur mobile */}
+                  <div className="flex items-stretch sm:items-center gap-3">
+                    {site?.domain && <DomainCopyButton domain={site.domain} />}
 
-                  {/* Badge nombre d'abonnés */}
-                  <div className="flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 group cursor-default">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                      <Users className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-2xl sm:text-3xl font-black text-slate-900">
-                        {customers.length.toLocaleString("fr-FR")}
-                      </span>
-                      <span className="text-sm font-semibold text-slate-600">
-                        {customers.length > 1 ? "abonnés" : "abonné"}
-                      </span>
+                    {/* Badge nombre d'abonnés */}
+                    <div className="flex items-center gap-2.5 sm:gap-3 px-4 sm:px-5 py-2.5 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 group cursor-default shrink-0">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <Users className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                      </div>
+                      <div className="flex items-baseline gap-1.5 whitespace-nowrap">
+                        <span className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 price">
+                          {customers.length.toLocaleString("fr-FR")}
+                        </span>
+                        <span className="text-xs sm:text-sm font-semibold text-slate-600">
+                          {customers.length > 1 ? "abonnés" : "abonné"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -573,16 +575,16 @@ export default function VendorProductsClient({
                 {(vendor.user?.email || vendor.user?.phone) && (
                   <div className="flex flex-wrap gap-4 mb-6">
                     {vendor.user?.email && (
-                      <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                      <div className="flex items-center gap-2 text-sm text-slate-600 min-w-0">
+                        <div className="w-8 h-8 shrink-0 rounded-lg bg-slate-100 flex items-center justify-center">
                           <Mail className="w-4 h-4 text-slate-600" />
                         </div>
-                        <span className="font-medium">{vendor.user.email}</span>
+                        <span className="font-medium truncate">{vendor.user.email}</span>
                       </div>
                     )}
                     {vendor.user?.phone && (
                       <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                        <div className="w-8 h-8 shrink-0 rounded-lg bg-slate-100 flex items-center justify-center">
                           <Phone className="w-4 h-4 text-slate-600" />
                         </div>
                         <span className="font-medium">{vendor.user.phone}</span>
@@ -590,9 +592,9 @@ export default function VendorProductsClient({
                     )}
                   </div>
                 )}
-                {/* Description */}
+                {/* Description : masquée sur mobile pour garder le profil compact, visible dès sm */}
                 {site?.description && (
-                  <div className="mt-6 p-6 bg-gradient-to-br from-slate-50 to-blue-50/50 rounded-2xl border-2 border-slate-200 shadow-sm">
+                  <div className="hidden sm:block mt-6 p-6 bg-gradient-to-br from-slate-50 to-blue-50/50 rounded-2xl border-2 border-slate-200 shadow-sm">
                     <p className="text-slate-700 leading-relaxed text-base">
                       {site.description}
                     </p>

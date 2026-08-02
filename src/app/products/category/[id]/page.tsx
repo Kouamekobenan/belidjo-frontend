@@ -133,7 +133,7 @@ function ProductCard({ product }: { product: IProduct }) {
           <h3 className="font-bold text-slate-800 text-sm md:text-base line-clamp-2 mb-1">
             {product.name}
           </h3>
-          <p className="text-teal-600 font-black text-lg">
+          <p className="text-teal-600 font-black text-lg price">
             {product.price.toLocaleString()}{" "}
             <span className="text-[10px] font-bold text-slate-400">FCFA</span>
           </p>

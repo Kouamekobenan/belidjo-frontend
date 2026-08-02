@@ -120,7 +120,11 @@ export default function DashbordVendor() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <QuickStatCard
             title="Valeur Stock"
-            value={`${stats.totalValue.toLocaleString()} FCFA`}
+            value={
+              <span className="price">
+                {stats.totalValue.toLocaleString()} FCFA
+              </span>
+            }
             icon={DollarSign}
             color="text-emerald-600"
             bgColor="bg-emerald-50"
@@ -219,7 +223,7 @@ export default function DashbordVendor() {
                       <p className="text-sm font-bold text-slate-700 line-clamp-1">
                         {product.name}
                       </p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-400 price">
                         {product.price.toLocaleString()} FCFA
                       </p>
                     </div>
