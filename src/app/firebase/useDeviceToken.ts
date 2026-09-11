@@ -1,34 +1,27 @@
-// src/hooks/useDeviceToken.ts
-import { useEffect } from "react";
-import axios from "axios";
+import { useEffect, useRef } from "react";
 import { requestDeviceToken } from "../lib/firebase";
 import { api } from "../lib/api";
 
-export const useDeviceToken = (userId: string, jwt: string) => {
+export const useDeviceToken = (userId?: string, jwt?: string) => {
+  const lastSentToken = useRef<string | null>(null);
+
   useEffect(() => {
-    if (!userId || !jwt) return;
+    if (!userId) return;
 
     const sendDeviceTokenToBackend = async () => {
       try {
         const token = await requestDeviceToken();
-        if (!token) return;
-        await api.patch("/users/device-token", { deviceToken: token });
-        await axios.patch(
-          "/api/users/device-token", // ton endpoint backend
-          { deviceToken: token },
-          {
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          }
-        );
+        if (!token || token === lastSentToken.current) return;
 
-        console.log("✅ Device token envoyé au backend !");
+        await api.patch("/users/device-token", { deviceToken: token });
+        lastSentToken.current = token;
+        console.log("✅ FCM Device token enregistré sur le backend !");
       } catch (error) {
-        console.error("❌ Erreur lors de l'envoi du device token :", error);
+        console.error("❌ Erreur lors de l'enregistrement du device token :", error);
       }
     };
 
     sendDeviceTokenToBackend();
   }, [userId, jwt]);
 };
+

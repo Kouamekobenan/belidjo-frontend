@@ -5,10 +5,16 @@ export class Notification {
     public readonly id: string,
     public readonly senderId: string | null,
     public readonly receiverId: string,
-    private title: string,
+    public title: string,
     public message: string,
-    public type: TypeNotification,
+    public type: TypeNotification | string,
     public readonly isRead: boolean,
-    public readonly createdAt: Date
+    public readonly createdAt: Date | string,
+    public readonly imageUrl?: string | null,
+    public readonly actionUrl?: string | null,
+    public readonly priority?: string,
+    public readonly channel?: string,
+    public readonly metadata?: Record<string, any> | null
   ) {}
 }
+

@@ -3,9 +3,11 @@ import { Sora, Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
-import { NotificationProvider } from "./lib/useFCMnotification";
+import { NotificationProvider } from "./context/NotificationContext";
+import { StartupNotificationModal } from "./notification/views/components/StartupNotificationModal";
 import PWAInstallBanner from "./components/features/PWAInstallBanner";
 import { GoogleTagManager } from "@next/third-parties/google";
+
 
 // ✅ Sora : titres & identité de marque (logo, hero, CTA)
 const sora = Sora({
@@ -142,6 +144,7 @@ export default function RootLayout({
         <AuthProvider>
           <NotificationProvider>
             {children}
+            <StartupNotificationModal />
             <PWAInstallBanner style="premium" />
             {/* ✅ Toaster pour les notifications */}
             <Toaster
