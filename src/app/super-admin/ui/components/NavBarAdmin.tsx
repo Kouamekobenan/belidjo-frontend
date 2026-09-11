@@ -14,6 +14,8 @@ import {
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NotificationBell } from "@/app/notification/views/components/NotificationBell";
+
 
 export default function NavBarAdmin() {
   const { user } = useAuth();
@@ -149,24 +151,27 @@ export default function NavBarAdmin() {
                 border: "1px solid rgba(255,255,255,0.07)",
               }}
             >
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)",
-                  }}
-                >
-                  {user?.name?.charAt(0)}
+              <div className="flex items-center justify-between gap-2 mb-4">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)",
+                    }}
+                  >
+                    {user?.name?.charAt(0)}
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-sm font-semibold text-slate-200 truncate">
+                      {user?.name}
+                    </p>
+                    <p className="text-[11px] text-teal-400 font-medium uppercase tracking-wider">
+                      Administrateur
+                    </p>
+                  </div>
                 </div>
-                <div className="overflow-hidden">
-                  <p className="text-sm font-semibold text-slate-200 truncate">
-                    {user?.name}
-                  </p>
-                  <p className="text-[11px] text-teal-400 font-medium uppercase tracking-wider">
-                    Administrateur
-                  </p>
-                </div>
+                <NotificationBell className="text-slate-300 hover:text-white" />
               </div>
               <div className="space-y-2 text-xs text-slate-500 mb-3">
                 <div className="flex items-center gap-2">

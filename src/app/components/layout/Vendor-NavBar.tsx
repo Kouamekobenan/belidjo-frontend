@@ -15,6 +15,8 @@ import { useAuth } from "@/app/context/AuthContext";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import AnimatedPromoBanner from "../features/Animation";
+import { NotificationBell } from "@/app/notification/views/components/NotificationBell";
+
 // Props pour recevoir les informations du vendeur
 interface VendorNavBarProps {
   vendorName?: string;
@@ -157,6 +159,9 @@ function VendorNavBar({
                 <span>Partager</span>
               </button>
 
+              {/* Notification Center Bell */}
+              {user && <NotificationBell />}
+
               {/* User Section */}
               {user ? (
                 <div className="relative">
@@ -208,10 +213,10 @@ function VendorNavBar({
       </nav>
       {/* Header Mobile - En haut (simplifié) */}
       <header className="lg:hidden bg-white/95 backdrop-blur-md shadow-md sticky top-0 z-50 border-b border-gray-200/50">
-        <div className="px-4 py-3">
+        <div className="px-4 py-3 flex items-center justify-between">
           <Link
             href="/vendor"
-            className="flex items-center justify-center space-x-2 group"
+            className="flex items-center space-x-2 group"
           >
             <div className="p-1.5 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300">
               <Store className="w-5 h-5 text-white" />
@@ -220,6 +225,7 @@ function VendorNavBar({
               {vendorName || "Espace Boutique"}
             </span>
           </Link>
+          {user && <NotificationBell />}
         </div>
         {/* Bannière d'invitation Mobile */}
         <AnimatedPromoBanner user={user} />
