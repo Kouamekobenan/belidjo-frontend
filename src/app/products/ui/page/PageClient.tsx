@@ -144,14 +144,14 @@ const BannerEditButton = ({
         <div className="flex items-center gap-2">
           {isUploading ? (
             <>
-              <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
+              <Loader2 className="w-5 h-5 text-green-600 animate-spin" />
               <span className="hidden sm:inline text-sm font-semibold text-slate-700">
                 En cours...
               </span>
             </>
           ) : (
             <>
-              <Camera className="w-5 h-5 text-teal-600 group-hover:scale-110 transition-transform" />
+              <Camera className="w-5 h-5 text-green-600 group-hover:scale-110 transition-transform" />
               <span className="hidden sm:inline text-sm font-semibold text-slate-700">
                 Modifier la bannière
               </span>
@@ -180,15 +180,15 @@ const BannerEditButton = ({
               <div className="bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-slate-300">
                 <ul className="text-sm text-slate-600 space-y-2">
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-teal-600" />
+                    <Check className="w-4 h-4 text-green-600" />
                     Format : JPG, PNG, WEBP
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-teal-600" />
+                    <Check className="w-4 h-4 text-green-600" />
                     Taille max : 5MB
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-teal-600" />
+                    <Check className="w-4 h-4 text-green-600" />
                     Ratio recommandé : 16:9 (1200x630px)
                   </li>
                 </ul>
@@ -210,7 +210,7 @@ const BannerEditButton = ({
                 </button>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   <Upload className="w-5 h-5" />
                   Choisir
@@ -256,7 +256,7 @@ const DomainCopyButton = ({ domain }: DomainCopyButtonProps) => {
     >
       <div className="w-9 h-9 shrink-0 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center group-hover:from-blue-100 group-hover:to-indigo-100 transition-all">
         {isCopied ? (
-          <Check className="w-5 h-5 text-teal-600 animate-bounce" />
+          <Check className="w-5 h-5 text-green-600 animate-bounce" />
         ) : (
           <Share2 className="w-5 h-5 text-green-600 group-hover:scale-110 transition-transform" />
         )}
@@ -366,7 +366,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
     return (
       <button
         onClick={() => toast.error("Veuillez vous connecter")}
-        className="flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+        className="flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-green-500 to-green-500 text-white hover:from-green-600 hover:to-green-600 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
       >
         <Bell className="w-5 h-5" />
         <span>Se connecter</span>
@@ -381,7 +381,7 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
       className={`flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 sm:py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 active:scale-95 ${
         isSubscribed
           ? "bg-white border-2 border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-slate-50 shadow-sm"
-          : "bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 shadow-lg hover:shadow-xl"
+          : "bg-gradient-to-r from-green-500 to-green-500 text-white hover:from-green-600 hover:to-green-600 shadow-lg hover:shadow-xl"
       } disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
     >
       {isLoading ? (
@@ -500,7 +500,7 @@ export default function VendorProductsClient({
               <div className="profile-image-container group">
                 <div className="relative">
                   {/* Cercle extérieur avec effet de lueur */}
-                  <div className="absolute -inset-4 bg-gradient-to-r from-teal-400 via-blue-500 to-purple-500 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
+                  <div className="absolute -inset-4 bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
                   {/* Container avec bordure animée */}
                   <div className="relative bg-white p-1.5 rounded-full shadow-2xl">
                     <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-white shadow-xl">
@@ -515,11 +515,11 @@ export default function VendorProductsClient({
                         />
                       </div>
                       {/* Overlay avec dégradé */}
-                      <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/20 via-transparent to-purple-500/20 pointer-events-none"></div>
+                      <div className="absolute inset-0 bg-gradient-to-tr from-green-500/20 via-transparent to-purple-500/20 pointer-events-none"></div>
                     </div>
                   </div>
                   {/* Badge vérifié */}
-                  <div className="absolute bottom-2 right-2 w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg border-3 border-white">
+                  <div className="absolute bottom-2 right-2 w-10 h-10 bg-gradient-to-br from-green-500 to-green-500 rounded-full flex items-center justify-center shadow-lg border-3 border-white">
                     <Check className="w-6 h-6 text-white" />
                   </div>
                 </div>
@@ -533,7 +533,7 @@ export default function VendorProductsClient({
                   </h1>
                   {vendor.user?.cityName && (
                     <div className="flex items-center gap-2 text-slate-600">
-                      <MapPin className="w-5 h-5 text-teal-600" />
+                      <MapPin className="w-5 h-5 text-green-600" />
                       <span className="text-lg font-medium">
                         {vendor.user.cityName}
                       </span>
@@ -555,7 +555,7 @@ export default function VendorProductsClient({
 
                     {/* Badge nombre d'abonnés */}
                     <div className="flex items-center gap-2.5 sm:gap-3 px-4 sm:px-5 py-2.5 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 group cursor-default shrink-0">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
                         <Users className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                       </div>
                       <div className="flex items-baseline gap-1.5 whitespace-nowrap">

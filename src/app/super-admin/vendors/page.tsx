@@ -13,8 +13,8 @@ export default function VendorsPage() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 text-center border border-slate-100">
-          <div className="w-20 h-20 bg-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <AlertCircle className="w-10 h-10 text-teal-600" />
+          <div className="w-20 h-20 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <AlertCircle className="w-10 h-10 text-green-600" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mb-2">
             Accès Restreint
@@ -24,7 +24,7 @@ export default function VendorsPage() {
           </p>
           <Link
             href="/users/ui/login"
-            className="flex items-center justify-center gap-2 w-full py-4 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-teal-200"
+            className="flex items-center justify-center gap-2 w-full py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-green-200"
           >
             <LogIn className="w-5 h-5" />
             Se connecter

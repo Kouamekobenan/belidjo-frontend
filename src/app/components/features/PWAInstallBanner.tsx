@@ -44,12 +44,12 @@ export default function PWAInstallBanner({
         <div className="relative">
           {/* Cercles d'animation */}
           <span className="absolute inset-0 flex">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
           </span>
 
           {/* Badge notification */}
           <span className="absolute -top-1 -right-1 flex h-5 w-5 z-10">
-            <span className="relative inline-flex rounded-full h-5 w-5 bg-gradient-to-r from-teal-500 to-emerald-500 items-center justify-center shadow-lg">
+            <span className="relative inline-flex rounded-full h-5 w-5 bg-gradient-to-r from-green-500 to-green-500 items-center justify-center shadow-lg">
               <Download size={11} className="text-white" />
             </span>
           </span>
@@ -160,7 +160,7 @@ export default function PWAInstallBanner({
           <div className="px-4 pb-4">
             <button
               onClick={handleInstall}
-              className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-green-500 to-green-500 hover:from-green-600 hover:to-green-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
             >
               <Download size={16} />
               Installer maintenant
@@ -176,9 +176,9 @@ export default function PWAInstallBanner({
   // ============================================
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[9999] p-4 md:bottom-6 md:left-auto md:right-6 md:max-w-md animate-in slide-in-from-bottom-8 duration-500">
-      <div className="bg-gradient-to-br from-white via-white to-teal-50 border border-gray-200 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm">
+      <div className="bg-gradient-to-br from-white via-white to-green-50 border border-gray-200 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden backdrop-blur-sm">
         {/* Header avec dégradé */}
-        <div className="bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 px-4 py-2.5 flex items-center justify-between relative overflow-hidden">
+        <div className="bg-gradient-to-r from-green-500 via-green-500 to-green-600 px-4 py-2.5 flex items-center justify-between relative overflow-hidden">
           {/* Animation de fond */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
 
@@ -215,7 +215,7 @@ export default function PWAInstallBanner({
           <div className="flex items-start gap-4">
             {/* Logo avec effets */}
             <div className="relative flex-shrink-0">
-              <div className="relative h-16 w-16 md:h-20 md:w-20 rounded-2xl overflow-hidden shadow-xl ring-4 ring-teal-100">
+              <div className="relative h-16 w-16 md:h-20 md:w-20 rounded-2xl overflow-hidden shadow-xl ring-4 ring-green-100">
                 <Image
                   src="/images/bj.png"
                   alt="Logo noBoutik"
@@ -236,7 +236,7 @@ export default function PWAInstallBanner({
                 <h3 className="font-black text-gray-900 text-base md:text-lg">
                   noBoutik
                 </h3>
-                <span className="text-[10px] font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full uppercase">
+                <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full uppercase">
                   PWA
                 </span>
               </div>
@@ -261,7 +261,7 @@ export default function PWAInstallBanner({
                   >
                     <CheckCircle
                       size={14}
-                      className="text-teal-500 flex-shrink-0"
+                      className="text-green-500 flex-shrink-0"
                     />
                     <span>
                       {feature.icon} {feature.text}
@@ -273,7 +273,7 @@ export default function PWAInstallBanner({
               {/* Bouton CTA principal */}
               <button
                 onClick={handleInstall}
-                className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white px-4 py-3 rounded-xl text-sm font-bold shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group"
+                className="w-full bg-gradient-to-r from-green-500 to-green-500 hover:from-green-600 hover:to-green-600 text-white px-4 py-3 rounded-xl text-sm font-bold shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group"
               >
                 <Download size={18} className="group-hover:animate-bounce" />
                 <span>Installer maintenant</span>

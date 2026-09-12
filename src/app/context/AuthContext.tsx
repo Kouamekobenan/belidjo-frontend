@@ -178,7 +178,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         children
       ) : (
         <div className="flex h-screen flex-col items-center justify-center bg-slate-50">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-teal-600 border-t-transparent"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-green-600 border-t-transparent"></div>
           <p className="mt-4 text-slate-600 font-medium">
             Chargement de votre session...
           </p>

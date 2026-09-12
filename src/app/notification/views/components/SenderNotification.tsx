@@ -201,7 +201,7 @@ export const SendNotificationForm = ({
                 name="receiverId"
                 value={formData.receiverId}
                 onChange={handleChange}
-                className={`w-full pl-10 pr-4 py-3 bg-gray-50 border rounded-xl appearance-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all ${
+                className={`w-full pl-10 pr-4 py-3 bg-gray-50 border rounded-xl appearance-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all ${
                   errors.receiverId ? "border-red-500" : "border-gray-200"
                 }`}
               >
@@ -239,7 +239,7 @@ export const SendNotificationForm = ({
               name="type"
               value={formData.type}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 transition-all"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 transition-all"
             >
               <option value={TypeNotification.SYSTEM}>Message Système</option>
               <option value={TypeNotification.PROMO}>Promotion</option>
@@ -263,7 +263,7 @@ export const SendNotificationForm = ({
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className={`w-full px-4 py-3 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-teal-500 transition-all ${
+              className={`w-full px-4 py-3 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-green-500 transition-all ${
                 errors.title ? "border-red-500" : "border-gray-200"
               }`}
               placeholder="Ex: Mise à jour compte"
@@ -289,7 +289,7 @@ export const SendNotificationForm = ({
             value={formData.message}
             onChange={handleChange}
             rows={4}
-            className={`w-full px-4 py-3 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-teal-500 transition-all resize-none ${
+            className={`w-full px-4 py-3 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-green-500 transition-all resize-none ${
               errors.message ? "border-red-500" : "border-gray-200"
             }`}
             placeholder="Écrivez votre message ici..."
@@ -309,7 +309,7 @@ export const SendNotificationForm = ({
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 cursor-pointer bg-teal-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-teal-700 shadow-lg shadow-teal-200 transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+            className="flex-1 cursor-pointer bg-green-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-green-700 shadow-lg shadow-green-200 transition-all disabled:opacity-50 flex items-center justify-center gap-3"
           >
             {loading ? (
               <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

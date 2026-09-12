@@ -11,7 +11,7 @@ export default function AdminPage() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-teal-600 mb-3"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-green-600 mb-3"></div>
           <p className="text-base text-gray-700 font-medium">Chargement...</p>
         </div>
       </div>
@@ -27,10 +27,10 @@ export default function AdminPage() {
           {/* Icône d'attente */}
           <div className="flex justify-center mb-6">
             <div className="relative">
-              <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center">
-                <Clock className="w-10 h-10 text-teal-600" />
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+                <Clock className="w-10 h-10 text-green-600" />
               </div>
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-teal-500 rounded-full animate-ping"></div>
+              <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full animate-ping"></div>
             </div>
           </div>
           {/* Titre */}
@@ -38,7 +38,7 @@ export default function AdminPage() {
             Demande en cours de vérification
           </h1>
           {/* Message principal */}
-          <div className="bg-blue-50 border-l-4 border-teal-500 p-6 mb-8 rounded-r-lg">
+          <div className="bg-blue-50 border-l-4 border-green-500 p-6 mb-8 rounded-r-lg">
             <p className="text-gray-700 text-lg leading-relaxed">
               Merci d'avoir soumis votre demande pour devenir vendeur ! Votre
               profil est actuellement en cours d'examen par notre équipe
@@ -57,7 +57,7 @@ export default function AdminPage() {
                 </h3>
                 <p className="text-gray-600">
                   Vous recevrez un message wathSapp de confirmation à
-                  <span className="font-medium text-teal-600">
+                  <span className="font-medium text-green-600">
                     {user.phone || "votre adresse"}
                   </span>
                   dès que votre compte sera approuvé.
@@ -65,8 +65,8 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
-                <Clock className="w-5 h-5 text-teal-600" />
+              <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <Clock className="w-5 h-5 text-green-600" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800 mb-1">

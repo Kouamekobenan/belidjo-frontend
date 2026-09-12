@@ -88,17 +88,17 @@ export default function VideoGenerator() {
   const estimatedSeconds = selectedImages.length * 3 + 15;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-green-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
 
         {/* HEADER */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
           <Link
             href="/admin/ui"
-            className="group flex items-center gap-2 px-6 py-3 bg-white rounded-xl border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 transition-all shadow-md hover:shadow-lg w-full md:w-auto justify-center md:justify-start"
+            className="group flex items-center gap-2 px-6 py-3 bg-white rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all shadow-md hover:shadow-lg w-full md:w-auto justify-center md:justify-start"
           >
             <svg
-              className="w-5 h-5 text-gray-600 group-hover:text-teal-600 group-hover:-translate-x-1 transition-all"
+              className="w-5 h-5 text-gray-600 group-hover:text-green-600 group-hover:-translate-x-1 transition-all"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -110,16 +110,16 @@ export default function VideoGenerator() {
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            <span className="font-semibold text-gray-700 group-hover:text-teal-600 transition-colors">
+            <span className="font-semibold text-gray-700 group-hover:text-green-600 transition-colors">
               Retour
             </span>
           </Link>
 
           <div className="flex-1 text-center">
-            <h1 className="text-3xl md:text-5xl font-black mb-3 bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-5xl font-black mb-3 bg-gradient-to-r from-green-600 via-green-600 to-green-600 bg-clip-text text-transparent">
               Créateur de Clip Magique
             </h1>
-            <div className="h-1.5 bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 rounded-full max-w-xs mx-auto" />
+            <div className="h-1.5 bg-gradient-to-r from-green-600 via-green-600 to-green-600 rounded-full max-w-xs mx-auto" />
             <p className="text-gray-600 mt-4 text-sm md:text-lg">
               Vendez plus avec une vidéo pro en 2 clics
             </p>
@@ -130,7 +130,7 @@ export default function VideoGenerator() {
 
         {/* ── BANNIÈRE SUCCÈS ── */}
         {videoUrl && (
-          <div className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-2xl p-6 shadow-lg">
+          <div className="mb-6 bg-gradient-to-r from-green-50 to-green-50 border-2 border-green-500 rounded-2xl p-6 shadow-lg">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <CheckCircle className="w-7 h-7 text-white" />
@@ -146,7 +146,7 @@ export default function VideoGenerator() {
                   <a
                     href={videoUrl}
                     download={`promo-${user?.vendorProfile?.name ?? "noboutik"}.mp4`}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-600 text-white font-bold rounded-xl hover:from-green-700 hover:to-green-700 transition-all shadow-lg hover:shadow-xl"
                   >
                     <Download className="w-5 h-5" />
                     Télécharger la vidéo (.mp4)
@@ -186,22 +186,22 @@ export default function VideoGenerator() {
 
         {/* ── PROGRESS BAR ── */}
         {isExporting && (
-          <div className="mb-6 bg-white border-2 border-teal-200 rounded-2xl p-6 shadow-lg">
+          <div className="mb-6 bg-white border-2 border-green-200 rounded-2xl p-6 shadow-lg">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                <RefreshCw className="w-5 h-5 text-teal-600 animate-spin" />
+              <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <RefreshCw className="w-5 h-5 text-green-600 animate-spin" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-gray-800">Génération en cours...</p>
                 <p className="text-sm text-gray-500 truncate">{status}</p>
               </div>
-              <span className="text-2xl font-black text-teal-600 flex-shrink-0">{progress}%</span>
+              <span className="text-2xl font-black text-green-600 flex-shrink-0">{progress}%</span>
             </div>
 
             {/* Barre de progression */}
             <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
               <div
-                className="h-3 rounded-full bg-gradient-to-r from-teal-500 to-emerald-500 transition-all duration-500"
+                className="h-3 rounded-full bg-gradient-to-r from-green-500 to-green-500 transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -228,15 +228,15 @@ export default function VideoGenerator() {
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-emerald-100 hover:shadow-xl transition-shadow">
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100 hover:shadow-xl transition-shadow">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500 font-medium">Durée estimée</p>
-                <p className="text-3xl font-bold text-emerald-600 mt-1">
+                <p className="text-3xl font-bold text-green-600 mt-1">
                   {selectedImages.length > 0 ? selectedImages.length * 3 : 10}s
                 </p>
               </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center">
                 <span className="text-2xl">🎬</span>
               </div>
             </div>
@@ -248,14 +248,14 @@ export default function VideoGenerator() {
           <div className="lg:col-span-3 space-y-6">
             {/* GRILLE PRODUITS */}
             <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-teal-600 to-teal-500 p-6">
+              <div className="bg-gradient-to-r from-green-600 to-green-500 p-6">
                 <h3 className="font-bold text-white text-xl flex items-center gap-3">
                   <span className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                     🛍️
                   </span>
                   1. Choisissez vos produits vedettes
                 </h3>
-                <p className="text-teal-50 mt-2 text-sm">
+                <p className="text-green-50 mt-2 text-sm">
                   Sélectionnez jusqu&apos;à 10 produits ({selectedImages.length}/10)
                 </p>
               </div>
@@ -267,7 +267,7 @@ export default function VideoGenerator() {
                     placeholder="Rechercher un produit..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:ring-4 focus:ring-teal-100 outline-none transition-all text-gray-700"
+                    className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-4 focus:ring-green-100 outline-none transition-all text-gray-700"
                   />
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl">🔍</span>
                 </div>
@@ -276,7 +276,7 @@ export default function VideoGenerator() {
               <div className="p-6">
                 {isLoading ? (
                   <div className="flex flex-col items-center justify-center py-20">
-                    <div className="w-16 h-16 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mb-4" />
+                    <div className="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4" />
                     <p className="text-gray-500 font-medium">Chargement des produits...</p>
                   </div>
                 ) : filteredProducts.length === 0 ? (
@@ -295,7 +295,7 @@ export default function VideoGenerator() {
                           onClick={() => toggleImageSelection(product.imageUrl)}
                           className={`group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 transform hover:scale-105 ${
                             isSelected
-                              ? "ring-4 ring-teal-500 shadow-2xl shadow-teal-200"
+                              ? "ring-4 ring-green-500 shadow-2xl shadow-green-200"
                               : "hover:shadow-xl"
                           }`}
                         >
@@ -309,13 +309,13 @@ export default function VideoGenerator() {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
                               <p className="font-semibold text-sm truncate">{product.name}</p>
-                              <p className="text-xs text-teal-300 font-bold price">
+                              <p className="text-xs text-green-300 font-bold price">
                                 {product.price} FCFA
                               </p>
                             </div>
                           </div>
                           {isSelected && (
-                            <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-teal-500 to-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
+                            <div className="absolute top-2 right-2 w-8 h-8 bg-gradient-to-br from-green-500 to-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
                               {selectionIndex + 1}
                             </div>
                           )}
@@ -336,14 +336,14 @@ export default function VideoGenerator() {
                         <button
                           onClick={() => goToPage(1)}
                           disabled={currentPage === 1}
-                          className="px-3 py-2 rounded-lg border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-medium"
+                          className="px-3 py-2 rounded-lg border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-medium"
                         >
                           ⏮️
                         </button>
                         <button
                           onClick={() => goToPage(currentPage - 1)}
                           disabled={currentPage === 1}
-                          className="px-4 py-2 rounded-lg border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all font-medium"
+                          className="px-4 py-2 rounded-lg border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all font-medium"
                         >
                           ← Précédent
                         </button>
@@ -366,8 +366,8 @@ export default function VideoGenerator() {
                                     onClick={() => goToPage(page)}
                                     className={`w-10 h-10 rounded-lg font-bold transition-all ${
                                       currentPage === page
-                                        ? "bg-gradient-to-br from-teal-500 to-green-500 text-white shadow-lg scale-110"
-                                        : "border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 text-gray-700"
+                                        ? "bg-gradient-to-br from-green-500 to-green-500 text-white shadow-lg scale-110"
+                                        : "border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 text-gray-700"
                                     }`}
                                   >
                                     {page}
@@ -379,14 +379,14 @@ export default function VideoGenerator() {
                         <button
                           onClick={() => goToPage(currentPage + 1)}
                           disabled={currentPage === totalPages}
-                          className="px-4 py-2 rounded-lg border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all font-medium"
+                          className="px-4 py-2 rounded-lg border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all font-medium"
                         >
                           Suivant →
                         </button>
                         <button
                           onClick={() => goToPage(totalPages)}
                           disabled={currentPage === totalPages}
-                          className="px-3 py-2 rounded-lg border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-medium"
+                          className="px-3 py-2 rounded-lg border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-medium"
                         >
                           ⏭️
                         </button>
@@ -409,8 +409,8 @@ export default function VideoGenerator() {
                     onClick={() => setSelectedAudio(audio)}
                     className={`px-5 py-3 rounded-full border-2 transition-all font-medium ${
                       selectedAudio.id === audio.id
-                        ? "bg-gradient-to-r from-teal-600 to-green-600 text-white border-teal-600 shadow-lg shadow-teal-200 scale-105"
-                        : "bg-gray-50 border-gray-200 text-gray-600 hover:border-teal-300 hover:bg-teal-50"
+                        ? "bg-gradient-to-r from-green-600 to-green-600 text-white border-green-600 shadow-lg shadow-green-200 scale-105"
+                        : "bg-gray-50 border-gray-200 text-gray-600 hover:border-green-300 hover:bg-green-50"
                     }`}
                   >
                     {selectedAudio.id === audio.id && "▶ "} {audio.name}
@@ -423,7 +423,7 @@ export default function VideoGenerator() {
             <button
               onClick={handleGenerate}
               disabled={isExporting || selectedImages.length === 0}
-              className="w-full bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 text-white py-5 rounded-2xl font-bold shadow-2xl hover:shadow-teal-300 disabled:from-gray-300 disabled:via-gray-400 disabled:to-gray-300 disabled:shadow-none disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98] text-lg group overflow-hidden relative"
+              className="w-full bg-gradient-to-r from-green-600 via-green-600 to-green-600 text-white py-5 rounded-2xl font-bold shadow-2xl hover:shadow-green-300 disabled:from-gray-300 disabled:via-gray-400 disabled:to-gray-300 disabled:shadow-none disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98] text-lg group overflow-hidden relative"
             >
               <span className="relative z-10 flex flex-col items-center justify-center gap-2">
                 {isExporting ? (
@@ -474,7 +474,7 @@ export default function VideoGenerator() {
                 </div>
 
                 <div className="relative">
-                  <div className="absolute -inset-4 bg-gradient-to-r from-teal-500 via-green-500 to-emerald-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
+                  <div className="absolute -inset-4 bg-gradient-to-r from-green-500 via-green-500 to-green-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
                   <div className="relative overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-white/10">
                     <Player
                       component={MyVideoTemplate}
@@ -520,8 +520,8 @@ export default function VideoGenerator() {
                 </div>
 
                 {selectedImages.length === 0 && (
-                  <div className="mt-6 bg-teal-500/10 border border-teal-500/30 rounded-xl p-4">
-                    <p className="text-teal-300 text-sm text-center font-medium">
+                  <div className="mt-6 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+                    <p className="text-green-300 text-sm text-center font-medium">
                       👈 Sélectionnez des produits pour voir l&apos;aperçu
                     </p>
                   </div>

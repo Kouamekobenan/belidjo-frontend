@@ -48,13 +48,13 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
           <>
             {/* Ping indicator animation */}
             <span className="absolute top-1.5 right-1.5 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-teal-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
             </span>
 
             {/* Unread badge count */}
             <span
-              className={`absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold text-white bg-gradient-to-r from-teal-500 to-emerald-600 rounded-full shadow-md border-2 border-white dark:border-slate-900 ${badgeClassName}`}
+              className={`absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold text-white bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-md border-2 border-white dark:border-slate-900 ${badgeClassName}`}
             >
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>

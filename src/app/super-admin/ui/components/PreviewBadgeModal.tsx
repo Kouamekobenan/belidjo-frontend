@@ -39,7 +39,7 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="group relative p-2.5 text-slate-600 hover:text-teal-600 transition-all duration-300 bg-white rounded-xl border border-slate-200 hover:border-teal-300 shadow-sm hover:shadow-md"
+        className="group relative p-2.5 text-slate-600 hover:text-green-600 transition-all duration-300 bg-white rounded-xl border border-slate-200 hover:border-green-300 shadow-sm hover:shadow-md"
         title="Voir le badge de certification"
       >
         <Eye size={16} className="relative z-10" />
@@ -54,9 +54,9 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
               <div className="flex items-center gap-3 mb-6">
                 <button
                   onClick={handleDownload}
-                  className="flex-1 flex items-center justify-center gap-2.5 bg-white text-slate-900 px-5 py-3 rounded-2xl text-sm font-black shadow-xl hover:bg-teal-50 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2.5 bg-white text-slate-900 px-5 py-3 rounded-2xl text-sm font-black shadow-xl hover:bg-green-50 transition-colors"
                 >
-                  <Download size={18} className="text-teal-600" />
+                  <Download size={18} className="text-green-600" />
                   TÉLÉCHARGER LE BADGE
                 </button>
                 <button
@@ -75,10 +75,10 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
                 {/* BACKGROUND DESIGN */}
                 <div className="absolute inset-0">
                   {/* Dégradé de base */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-teal-50/50" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-green-50/50" />
                   {/* Formes organiques premium */}
-                  <div className="absolute -top-24 -right-24 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl" />
-                  <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl" />
+                  <div className="absolute -top-24 -right-24 w-64 h-64 bg-green-500/10 rounded-full blur-3xl" />
+                  <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-green-500/10 rounded-full blur-3xl" />
                 </div>
 
                 {/* CONTENT */}
@@ -86,7 +86,7 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
                   {/* Badge de tête */}
                   <div className="flex justify-center mb-8">
                     <div className="flex items-center gap-2 bg-slate-900 px-4 py-1.5 rounded-full shadow-lg">
-                      <CheckCircle2 size={12} className="text-teal-400" />
+                      <CheckCircle2 size={12} className="text-green-400" />
                       <span className="text-[10px] font-black text-white tracking-[0.2em] uppercase">
                         Vendeur Certifié
                       </span>
@@ -95,8 +95,8 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
                   {/* Logo / Image de profil */}
                   <div className="flex flex-col items-center flex-1">
                     <div className="relative mb-6">
-                      <div className="absolute -inset-4 bg-gradient-to-tr from-teal-500/20 to-emerald-500/20 blur-2xl rounded-full" />
-                      <div className="relative w-32 h-32 rounded-[2rem] bg-gradient-to-br from-teal-600 to-emerald-600 p-1 shadow-2xl rotate-3">
+                      <div className="absolute -inset-4 bg-gradient-to-tr from-green-500/20 to-green-500/20 blur-2xl rounded-full" />
+                      <div className="relative w-32 h-32 rounded-[2rem] bg-gradient-to-br from-green-600 to-green-600 p-1 shadow-2xl rotate-3">
                         <div className="w-full h-full bg-white rounded-[1.8rem] flex items-center justify-center overflow-hidden -rotate-3">
                           {vendor.site?.logoUrl ? (
                             <Image
@@ -107,14 +107,14 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
                               className="object-contain p-2"
                             />
                           ) : (
-                            <span className="text-4xl font-black bg-gradient-to-br from-teal-600 to-emerald-600 bg-clip-text text-transparent">
+                            <span className="text-4xl font-black bg-gradient-to-br from-green-600 to-green-600 bg-clip-text text-transparent">
                               {vendor.name.substring(0, 1)}
                             </span>
                           )}
                         </div>
                       </div>
                       {/* Pastille de vérification flottante */}
-                      <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white p-2 rounded-2xl shadow-xl border-4 border-white">
+                      <div className="absolute -bottom-2 -right-2 bg-green-500 text-white p-2 rounded-2xl shadow-xl border-4 border-white">
                         <Shield size={20} fill="currentColor" />
                       </div>
                     </div>
@@ -122,9 +122,9 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
                     <h3 className="font-black text-slate-900 text-3xl text-center leading-tight mb-2 uppercase tracking-tight px-4">
                       {vendor.name}
                     </h3>
-                    <div className="flex items-center gap-2 py-1.5 px-4 bg-teal-50 rounded-full">
-                      <Sparkles size={12} className="text-teal-600" />
-                      <span className="text-teal-700 font-bold text-xs">
+                    <div className="flex items-center gap-2 py-1.5 px-4 bg-green-50 rounded-full">
+                      <Sparkles size={12} className="text-green-600" />
+                      <span className="text-green-700 font-bold text-xs">
                         @{vendor.user?.name}
                       </span>
                     </div>
@@ -138,7 +138,7 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
                           >
                             <Star
                               size={10}
-                              className="text-teal-500 fill-teal-500"
+                              className="text-green-500 fill-green-500"
                             />
                           </div>
                         ))}
@@ -163,7 +163,7 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
                       <p className="text-lg font-black tracking-tighter text-slate-900 leading-none">
                         NOBOUTIK
                       </p>
-                      <p className="text-[7px] font-bold text-teal-600 tracking-[0.2em] uppercase">
+                      <p className="text-[7px] font-bold text-green-600 tracking-[0.2em] uppercase">
                         Boutique Officielle
                       </p>
                     </div>
@@ -171,7 +171,7 @@ export default function PreviewBadgeModal({ vendor }: { vendor: Vendor }) {
                 </div>
 
                 {/* Barre de décoration latérale signature */}
-                <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-teal-500 to-emerald-600" />
+                <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-green-500 to-green-600" />
               </div>
 
               {/* TOOLTIP SHARE */}

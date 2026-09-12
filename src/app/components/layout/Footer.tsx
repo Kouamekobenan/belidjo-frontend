@@ -44,7 +44,7 @@ export const Footer = () => {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-gray-700 hover:bg-teal-600 flex items-center justify-center transition-all duration-300 transform hover:scale-110"
+                className="w-10 h-10 rounded-full bg-gray-700 hover:bg-green-600 flex items-center justify-center transition-all duration-300 transform hover:scale-110"
                 aria-label="Facebook"
               >
                 <Facebook className="w-5 h-5" />
@@ -81,14 +81,14 @@ export const Footer = () => {
 
           {/* Colonne 2 : Liens rapides */}
           <div>
-            <h3 className="text-lg font-bold text-white mb-4 border-b-2 border-teal-600 inline-block pb-2">
+            <h3 className="text-lg font-bold text-white mb-4 border-b-2 border-green-600 inline-block pb-2">
               Liens Rapides
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   href="/vendor"
-                  className="flex items-center gap-2 hover:text-teal-400 transition-colors duration-200"
+                  className="flex items-center gap-2 hover:text-green-400 transition-colors duration-200"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   Trouvez un vendeur
@@ -97,7 +97,7 @@ export const Footer = () => {
               <li>
                 <Link
                   href="/about"
-                  className="flex items-center gap-2 hover:text-teal-400 transition-colors duration-200"
+                  className="flex items-center gap-2 hover:text-green-400 transition-colors duration-200"
                 >
                   <Heart className="w-4 h-4" />À Propos
                 </Link>
@@ -105,7 +105,7 @@ export const Footer = () => {
               <li>
                 <Link
                   href="/vendors"
-                  className="flex items-center gap-2 hover:text-teal-400 transition-colors duration-200"
+                  className="flex items-center gap-2 hover:text-green-400 transition-colors duration-200"
                 >
                   <TrendingUp className="w-4 h-4" />
                   Devenir Vendeur
@@ -114,7 +114,7 @@ export const Footer = () => {
               <li>
                 <Link
                   href="/faq"
-                  className="flex items-center gap-2 hover:text-teal-400 transition-colors duration-200"
+                  className="flex items-center gap-2 hover:text-green-400 transition-colors duration-200"
                 >
                   <Shield className="w-4 h-4" />
                   FAQ
@@ -124,14 +124,14 @@ export const Footer = () => {
           </div>
           {/* Colonne 3 : Contact */}
           <div>
-            <h3 className="text-lg font-bold text-white mb-4 border-b-2 border-teal-600 inline-block pb-2">
+            <h3 className="text-lg font-bold text-white mb-4 border-b-2 border-green-600 inline-block pb-2">
               Contactez-nous
             </h3>
             <ul className="space-y-3">
               <li>
                 <a
                   href="tel:+2250506832678"
-                  className="flex items-start gap-3 hover:text-teal-400 transition-colors duration-200 group"
+                  className="flex items-start gap-3 hover:text-green-400 transition-colors duration-200 group"
                 >
                   <Phone className="w-5 h-5 mt-0.5 flex-shrink-0 group-hover:rotate-12 transition-transform" />
                   <span className="text-sm">
@@ -146,7 +146,7 @@ export const Footer = () => {
               <li>
                 <a
                   href="mailto:contact@belidjo.com"
-                  className="flex items-start gap-3 hover:text-teal-400 transition-colors duration-200 group"
+                  className="flex items-start gap-3 hover:text-green-400 transition-colors duration-200 group"
                 >
                   <Mail className="w-5 h-5 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
                   <span className="text-sm break-all">
@@ -156,7 +156,7 @@ export const Footer = () => {
               </li>
               <li>
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0 text-teal-500" />
+                  <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0 text-green-500" />
                   <span className="text-sm">
                     Bondoukou, Zanzan
                     <br />
@@ -169,14 +169,14 @@ export const Footer = () => {
 
           {/* Colonne 4 : Informations légales */}
           <div>
-            <h3 className="text-lg font-bold text-white mb-4 border-b-2 border-teal-600 inline-block pb-2">
+            <h3 className="text-lg font-bold text-white mb-4 border-b-2 border-green-600 inline-block pb-2">
               Informations Légales
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   href="/privacy"
-                  className="hover:text-teal-400 transition-colors duration-200 text-sm"
+                  className="hover:text-green-400 transition-colors duration-200 text-sm"
                 >
                   Politique de Confidentialité
                 </Link>
@@ -184,7 +184,7 @@ export const Footer = () => {
               <li>
                 <Link
                   href="/terms"
-                  className="hover:text-teal-400 transition-colors duration-200 text-sm"
+                  className="hover:text-green-400 transition-colors duration-200 text-sm"
                 >
                   Conditions d'Utilisation
                 </Link>
@@ -192,7 +192,7 @@ export const Footer = () => {
               <li>
                 <Link
                   href="/cookies"
-                  className="hover:text-teal-400 transition-colors duration-200 text-sm"
+                  className="hover:text-green-400 transition-colors duration-200 text-sm"
                 >
                   Politique des Cookies
                 </Link>
@@ -200,7 +200,7 @@ export const Footer = () => {
               <li>
                 <Link
                   href="/refund"
-                  className="hover:text-teal-400 transition-colors duration-200 text-sm"
+                  className="hover:text-green-400 transition-colors duration-200 text-sm"
                 >
                   Retours et Remboursements
                 </Link>
@@ -210,7 +210,7 @@ export const Footer = () => {
             {/* Badge de sécurité */}
             <div className="mt-6 p-3 bg-gray-800 rounded-lg border border-gray-700">
               <div className="flex items-center gap-2 mb-1">
-                <Shield className="w-4 h-4 text-teal-500" />
+                <Shield className="w-4 h-4 text-green-500" />
                 <span className="text-xs font-semibold text-white">
                   Paiement Sécurisé
                 </span>

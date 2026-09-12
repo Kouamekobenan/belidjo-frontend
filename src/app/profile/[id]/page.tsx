@@ -99,8 +99,8 @@ export default function SettingsProfile() {
 
   if (fetching) {
     return (
-      <div className="flex flex-col justify-center items-center h-screen text-teal-600 gap-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
+      <div className="flex flex-col justify-center items-center h-screen text-green-600 gap-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
         <p className="font-medium">Chargement de votre univers NoBoutik...</p>
       </div>
     );
@@ -110,7 +110,7 @@ export default function SettingsProfile() {
     <div className="max-w-3xl mx-auto p-4 md:p-8">
       <button
         onClick={() => router.back()}
-        className="flex items-center text-teal-700 hover:text-teal-900 transition mb-6 font-medium group"
+        className="flex items-center text-green-700 hover:text-green-900 transition mb-6 font-medium group"
       >
         <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
         Retour au profil
@@ -118,14 +118,14 @@ export default function SettingsProfile() {
 
       <div className="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
         {/* Header NoBoutik */}
-        <div className="bg-gradient-to-r from-teal-600 to-green-500 p-6 text-white">
+        <div className="bg-gradient-to-r from-green-600 to-green-500 p-6 text-white">
           <div className="flex items-center gap-4">
             <div className="bg-white/20 p-3 rounded-full shadow-inner">
               <UserIcon className="w-8 h-8 text-white" />
             </div>
             <div>
               <h1 className="text-2xl font-bold">Paramètres du compte</h1>
-              <p className="text-teal-50 text-sm opacity-90 italic">
+              <p className="text-green-50 text-sm opacity-90 italic">
                 Optimisez votre présence sur NoBoutik
               </p>
             </div>
@@ -151,7 +151,7 @@ export default function SettingsProfile() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all bg-gray-50/50"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all bg-gray-50/50"
                   placeholder="Jean Dupont"
                 />
               </div>
@@ -166,7 +166,7 @@ export default function SettingsProfile() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all bg-gray-50/50"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all bg-gray-50/50"
                   placeholder="contact@noboutik.com"
                 />
               </div>
@@ -181,7 +181,7 @@ export default function SettingsProfile() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all bg-gray-50/50"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all bg-gray-50/50"
                   placeholder="+225 07..."
                 />
               </div>
@@ -189,14 +189,14 @@ export default function SettingsProfile() {
               {/* SELECT VILLES */}
               <div className="space-y-1">
                 <label className="text-sm font-semibold text-gray-600 ml-1 flex items-center">
-                  <MapPin className="w-3 h-3 mr-1 text-teal-600" /> Ville de
+                  <MapPin className="w-3 h-3 mr-1 text-green-600" /> Ville de
                   résidence
                 </label>
                 <select
                   name="cityId"
                   value={formData.cityId}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all bg-gray-50/50 appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all bg-gray-50/50 appearance-none cursor-pointer"
                 >
                   <option value="">Sélectionnez votre ville</option>
                   {cities.map((c) => (
@@ -210,9 +210,9 @@ export default function SettingsProfile() {
           </div>
 
           {/* Section : Sécurité */}
-          <div className="bg-teal-50/30 p-6 rounded-2xl space-y-4 border border-teal-100">
+          <div className="bg-green-50/30 p-6 rounded-2xl space-y-4 border border-green-100">
             <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-              <span className="w-2 h-2 bg-teal-500 rounded-full mr-2"></span>
+              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
               Sécurité du compte
             </h2>
             <div className="max-w-md">
@@ -250,7 +250,7 @@ export default function SettingsProfile() {
               className={`flex items-center gap-2 px-10 py-4 rounded-2xl text-white font-extrabold transition-all transform active:scale-95 shadow-lg ${
                 loading
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-teal-600 to-green-600 hover:from-teal-700 hover:to-green-700 hover:shadow-teal-200 hover:-translate-y-1"
+                  : "bg-gradient-to-r from-green-600 to-green-600 hover:from-green-700 hover:to-green-700 hover:shadow-green-200 hover:-translate-y-1"
               }`}
             >
               {loading ? (

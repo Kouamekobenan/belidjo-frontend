@@ -76,8 +76,8 @@ export default function DashBordVisitAdmin({ vendorId }: { vendorId: string }) {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent animate-shimmer"></div>
         <div className="flex flex-col items-center justify-center h-80 space-y-4">
           <div className="relative">
-            <div className="absolute inset-0 bg-teal-500/20 rounded-full blur-xl animate-pulse"></div>
-            <Loader2 className="relative w-12 h-12 text-teal-500 animate-spin" />
+            <div className="absolute inset-0 bg-green-500/20 rounded-full blur-xl animate-pulse"></div>
+            <Loader2 className="relative w-12 h-12 text-green-500 animate-spin" />
           </div>
           <p className="text-sm font-semibold text-slate-500 animate-pulse">
             Chargement des statistiques...
@@ -93,10 +93,10 @@ export default function DashBordVisitAdmin({ vendorId }: { vendorId: string }) {
       value: animatedValues.today,
       icon: <TrendingUp className="w-6 h-6 text-green-500" />,
       gradient: "bg-gray-100",
-      bgGradient: "from-emerald-50 to-teal-50",
+      bgGradient: "from-green-50 to-green-50",
       trend: todayVsYesterday,
       subtitle: "visites du jour",
-      accentColor: "emerald",
+      accentColor: "green",
     },
     {
       label: "Cette Semaine",
@@ -126,8 +126,8 @@ export default function DashBordVisitAdmin({ vendorId }: { vendorId: string }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-blue-500 rounded-2xl blur-lg opacity-50"></div>
-            <div className="relative p-3 bg-gradient-to-br bg-teal-500  rounded-2xl shadow-lg">
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl blur-lg opacity-50"></div>
+            <div className="relative p-3 bg-gradient-to-br bg-green-500  rounded-2xl shadow-lg">
               <BarChart3 className="w-7 h-7 text-white" />
             </div>
           </div>
@@ -137,7 +137,7 @@ export default function DashBordVisitAdmin({ vendorId }: { vendorId: string }) {
             </h2>
           </div>
         </div>
-        <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
+        <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-50 to-green-50 border-2 border-green-200 rounded-xl">
           <Activity className="w-4 h-4 text-green-600 animate-pulse" />
           <span className="text-sm font-bold text-green-700">En Direct</span>
         </div>

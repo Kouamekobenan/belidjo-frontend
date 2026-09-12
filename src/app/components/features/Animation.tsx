@@ -42,8 +42,8 @@ export default function AnimatedPromoBanner({
       <div
         className={`
           relative overflow-hidden
-          bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50
-          border-y border-emerald-200/60
+          bg-gradient-to-r from-green-50 via-green-50 to-cyan-50
+          border-y border-green-200/60
           shadow-lg
           transform transition-all duration-500 ease-out
           ${
@@ -73,8 +73,8 @@ export default function AnimatedPromoBanner({
             {/* Icône animée avec effet glow */}
             <div className="flex-shrink-0 hidden sm:block">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-cyan-500 rounded-full blur-lg opacity-60 animate-pulse-glow"></div>
-                <div className="relative bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 p-2.5 rounded-full shadow-xl icon-float">
+                <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-cyan-500 rounded-full blur-lg opacity-60 animate-pulse-glow"></div>
+                <div className="relative bg-gradient-to-br from-green-500 via-green-500 to-cyan-600 p-2.5 rounded-full shadow-xl icon-float">
                   <Gift className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </div>
               </div>
@@ -100,12 +100,12 @@ export default function AnimatedPromoBanner({
                     href="/users/ui/login"
                     className="group relative inline-flex items-center font-bold"
                   >
-                    <span className="relative text-emerald-600 hover:text-emerald-700 transition-colors">
+                    <span className="relative text-green-600 hover:text-green-700 transition-colors">
                       NoBoutik
                       {/* Soulignement animé */}
-                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-600 to-cyan-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-green-600 to-cyan-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
                     </span>
-                    <ChevronRight className="w-4 h-4 ml-0.5 text-emerald-600 transform group-hover:translate-x-1 transition-transform duration-300" />
+                    <ChevronRight className="w-4 h-4 ml-0.5 text-green-600 transform group-hover:translate-x-1 transition-transform duration-300" />
                   </Link>
 
                   <span className="text-gray-700 font-medium hidden sm:inline">
@@ -113,7 +113,7 @@ export default function AnimatedPromoBanner({
                   </span>
 
                   {/* Badge réduction */}
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-black rounded-full shadow-md discount-pulse">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs font-black rounded-full shadow-md discount-pulse">
                     <TrendingUp className="w-3.5 h-3.5" strokeWidth={3} />
                     -20%
                   </span>
@@ -141,7 +141,7 @@ export default function AnimatedPromoBanner({
 
           {/* Barre de progression (temps limité) */}
           <div className="mt-3 w-full h-1 bg-gray-200/50 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 progress-bar"></div>
+            <div className="h-full bg-gradient-to-r from-green-500 via-green-500 to-cyan-500 progress-bar"></div>
           </div>
         </div>
       </div>

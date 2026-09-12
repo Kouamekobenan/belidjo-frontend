@@ -110,7 +110,7 @@ export default function NavBarAdmin() {
                   >
                     NoBoutik
                   </h2>
-                  <p className="text-[10px] text-teal-500/70 uppercase tracking-widest font-semibold">
+                  <p className="text-[10px] text-green-500/70 uppercase tracking-widest font-semibold">
                     Admin Panel
                   </p>
                 </div>
@@ -166,7 +166,7 @@ export default function NavBarAdmin() {
                     <p className="text-sm font-semibold text-slate-200 truncate">
                       {user?.name}
                     </p>
-                    <p className="text-[11px] text-teal-400 font-medium uppercase tracking-wider">
+                    <p className="text-[11px] text-green-400 font-medium uppercase tracking-wider">
                       Administrateur
                     </p>
                   </div>

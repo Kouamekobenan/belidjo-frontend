@@ -19,7 +19,7 @@ export const StartupNotificationModal: React.FC = () => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden transform animate-in zoom-in-95 duration-200">
         {/* Background glow decorator */}
-        <div className="absolute -top-24 -right-24 w-48 h-48 bg-teal-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-green-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
 
         {/* Close button */}
@@ -42,7 +42,7 @@ export const StartupNotificationModal: React.FC = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
             <div className="absolute bottom-4 left-6 right-6">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-500/90 text-white backdrop-blur-md mb-1 shadow-md">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-500/90 text-white backdrop-blur-md mb-1 shadow-md">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Annonce importante</span>
               </span>
@@ -50,7 +50,7 @@ export const StartupNotificationModal: React.FC = () => {
           </div>
         ) : (
           <div className="p-6 pb-0 flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400">
+            <div className="p-3 rounded-2xl bg-green-500/10 text-green-600 dark:text-green-400">
               <BellRing className="w-6 h-6" />
             </div>
             <div>
@@ -85,7 +85,7 @@ export const StartupNotificationModal: React.FC = () => {
               <Link
                 href={targetUrl}
                 onClick={dismissStartupModal}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-2xl text-sm font-semibold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-lg shadow-teal-600/25 transition-all transform hover:scale-[1.02]"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-2xl text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-600 hover:from-green-700 hover:to-green-700 shadow-lg shadow-green-600/25 transition-all transform hover:scale-[1.02]"
               >
                 <span>Découvrir</span>
                 <ExternalLink className="w-4 h-4" />

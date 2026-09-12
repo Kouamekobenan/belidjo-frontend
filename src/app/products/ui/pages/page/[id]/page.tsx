@@ -141,7 +141,7 @@ export default function ProductDetail() {
   if (loading)
     return (
       <div className="min-h-screen flex flex-col justify-center items-center bg-white">
-        <div className="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
         <p className="mt-4 text-gray-500 font-medium">
           Chargement du produit...
         </p>
@@ -210,7 +210,7 @@ export default function ProductDetail() {
                   className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm ${
                     product.quantity < 5
                       ? "bg-orange-500 text-white"
-                      : "bg-teal-600 text-white"
+                      : "bg-green-600 text-white"
                   }`}
                 >
                   {product.quantity < 5 ? "Stock Limité" : "En Stock"}
@@ -225,7 +225,7 @@ export default function ProductDetail() {
               </h1>
 
               <div className="flex items-baseline gap-2 mb-8">
-                <span className="text-4xl lg:text-5xl font-black text-teal-600 price">
+                <span className="text-4xl lg:text-5xl font-black text-green-600 price">
                   {product.price.toLocaleString()}
                 </span>
                 <span className="text-xl font-bold text-gray-400">FCFA</span>
@@ -250,11 +250,11 @@ export default function ProductDetail() {
                       {product.quantity}
                     </p>
                   </div>
-                  <div className="p-5 bg-teal-50 rounded-3xl border border-teal-100">
-                    <p className="text-[10px] font-black text-teal-400 uppercase tracking-widest">
+                  <div className="p-5 bg-green-50 rounded-3xl border border-green-100">
+                    <p className="text-[10px] font-black text-green-400 uppercase tracking-widest">
                       Boutique
                     </p>
-                    <p className="text-sm font-bold text-teal-700 truncate">
+                    <p className="text-sm font-bold text-green-700 truncate">
                       {product.vendor.user?.name || "Boutique Officielle"}
                     </p>
                   </div>
@@ -263,7 +263,7 @@ export default function ProductDetail() {
 
               <button
                 onClick={handleWhatsAppOrder}
-                className="hidden lg:flex mt-12 w-full bg-teal-600 hover:bg-teal-700 text-white py-6  font-black text-xl items-center justify-center gap-4 transition-all hover:scale-[1.02] shadow-2xl shadow-teal-200"
+                className="hidden lg:flex mt-12 w-full bg-green-600 hover:bg-green-700 text-white py-6  font-black text-xl items-center justify-center gap-4 transition-all hover:scale-[1.02] shadow-2xl shadow-green-200"
               >
                 <ShoppingCart className="w-7 h-7" />
                 Commander maintenant
@@ -275,7 +275,7 @@ export default function ProductDetail() {
         <section className="mt-12 px-4 lg:px-0 max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-black text-gray-900 flex items-center gap-3">
-              <MessageSquare className="w-6 h-6 text-teal-600" />
+              <MessageSquare className="w-6 h-6 text-green-600" />
               Avis Clients
               <span className="text-gray-300 font-medium">
                 ({product.comment?.length || 0})
@@ -296,7 +296,7 @@ export default function ProductDetail() {
               className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm ${
                 showCommentForm
                   ? "bg-red-50 text-red-600"
-                  : "bg-white text-teal-600 border border-teal-100"
+                  : "bg-white text-green-600 border border-green-100"
               }`}
             >
               {showCommentForm ? (
@@ -312,7 +312,7 @@ export default function ProductDetail() {
           </div>
 
           {showCommentForm && (
-            <div className="mb-10 p-6 bg-white rounded-[32px] border-2 border-teal-50 shadow-xl shadow-teal-50/50 animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="mb-10 p-6 bg-white rounded-[32px] border-2 border-green-50 shadow-xl shadow-green-50/50 animate-in fade-in slide-in-from-top-4 duration-300">
               <textarea
                 value={commentContent}
                 onChange={(e) => {
@@ -320,7 +320,7 @@ export default function ProductDetail() {
                   setCommentError(null);
                 }}
                 placeholder="Dites-nous ce que vous pensez de ce produit..."
-                className="w-full p-5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-teal-500 text-gray-800 min-h-[120px] text-lg"
+                className="w-full p-5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-green-500 text-gray-800 min-h-[120px] text-lg"
               />
               {commentError && (
                 <p className="mt-2 text-red-500 text-xs px-2">{commentError}</p>
@@ -329,7 +329,7 @@ export default function ProductDetail() {
                 <button
                   onClick={handleComment}
                   disabled={isSubmittingComment || !commentContent.trim()}
-                  className="bg-teal-600 hover:bg-teal-700 disabled:bg-gray-200 text-white px-8 py-3 rounded-xl font-black flex items-center gap-2 transition-all shadow-lg shadow-teal-100"
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-200 text-white px-8 py-3 rounded-xl font-black flex items-center gap-2 transition-all shadow-lg shadow-green-100"
                 >
                   {isSubmittingComment ? (
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -351,7 +351,7 @@ export default function ProductDetail() {
                   className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm transition-hover hover:shadow-md"
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-teal-100">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-100">
                       <User className="w-6 h-6" />
                     </div>
                     <div>
@@ -393,7 +393,7 @@ export default function ProductDetail() {
           )}
           <button
             onClick={handleWhatsAppOrder}
-            className="flex-1 bg-teal-600 text-white font-black rounded-[24px] flex items-center justify-center gap-3 active:scale-95 transition-transform shadow-2xl shadow-teal-200"
+            className="flex-1 bg-green-600 text-white font-black rounded-[24px] flex items-center justify-center gap-3 active:scale-95 transition-transform shadow-2xl shadow-green-200"
           >
             <ShoppingCart className="w-6 h-6" />
             Commander via WhatsApp

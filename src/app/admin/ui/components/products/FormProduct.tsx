@@ -342,7 +342,7 @@ export default function ProductForm({
             {/* ZONE IMAGE */}
             <div className="p-8 border-b border-gray-100 bg-gray-50/50">
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <ImageIcon className="w-6 h-6 mr-2 text-teal-600" /> Image du
+                <ImageIcon className="w-6 h-6 mr-2 text-green-600" /> Image du
                 produit
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -373,7 +373,7 @@ export default function ProductForm({
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center transition-colors ${isDragOver ? "border-teal-500 bg-teal-50" : "border-gray-200 bg-white"}`}
+                  className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center transition-colors ${isDragOver ? "border-green-500 bg-green-50" : "border-gray-200 bg-white"}`}
                 >
                   <input
                     type="file"
@@ -384,7 +384,7 @@ export default function ProductForm({
                   />
                   <label
                     htmlFor="img-input"
-                    className="cursor-pointer bg-teal-600 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:bg-teal-700 transition-all"
+                    className="cursor-pointer bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:bg-green-700 transition-all"
                   >
                     Choisir une photo
                   </label>
@@ -405,12 +405,12 @@ export default function ProductForm({
             <div className="p-8 border-b border-gray-100">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-800 flex items-center">
-                  <Tag className="w-6 h-6 mr-2 text-teal-600" /> Choisir la
+                  <Tag className="w-6 h-6 mr-2 text-green-600" /> Choisir la
                   catégorie
                 </h2>
                 {selectedChild && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600 bg-teal-50 px-4 py-2 rounded-full">
-                    <Check className="w-4 h-4 text-teal-600" />
+                  <div className="flex items-center gap-2 text-sm text-gray-600 bg-green-50 px-4 py-2 rounded-full">
+                    <Check className="w-4 h-4 text-green-600" />
                     <span className="font-medium">
                       {selectedParent?.name} → {selectedChild.name}
                     </span>
@@ -430,7 +430,7 @@ export default function ProductForm({
                         key={cat.id}
                         type="button"
                         onClick={() => handleSelectCategory(cat, true)}
-                        className={`px-6 py-3 rounded-2xl font-semibold transition-all border-2 ${selectedParent?.id === cat.id ? "bg-teal-600 border-teal-600 text-white shadow-lg scale-105" : "bg-white border-gray-100 text-gray-600 hover:border-teal-200 hover:shadow-md"}`}
+                        className={`px-6 py-3 rounded-2xl font-semibold transition-all border-2 ${selectedParent?.id === cat.id ? "bg-green-600 border-green-600 text-white shadow-lg scale-105" : "bg-white border-gray-100 text-gray-600 hover:border-green-200 hover:shadow-md"}`}
                       >
                         {cat.name}
                         {selectedParent?.id === cat.id && (
@@ -445,8 +445,8 @@ export default function ProductForm({
                 {selectedParent &&
                   selectedParent.children &&
                   selectedParent.children.length > 0 && (
-                    <div className="p-6 bg-gradient-to-br from-teal-50 to-blue-50 rounded-3xl animate-in slide-in-from-top-2 duration-300 border border-teal-100">
-                      <p className="text-xs font-bold text-teal-700 mb-4 uppercase tracking-wider flex items-center">
+                    <div className="p-6 bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl animate-in slide-in-from-top-2 duration-300 border border-green-100">
+                      <p className="text-xs font-bold text-green-700 mb-4 uppercase tracking-wider flex items-center">
                         <ChevronRight className="w-4 h-4 mr-1" />
                         2. Sous-catégorie de {selectedParent.name}
                       </p>
@@ -488,7 +488,7 @@ export default function ProductForm({
                     <button
                       type="button"
                       onClick={resetNameToAutoComplete}
-                      className="text-xs text-teal-600 hover:text-teal-800 font-medium flex items-center gap-1 transition-colors"
+                      className="text-xs text-green-600 hover:text-green-800 font-medium flex items-center gap-1 transition-colors"
                     >
                       <RefreshCw className="w-3 h-3" />
                       Réinitialiser
@@ -496,7 +496,7 @@ export default function ProductForm({
                   )}
                 </div>
                 <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-teal-600 transition-colors">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors">
                     <Package className="w-5 h-5" />
                   </div>
                   <input
@@ -505,7 +505,7 @@ export default function ProductForm({
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Ex: Pagne Bazin Riche"
-                    className={`w-full pl-12 pr-4 py-4 bg-white border-2 rounded-2xl focus:outline-none transition-all ${validationErrors.name ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-teal-500 text-black shadow-sm hover:border-gray-200"}`}
+                    className={`w-full pl-12 pr-4 py-4 bg-white border-2 rounded-2xl focus:outline-none transition-all ${validationErrors.name ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-green-500 text-black shadow-sm hover:border-gray-200"}`}
                   />
                 </div>
                 {validationErrors.name && (
@@ -550,7 +550,7 @@ export default function ProductForm({
                       <button
                         type="button"
                         onClick={resetDescriptionToAutoComplete}
-                        className="text-xs text-teal-600 hover:text-teal-800 font-medium flex items-center gap-1 transition-colors"
+                        className="text-xs text-green-600 hover:text-green-800 font-medium flex items-center gap-1 transition-colors"
                       >
                         <RefreshCw className="w-3 h-3" />
                         Réinitialiser
@@ -563,7 +563,7 @@ export default function ProductForm({
                   value={formData.description}
                   onChange={handleChange}
                   placeholder="Matière, taille, coloris..."
-                  className={`w-full p-4 bg-white border-2 rounded-2xl focus:outline-none transition-all resize-none ${validationErrors.description ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-teal-500 text-black shadow-sm hover:border-gray-200"}`}
+                  className={`w-full p-4 bg-white border-2 rounded-2xl focus:outline-none transition-all resize-none ${validationErrors.description ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-green-500 text-black shadow-sm hover:border-gray-200"}`}
                 />
                 <div className="flex justify-between px-1">
                   {validationErrors.description ? (
@@ -593,7 +593,7 @@ export default function ProductForm({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-teal-600 text-white px-10 py-4 rounded-2xl font-bold shadow-2xl hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[200px] transition-all"
+              className="bg-green-600 text-white px-10 py-4 rounded-2xl font-bold shadow-2xl hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[200px] transition-all"
             >
               {isSubmitting ? (
                 <>
@@ -634,7 +634,7 @@ const InputField: React.FC<any> = ({
       {label} {required && "*"}
     </label>
     <div className="relative group">
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-teal-600 transition-colors">
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors">
         {icon}
       </div>
       <input
@@ -643,7 +643,7 @@ const InputField: React.FC<any> = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full pl-12 pr-4 py-4 bg-white border-2 rounded-2xl focus:outline-none transition-all ${error ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-teal-500 text-black shadow-sm hover:border-gray-200"}`}
+        className={`w-full pl-12 pr-4 py-4 bg-white border-2 rounded-2xl focus:outline-none transition-all ${error ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-green-500 text-black shadow-sm hover:border-gray-200"}`}
       />
     </div>
     {error && <p className="text-red-500 text-xs font-medium ml-1">{error}</p>}

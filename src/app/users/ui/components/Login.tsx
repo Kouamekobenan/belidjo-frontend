@@ -152,7 +152,7 @@ export default function LoginUser() {
         <div className="flex justify-center items-center pb-6">
           <Link
             href="/vendor"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-50 hover:bg-teal-100 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-green-50 hover:bg-green-100 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
             <span>Accueil</span>
           </Link>
@@ -161,8 +161,8 @@ export default function LoginUser() {
         {/* Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 backdrop-blur-lg border border-gray-200 dark:border-gray-700">
           <div className="mb-6 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-full mb-3">
-              <ShieldCheck className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full mb-3">
+              <ShieldCheck className="w-6 h-6 text-green-600 dark:text-green-400" />
             </div>
             <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
               Connexion sécurisée
@@ -268,7 +268,7 @@ export default function LoginUser() {
               type="button"
               onClick={handleSubmit}
               disabled={isLoading}
-              className="w-full cursor-pointer bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group"
+              className="w-full cursor-pointer bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed group"
             >
               {isLoading ? (
                 <>
@@ -296,7 +296,7 @@ export default function LoginUser() {
               <button
                 type="button"
                 disabled={isLoading}
-                className="group relative w-full flex items-center justify-center space-x-3 px-6 py-3 border-2 border-teal-600 dark:border-teal-500 text-teal-600 dark:text-teal-400 font-bold rounded-xl hover:bg-teal-600 hover:text-white dark:hover:bg-teal-500 dark:hover:text-white transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+                className="group relative w-full flex items-center justify-center space-x-3 px-6 py-3 border-2 border-green-600 dark:border-green-500 text-green-600 dark:text-green-400 font-bold rounded-xl hover:bg-green-600 hover:text-white dark:hover:bg-green-500 dark:hover:text-white transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
               >
                 <UserPlus className="w-5 h-5 transition-transform group-hover:scale-110" />
                 <span>Créer mon compte gratuitement</span>
