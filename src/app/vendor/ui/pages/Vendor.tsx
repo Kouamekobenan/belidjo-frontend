@@ -5,8 +5,8 @@ import { Vendor } from "../../domain/entities/vendor.entity";
 import { Store, AlertTriangle, RefreshCw, Sparkles } from "lucide-react";
 
 const FilterSkeleton = () => (
-  <div className="bg-gradient-to-r from-teal-50 via-cyan-50 to-blue-50 rounded-2xl shadow-xl p-6 animate-pulse">
-    <div className="h-6 bg-teal-200 rounded-lg w-48 mb-4"></div>
+  <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 rounded-2xl shadow-xl p-6 animate-pulse">
+    <div className="h-6 bg-emerald-200 rounded-lg w-48 mb-4"></div>
     <div className="h-12 bg-white/80 rounded-xl w-full max-w-lg shadow-inner"></div>
   </div>
 );
@@ -15,20 +15,14 @@ const FilterSkeleton = () => (
  * Skeleton pour un élément de la liste de vendeurs
  */
 const VendorItemSkeleton = () => (
-  <li className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-gray-200 p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 animate-pulse">
-    {/* Logo Placeholder */}
-    <div className="h-20 w-20 sm:h-24 sm:w-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl flex-shrink-0"></div>
-
-    {/* Informations du vendeur */}
-    <div className="flex-1 space-y-3 min-w-0">
-      <div className="h-7 bg-gray-300 rounded-lg w-3/5"></div>
-      <div className="h-4 bg-gray-200 rounded-lg w-2/5"></div>
-      <div className="h-4 bg-gray-200 rounded-lg w-full"></div>
-      <div className="h-3 bg-gray-100 rounded-lg w-4/5"></div>
+  <li className="flex flex-col items-center gap-2.5 animate-pulse">
+    {/* Circle placeholder */}
+    <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 border-[3px] border-slate-100" />
+    {/* Text placeholders */}
+    <div className="flex flex-col items-center gap-1">
+      <div className="h-3 sm:h-3.5 bg-slate-200 rounded-full w-16 sm:w-20" />
+      <div className="h-2.5 bg-slate-100 rounded-full w-12 sm:w-14" />
     </div>
-
-    {/* Bouton d'action */}
-    <div className="h-11 w-full sm:w-40 bg-teal-300 rounded-lg sm:flex-shrink-0"></div>
   </li>
 );
 
@@ -36,15 +30,14 @@ const VendorItemSkeleton = () => (
  * Composant Squelette complet de la liste
  */
 const VendorListSkeleton = () => (
-  <div className="space-y-6 max-w-6xl mx-auto">
+  <div className="space-y-6 max-w-7xl mx-auto">
     <FilterSkeleton />
-
     <ul
-      className="space-y-5 mt-8"
+      className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 sm:gap-6 mt-8"
       role="list"
       aria-label="Chargement des partenaires"
     >
-      {Array.from({ length: 5 }, (_, index) => (
+      {Array.from({ length: 14 }, (_, index) => (
         <VendorItemSkeleton key={`skeleton-${index}`} />
       ))}
     </ul>
@@ -96,8 +89,8 @@ const ErrorState = ({ message, onRetry }: ErrorStateProps) => (
 const EmptyState = () => (
   <div className="text-center max-w-md mx-auto p-10 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-100">
     <div className="mb-6">
-      <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full mb-4">
-        <Store className="h-12 w-12 text-teal-600" />
+      <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full mb-4">
+        <Store className="h-12 w-12 text-emerald-600" />
       </div>
       <h2 className="text-2xl font-bold text-gray-900 mb-3">
         Aucun Partenaire Disponible
@@ -109,7 +102,7 @@ const EmptyState = () => (
       </p>
     </div>
 
-    <div className="flex items-center justify-center gap-2 text-sm text-teal-600 font-medium">
+    <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 font-medium">
       <Sparkles className="h-4 w-4" />
       <span>De nouveaux partenaires arrivent prochainement</span>
     </div>
@@ -129,7 +122,7 @@ const PageHeader = () => (
       <div className="flex-1 min-w-0 text-center sm:text-left">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-2">
           Catalogue de nos{" "}
-          <span className="bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
             Partenaires
           </span>
         </h1>
@@ -141,10 +134,10 @@ const PageHeader = () => (
 
     {/* Badge de statut */}
     <div className="mt-6 flex justify-center sm:justify-start">
-      <span className="inline-flex items-center gap-2 px-4 py-2 bg-teal-50 text-teal-700 rounded-full text-sm font-medium border border-teal-200">
+      <span className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium border border-emerald-200">
         <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
         Partenaires actifs
       </span>

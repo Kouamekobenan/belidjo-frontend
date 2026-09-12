@@ -2,7 +2,21 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X, Loader2, PackageSearch } from "lucide-react";
+import {
+  Search,
+  X,
+  Loader2,
+  PackageSearch,
+  Sparkles,
+  Flame,
+  ChevronRight,
+  TrendingUp,
+  Footprints,
+  ShoppingBag,
+  Shirt,
+  Smartphone,
+  Watch,
+} from "lucide-react";
 import { useDebounce } from "@/app/hook/useDebounce";
 import { IProduct } from "../../domain/entities/product.entity";
 import { SearchProductsUseCase } from "../../application/usecases/search-products.usecase";
@@ -11,6 +25,15 @@ import { ProductMapper } from "../../domain/mappers/product.mapper";
 
 const repo = new ProductRepository(new ProductMapper());
 const searchProducts = new SearchProductsUseCase(repo);
+
+const POPULAR_TAGS = [
+  { label: "Chaussures", icon: Footprints },
+  { label: "Sacs & Accessoires", icon: ShoppingBag },
+  { label: "Vêtements & Robes", icon: Shirt },
+  { label: "Smartphones", icon: Smartphone },
+  { label: "Montres", icon: Watch },
+  { label: "Beauté & Parfums", icon: Sparkles },
+];
 
 export default function ProductSearch({
   triggerClassName,
@@ -29,7 +52,7 @@ export default function ProductSearch({
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  const debouncedQuery = useDebounce(query, 400);
+  const debouncedQuery = useDebounce(query, 350);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -95,77 +118,170 @@ export default function ProductSearch({
     }
   };
 
-  const resultsContent = (
-    <>
-      {query.trim().length > 0 && query.trim().length < 2 && (
-        <p className="p-6 text-center text-sm text-slate-400">
-          Continuez à taper pour lancer la recherche...
-        </p>
-      )}
+  const handleQuickTagClick = (tagLabel: string) => {
+    setQuery(tagLabel);
+    setIsOpen(true);
+    inputRef.current?.focus();
+  };
 
-      {searched && !loading && results.length === 0 && (
-        <div className="p-10 text-center">
-          <PackageSearch size={40} className="mx-auto mb-3 text-slate-200" />
-          <p className="text-slate-500 font-semibold text-sm">
-            Aucun article ne correspond à "{query}".
-          </p>
+  const resultsContent = (
+    <div className="p-2 sm:p-3 bg-white">
+      {/* Suggestions marketing quand la saisie est courte/vide */}
+      {query.trim().length < 2 && (
+        <div className="p-4 sm:p-5">
+          <div className="flex items-center gap-2 mb-3 text-slate-800 font-extrabold text-xs sm:text-sm uppercase tracking-wider">
+            <Flame className="w-4 h-4 text-orange-500 animate-pulse" />
+            <span>Recherches populaires & Tendances</span>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-4">
+            {POPULAR_TAGS.map((tag) => {
+              const TagIcon = tag.icon;
+              return (
+                <button
+                  key={tag.label}
+                  onClick={() => handleQuickTagClick(tag.label)}
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-slate-100/80 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200/70 text-xs font-semibold text-slate-700 transition-all duration-200 shadow-sm active:scale-95 group"
+                >
+                  <TagIcon className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+                  <span>{tag.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="p-3 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200/60 text-xs text-emerald-800 flex items-center justify-between gap-3 shadow-sm">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Trouvez en un instant les meilleures offres du moment.</span>
+            </div>
+          </div>
         </div>
       )}
 
+      {/* État : Aucun résultat */}
+      {searched && !loading && results.length === 0 && (
+        <div className="p-8 sm:p-12 text-center flex flex-col items-center justify-center bg-white">
+          <div className="w-16 h-16 rounded-3xl bg-slate-100 flex items-center justify-center text-slate-400 mb-4 shadow-inner">
+            <PackageSearch className="w-8 h-8 text-slate-400" />
+          </div>
+          <p className="text-slate-800 font-extrabold text-base sm:text-lg mb-1">
+            Aucun article trouvé pour « {query} »
+          </p>
+          <p className="text-xs sm:text-sm text-slate-500 max-w-xs mb-4">
+            Essayez de vérifier l'orthographe ou d'utiliser un mot-clé plus général.
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-2">
+            {POPULAR_TAGS.slice(0, 3).map((tag) => {
+              const TagIcon = tag.icon;
+              return (
+                <button
+                  key={tag.label}
+                  onClick={() => handleQuickTagClick(tag.label)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-medium text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                >
+                  <TagIcon className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{tag.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Liste des résultats */}
       {results.length > 0 && (
-        <ul className="divide-y divide-slate-100">
-          {results.map((product) => (
-            <li key={product.id}>
+        <div className="space-y-1 bg-white">
+          <div className="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+            <span>{results.length} Produit{results.length > 1 ? "s" : ""} trouvé{results.length > 1 ? "s" : ""}</span>
+            <span className="text-emerald-600 flex items-center gap-1 font-semibold">
+              <TrendingUp className="w-3 h-3" /> Résultats instantanés
+            </span>
+          </div>
+
+          <div className="divide-y divide-slate-100">
+            {results.map((product) => (
               <button
+                key={product.id}
                 onClick={() => handleSelect(product)}
-                className="w-full flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors text-left"
+                className="w-full group flex items-center gap-3 sm:gap-4 p-3 rounded-2xl bg-white hover:bg-slate-50 transition-all duration-200 text-left border border-transparent hover:border-emerald-500/20"
               >
-                <div className="w-14 h-14 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0">
+                {/* Image miniature */}
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-100 overflow-hidden shrink-0 border border-slate-200/80 shadow-sm group-hover:shadow-md transition-shadow">
                   <img
                     src={product.imageUrl || "/placeholder.png"}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
+
+                {/* Info Produit */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-slate-800 text-sm truncate">
+                  <p className="font-extrabold text-slate-900 text-sm sm:text-base group-hover:text-emerald-600 transition-colors truncate">
                     {product.name}
                   </p>
-                  <p className="text-xs text-slate-400 truncate">
-                    {product.categoryName || "Sans catégorie"}
-                  </p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-[10px] sm:text-xs font-semibold text-slate-500 truncate">
+                      {product.categoryName || "Général"}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-teal-600 font-black text-sm flex-shrink-0 price">
-                  {product.price.toLocaleString()}{" "}
-                  <span className="text-[10px] font-bold text-slate-400">
-                    FCFA
-                  </span>
-                </p>
+
+                {/* Prix & Action */}
+                <div className="flex items-center gap-3 shrink-0">
+                  <div className="text-right">
+                    <div className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/60 text-emerald-700 font-black text-sm sm:text-base shadow-sm">
+                      {product.price.toLocaleString()}{" "}
+                      <span className="text-[10px] font-bold text-emerald-600">
+                        FCFA
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-2 rounded-xl text-slate-300 group-hover:text-emerald-600 group-hover:bg-emerald-50 transition-all">
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </div>
               </button>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        </div>
       )}
-    </>
+    </div>
   );
 
+  // Variant: BARRE D'ENTRÉE CLAIRE & MARKETING
   if (variant === "bar") {
     return (
-      <div ref={containerRef} className={triggerClassName ?? "relative w-full max-w-md"}>
-        <div className="relative flex items-center gap-2 bg-slate-100 focus-within:bg-white rounded-xl px-4 py-2.5 border border-transparent focus-within:border-teal-200 focus-within:shadow-md transition-all">
-          <Search size={18} className="text-slate-400 flex-shrink-0" />
+      <div ref={containerRef} className={triggerClassName ?? "relative w-full max-w-xl mx-auto"}>
+        {/* Champ de recherche haute visibilité */}
+        <div
+          className={`group relative flex items-center gap-2 sm:gap-3 bg-white rounded-2xl sm:rounded-3xl px-3.5 sm:px-4 py-2.5 sm:py-3 border-2 transition-all duration-300 shadow-sm ${
+            isOpen
+              ? "border-emerald-500 ring-4 ring-emerald-500/15 shadow-xl shadow-emerald-500/10"
+              : "border-slate-200/90 hover:border-emerald-400 hover:shadow-md"
+          }`}
+        >
+          {/* Icône animée */}
+          <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 group-focus-within:bg-emerald-500 group-focus-within:text-white transition-all duration-300 shrink-0">
+            <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+          </div>
+
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setIsOpen(true)}
-            placeholder="Rechercher un article (ex: chaussure, sac...)"
-            className="flex-1 min-w-0 bg-transparent outline-none text-sm placeholder:text-slate-400 text-slate-800"
+            placeholder="Rechercher un produit, une marque..."
+            className="flex-1 min-w-0 bg-transparent outline-none text-xs sm:text-sm font-semibold placeholder:text-slate-400 text-slate-900"
           />
+
           {loading && (
-            <Loader2 size={16} className="animate-spin text-teal-500 flex-shrink-0" />
+            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-emerald-500 shrink-0" />
           )}
+
           {query && (
             <button
               onClick={() => {
@@ -175,15 +291,24 @@ export default function ProductSearch({
                 inputRef.current?.focus();
               }}
               aria-label="Effacer la recherche"
-              className="p-1 rounded-full hover:bg-slate-200 text-slate-400 flex-shrink-0"
+              className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors shrink-0"
             >
-              <X size={14} />
+              <X className="w-4 h-4" />
             </button>
+          )}
+
+          {/* Tag d'incitation marketing sur grand écran */}
+          {!query && (
+            <div className="hidden md:flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 text-[11px] font-bold text-slate-600 shrink-0 border border-slate-200/60 pointer-events-none">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-bounce" />
+              <span>Offres & Produits</span>
+            </div>
           )}
         </div>
 
-        {isOpen && query.trim().length > 0 && (
-          <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50 max-h-[70vh] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-150">
+        {/* Dropdown sous la barre */}
+        {isOpen && (
+          <div className="absolute left-0 right-0 top-full mt-2.5 bg-white rounded-3xl shadow-2xl border-2 border-slate-100 overflow-hidden z-50 max-h-[75vh] overflow-y-auto animate-in fade-in slide-in-from-top-3 duration-200">
             {resultsContent}
           </div>
         )}
@@ -191,6 +316,7 @@ export default function ProductSearch({
     );
   }
 
+  // Variant: BOUTON DÉCLENCHEUR CLAIR
   return (
     <>
       <button
@@ -198,44 +324,61 @@ export default function ProductSearch({
         aria-label="Rechercher un article"
         className={
           triggerClassName ??
-          "p-2.5 rounded-xl text-gray-500 hover:text-teal-600 hover:bg-teal-50 transition-colors"
+          "relative group flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white hover:bg-emerald-50 border-2 border-slate-200/90 hover:border-emerald-400 text-slate-700 hover:text-emerald-700 transition-all duration-300 shadow-sm hover:shadow-md"
         }
       >
-        <Search size={20} />
+        <Search className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 group-hover:scale-110 transition-transform" />
+        <span className="hidden sm:inline font-bold text-xs sm:text-sm">Rechercher</span>
+        <span className="hidden md:inline-block px-1.5 py-0.5 text-[10px] font-extrabold bg-emerald-50 text-emerald-700 rounded-md border border-emerald-200/60">
+          PRODUITS
+        </span>
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[70] flex items-start justify-center p-4 pt-16 sm:pt-24">
+        <div className="fixed inset-0 z-[70] flex items-start justify-center p-3 sm:p-6 pt-12 sm:pt-20">
+          {/* Overlay léger avec flou doux */}
           <div
-            className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm animate-in fade-in duration-200"
             onClick={() => setIsOpen(false)}
           />
-          <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
-            <div className="flex items-center gap-3 p-4 border-b border-slate-100">
-              <Search size={20} className="text-teal-600 flex-shrink-0" />
+
+          {/* Carte modale 100% lumineuse/blanche */}
+          <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border-2 border-slate-200/90 overflow-hidden animate-in zoom-in-95 duration-200 z-10 flex flex-col max-h-[85vh]">
+            {/* Header de la recherche */}
+            <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/80 flex items-center gap-3">
+              <div className="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0">
+                <Search className="w-5 h-5 sm:w-6 sm:h-6" />
+              </div>
+
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Rechercher un article (ex: chaussure, sac...)"
-                className="flex-1 outline-none text-sm sm:text-base placeholder:text-slate-400"
+                placeholder="Rechercher un produit, une marque, une catégorie..."
+                className="flex-1 bg-transparent outline-none text-sm sm:text-base font-bold placeholder:text-slate-400 text-slate-900"
               />
+
               {loading && (
-                <Loader2 size={18} className="animate-spin text-teal-500" />
+                <Loader2 className="w-5 h-5 animate-spin text-emerald-500 shrink-0" />
               )}
+
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex-shrink-0"
+                className="p-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-500 transition-colors shrink-0"
+                aria-label="Fermer"
               >
-                <X size={16} />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="max-h-[60vh] overflow-y-auto">{resultsContent}</div>
+            {/* Contenu dynamique */}
+            <div className="overflow-y-auto flex-1 bg-white">{resultsContent}</div>
           </div>
         </div>
       )}
     </>
   );
 }
+
+

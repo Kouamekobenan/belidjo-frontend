@@ -33,7 +33,6 @@ export class NotificationRepository implements INotificationRepository {
         )
       : [];
   }
-
   async getFeaturedPopup(userId: string): Promise<Notification | null> {
     try {
       const response = await api.get(`/notification/${userId}/featured-popup`);
@@ -74,7 +73,6 @@ export class NotificationRepository implements INotificationRepository {
       await api.patch(`/notification/read-all/${userId}`);
     }
   }
-
   async deleteNotification(id: string): Promise<void> {
     await api.delete(`/notification/${id}`);
   }

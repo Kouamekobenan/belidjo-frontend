@@ -1,6 +1,5 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { api } from "@/app/lib/api";
 import VendorNavBar from "@/app/components/layout/Vendor-NavBar";
