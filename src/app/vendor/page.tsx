@@ -81,7 +81,7 @@ const Navbar = () => {
       return (
         <Link
           href={roleConfig.href}
-          className={`group inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-xl shadow-md transition-all ${mobile ? "w-full justify-center py-4" : ""}`}
+          className={`group inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md transition-all ${mobile ? "w-full justify-center py-4" : ""}`}
         >
           {roleConfig.icon}
           <span>{roleConfig.label}</span>
@@ -91,7 +91,7 @@ const Navbar = () => {
     return (
       <Link
         href="/users/ui/login"
-        className={`group inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-lg transition-all ${mobile ? "w-full justify-center py-4" : ""}`}
+        className={`group inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-lg transition-all ${mobile ? "w-full justify-center py-4" : ""}`}
       >
         <LogIn
           size={18}
@@ -121,10 +121,10 @@ const Navbar = () => {
               />
             </div>
             <span
-              className={`text-2xl font-black tracking-tighter ${isScrolled ? "text-gray-900" : "text-teal-600"}`}
+              className={`text-2xl font-black tracking-tighter ${isScrolled ? "text-gray-900" : "text-emerald-600"}`}
             >
               {cityName}
-              <span className="text-teal-500">.</span>
+              <span className="text-emerald-500">.</span>
             </span>
           </Link>
 
@@ -178,7 +178,7 @@ const Navbar = () => {
         <div className="grid grid-cols-3 h-16">
           <Link
             href="/vendor"
-            className="flex flex-col items-center justify-center text-gray-400 hover:text-teal-600"
+            className="flex flex-col items-center justify-center text-gray-400 hover:text-emerald-600"
           >
             <Home size={22} />
             <span className="text-[10px] mt-1 font-medium">Accueil</span>
@@ -202,7 +202,7 @@ const Navbar = () => {
                 ? roleConfig.href
                 : "/users/ui/login"
             }
-            className="flex flex-col items-center justify-center text-gray-400 hover:text-teal-600"
+            className="flex flex-col items-center justify-center text-gray-400 hover:text-emerald-600"
           >
             {isAuthenticated && roleConfig ? (
               <div className={roleConfig.color}>{roleConfig.icon}</div>
@@ -239,7 +239,7 @@ const Navbar = () => {
                   href="/page"
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl"
                 >
-                  <div className="p-2 bg-teal-100 text-teal-600 rounded-lg">
+                  <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
                     <Info size={20} />
                   </div>
                   <span className="font-semibold">À propos de nous</span>

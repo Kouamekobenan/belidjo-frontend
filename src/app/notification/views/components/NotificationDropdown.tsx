@@ -310,8 +310,8 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ onCl
 
       {/* Footer */}
       <div className="p-3 border-t border-slate-100 dark:border-slate-800 text-center bg-slate-50/50 dark:bg-slate-900/50">
-        <p className="text-[11px] text-slate-400">
-          Belidjo Notifications Center
+        <p className="text-[11px] text-slate-400 font-medium">
+          NoBoutik Notifications
         </p>
       </div>
     </div>

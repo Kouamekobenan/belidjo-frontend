@@ -55,7 +55,7 @@ export async function generateMetadata({
     },
   };
 }
-// ✅ Correction 2 : params est une Promise ici aussi
+// Correction 2 : params est une Promise ici aussi
 export default async function Page({
   params,
 }: {

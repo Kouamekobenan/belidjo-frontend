@@ -2,10 +2,9 @@
 import {
   MapPin,
   Store,
-  ChevronRight,
-  ArrowRight,
   Search,
   X,
+  ChevronRight,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Vendor } from "../../domain/entities/vendor.entity";
@@ -23,70 +22,46 @@ interface VendorListProps {
 
 const VendorListItem = ({
   vendor,
-  onClick,
 }: {
   vendor: Vendor;
-  onClick: (id: string, domain?: string) => void;
+  onClick?: (id: string, domain?: string) => void;
 }) => {
   const { id, name, city, site } = vendor;
 
   return (
-    <li className="group bg-white border border-slate-100 p-5 rounded-[24px] shadow-sm hover:shadow-xl hover:shadow-teal-500/5 transition-all duration-500 ease-out active:scale-[0.98]">
-      {/* Container Principal : Colonne sur mobile, Ligne sur SM+ */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-6">
-        {/* Logo Section : Centré sur mobile */}
-        <div
-          className="relative w-full sm:w-28 h-48 sm:h-28 flex-shrink-0 bg-slate-50  overflow-hidden border border-slate-100 group-hover:border-teal-100 transition-colors cursor-pointer"
-          onClick={() => onClick(id, site?.domain)}
-        >
-          <img
-            src={site?.logoUrl ?? photoCouv}
-            alt={name}
-            // className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-500"
-          />
-        </div>
-        {/* Info Section : Aligné à gauche */}
-        <div className="flex-1 min-w-0 space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-black text-xl md:text-2xl text-slate-900 group-hover:text-teal-600 transition-colors truncate">
-              {name}
-            </h3>
-            {city && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-50 text-teal-700 text-[10px] font-bold uppercase tracking-wider rounded-full border border-teal-100">
-                <MapPin className="h-3 w-3" />
-                {city.name}
-              </span>
-            )}
-          </div>
-
-          <p className="text-slate-500 text-sm md:text-base leading-relaxed line-clamp-2 max-w-2xl">
-            {site?.description ||
-              "Découvrez une sélection exclusive de produits de qualité supérieure chez ce partenaire certifié."}
-          </p>
-
-          <div className="flex items-center gap-4 pt-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-            <span className="flex items-center gap-1">
-              <Store size={14} className="text-teal-500" /> Boutique Vérifiée
-            </span>
-            <span className="hidden sm:block">•</span>
-            <span className="hidden sm:block">Livraison Rapide</span>
-          </div>
-        </div>
-
-        {/* Action Section : Pleine largeur sur mobile */}
-        <div className="w-full sm:w-auto pt-2 sm:pt-0">
-          <Link
-            href={`/products/ui/page/${id}`}
-            className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 bg-slate-900 hover:bg-teal-600 text-white font-bold  transition-all duration-300 shadow-lg shadow-slate-200 hover:shadow-teal-500/20 group/btn"
-          >
-            Visiter
-            <ArrowRight
-              size={18}
-              className="group-hover/btn:translate-x-1 transition-transform"
+    <li className="flex flex-col items-center">
+      <Link
+        href={`/products/ui/page/${id}`}
+        className="group flex flex-col items-center gap-2.5 cursor-pointer"
+      >
+        {/* Cercle Photo / Logo */}
+        <div className="relative">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-[3px] border-slate-100 group-hover:border-emerald-400 shadow-md group-hover:shadow-lg group-hover:shadow-emerald-500/15 transition-all duration-300 active:scale-95">
+            <img
+              src={site?.logoUrl ?? photoCouv}
+              alt={name}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             />
-          </Link>
+          </div>
+          {/* Badge vérifié */}
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 bg-emerald-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+            <Store size={10} className="text-white" />
+          </div>
         </div>
-      </div>
+
+        {/* Nom + Ville */}
+        <div className="text-center max-w-[110px] sm:max-w-[130px]">
+          <h3 className="font-bold text-xs sm:text-sm text-slate-800 group-hover:text-emerald-600 transition-colors truncate leading-tight">
+            {name}
+          </h3>
+          {city && (
+            <span className="inline-flex items-center justify-center gap-0.5 text-[9px] sm:text-[10px] font-medium text-slate-400 mt-0.5">
+              <MapPin size={8} className="text-emerald-400 flex-shrink-0" />
+              {city.name}
+            </span>
+          )}
+        </div>
+      </Link>
     </li>
   );
 };
@@ -472,7 +447,7 @@ export function VendorList({ data, onVendorClick }: VendorListProps) {
     );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="max-w-7xl mx-auto px-4 py-10">
       <VendorFilters
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
@@ -480,25 +455,24 @@ export function VendorList({ data, onVendorClick }: VendorListProps) {
       />
 
       {filteredVendors.length === 0 ? (
-        <div className="text-center py-20 bg-slate-50 rounded-[32px] border-2 border-dashed border-slate-200">
+        <div className="text-center py-20 bg-slate-50 rounded-[32px] border-2 border-dashed border-slate-200 mt-8">
           <MapPin size={48} className="mx-auto text-slate-300 mb-4" />
           <p className="text-xl font-bold text-slate-900">
             Désolé, personne ici !
           </p>
           <button
             onClick={() => setSelectedCity("all")}
-            className="mt-4 text-teal-600 font-bold hover:underline"
+            className="mt-4 text-emerald-600 font-bold hover:underline"
           >
             Voir partout
           </button>
         </div>
       ) : (
-        <ul className="grid grid-cols-1 gap-6">
+        <ul className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 sm:gap-6 mt-8">
           {filteredVendors.map((vendor) => (
             <VendorListItem
               key={vendor.id}
               vendor={vendor}
-              onClick={handleVendorClick}
             />
           ))}
         </ul>

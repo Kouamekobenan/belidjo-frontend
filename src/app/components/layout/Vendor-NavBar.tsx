@@ -209,7 +209,7 @@ function VendorNavBar({
           </div>
         </div>
         {/* Bannière d'invitation */}
-        <AnimatedPromoBanner user={user} />
+        {/* <AnimatedPromoBanner user={user} /> */}
       </nav>
       {/* Header Mobile - En haut (simplifié) */}
       <header className="lg:hidden bg-white/95 backdrop-blur-md shadow-md sticky top-0 z-50 border-b border-gray-200/50">
@@ -228,7 +228,7 @@ function VendorNavBar({
           {user && <NotificationBell />}
         </div>
         {/* Bannière d'invitation Mobile */}
-        <AnimatedPromoBanner user={user} />
+        {/* <AnimatedPromoBanner user={user} /> */}
         {/* <NeonPromoBanner user={user} /> */}
       </header>
       {/* Navigation Mobile - En bas (Style App) */}
@@ -407,7 +407,6 @@ function VendorNavBar({
                   <X className="w-6 h-6 text-gray-600" />
                 </button>
               </div>
-
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center justify-center space-x-3 px-4 py-4 bg-red-50 text-red-600 hover:bg-red-100 rounded-xl transition-colors font-medium border border-red-200"
