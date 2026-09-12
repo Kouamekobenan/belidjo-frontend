@@ -109,10 +109,10 @@ function VendorNavBar({
           <div className="flex items-center justify-between h-16">
             {/* Logo et Nom */}
             <Link href="/vendor" className="flex items-center space-x-2 group">
-              <div className="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+              <div className="p-2 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
                 <Store className="w-6 h-6 text-white" />
               </div>
-              <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-teal-600 to-teal-800 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
                 {vendorName || "Espace Boutique"}
               </span>
             </Link>
@@ -122,7 +122,7 @@ function VendorNavBar({
               {user?.role === "VENDEUR" ? (
                 <button
                   onClick={() => router.push("/admin/ui")}
-                  className="group relative cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
+                  className="group relative cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
                 >
                   <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
                   <Store className="w-5 h-5" />
@@ -132,7 +132,7 @@ function VendorNavBar({
               ) : (
                 <button
                   onClick={() => router.push("/vendor")}
-                  className="group relative cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
+                  className="group relative cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
                 >
                   <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
                   <Store className="w-5 h-5" />
@@ -144,7 +144,7 @@ function VendorNavBar({
               <button
                 onClick={() => window.history.back()}
                 aria-label="Retour à l'accueil"
-                className="px-4 py-2 text-base text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-200 font-medium flex items-center group"
+                className="px-4 py-2 text-base text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all duration-200 font-medium flex items-center group"
               >
                 <Home className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 <span>Accueil</span>
@@ -153,7 +153,7 @@ function VendorNavBar({
               <button
                 onClick={handleShare}
                 aria-label="Partager la boutique"
-                className="px-4 py-2 text-base text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-200 font-medium flex items-center group"
+                className="px-4 py-2 text-base text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all duration-200 font-medium flex items-center group"
               >
                 <Share2 className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 <span>Partager</span>
@@ -167,7 +167,7 @@ function VendorNavBar({
                 <div className="relative">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-xl hover:from-teal-700 hover:to-teal-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base group"
+                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base group"
                   >
                     <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                       <User className="w-4 h-4" />
@@ -199,7 +199,7 @@ function VendorNavBar({
                 </div>
               ) : (
                 <Link href="/users/ui/login">
-                  <button className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-xl hover:from-teal-700 hover:to-teal-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base group">
+                  <button className="flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base group">
                     <UserPlus className="w-5 h-5 group-hover:scale-110 transition-transform" />
                     <span className="whitespace-nowrap">Se connecter</span>
                   </button>
@@ -218,10 +218,10 @@ function VendorNavBar({
             href="/vendor"
             className="flex items-center space-x-2 group"
           >
-            <div className="p-1.5 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300">
+            <div className="p-1.5 bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300">
               <Store className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-teal-600 to-teal-800 bg-clip-text text-transparent">
+            <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
               {vendorName || "Espace Boutique"}
             </span>
           </Link>
@@ -237,7 +237,7 @@ function VendorNavBar({
           {/* Accueil */}
           <button
             onClick={() => window.history.back()}
-            className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
+            className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-green-600 active:bg-green-50 transition-all duration-200 group"
           >
             <Home className="w-6 h-6 group-hover:scale-110 transition-transform" />
             <span className="text-xs font-medium">Accueil</span>
@@ -245,7 +245,7 @@ function VendorNavBar({
           {/* Partager */}
           <button
             onClick={handleShare}
-            className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
+            className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-green-600 active:bg-green-50 transition-all duration-200 group"
           >
             <Share2 className="w-6 h-6 group-hover:scale-110 transition-transform" />
             <span className="text-xs font-medium">Partager</span>
@@ -254,22 +254,22 @@ function VendorNavBar({
           {user?.role === "VENDEUR" ? (
             <button
               onClick={() => router.push("/admin/ui")}
-              className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
+              className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-green-600 active:bg-green-50 transition-all duration-200 group"
             >
               <div className="relative">
                 <Store className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-teal-500 rounded-full"></div>
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
               </div>
               <span className="text-xs font-medium">Vendeur</span>
             </button>
           ) : (
             <button
               onClick={() => router.push("/vendor")}
-              className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
+              className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-green-600 active:bg-green-50 transition-all duration-200 group"
             >
               <div className="relative">
                 <Store className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-teal-500 rounded-full"></div>
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
               </div>
               <span className="text-xs font-medium">Catalogue</span>
             </button>
@@ -279,16 +279,16 @@ function VendorNavBar({
           {user ? (
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group"
+              className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-green-600 active:bg-green-50 transition-all duration-200 group"
             >
-              <div className="w-7 h-7 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+              <div className="w-7 h-7 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
                 <User className="w-4 h-4 text-white" />
               </div>
               <span className="text-xs font-medium">Profil</span>
             </button>
           ) : (
             <Link href="/users/ui/login">
-              <button className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-teal-600 active:bg-teal-50 transition-all duration-200 group w-full h-full">
+              <button className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-green-600 active:bg-green-50 transition-all duration-200 group w-full h-full">
                 <UserPlus className="w-6 h-6 group-hover:scale-110 transition-transform" />
                 <span className="text-xs font-medium">Connexion</span>
               </button>
@@ -318,7 +318,7 @@ function VendorNavBar({
                     router.push("/admin/ui");
                     closeMobileMenu();
                   }}
-                  className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-xl shadow-md font-medium"
+                  className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl shadow-md font-medium"
                 >
                   <div className="flex items-center space-x-3">
                     <Store className="w-5 h-5" />
@@ -332,7 +332,7 @@ function VendorNavBar({
                     router.push("/vendor");
                     closeMobileMenu();
                   }}
-                  className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-xl shadow-md font-medium"
+                  className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl shadow-md font-medium"
                 >
                   <div className="flex items-center space-x-3">
                     <Store className="w-5 h-5" />
@@ -344,9 +344,9 @@ function VendorNavBar({
 
               {/* Info User */}
               {user && (
-                <div className="bg-teal-50 rounded-xl p-4 border border-teal-200">
+                <div className="bg-green-50 rounded-xl p-4 border border-green-200">
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
                       <User className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -391,7 +391,7 @@ function VendorNavBar({
           <div className="absolute bottom-16 left-0 right-0 bg-white rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-300">
             <div className="px-4 py-6 space-y-4">
               <div className="flex items-center space-x-4 pb-4 border-b border-gray-200">
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg">
                   <User className="w-8 h-8 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -428,7 +428,7 @@ function VendorNavBar({
           <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-300">
             {/* Image de preview */}
             {vendorImage && (
-              <div className="relative h-48 w-full bg-gradient-to-br from-teal-100 to-teal-200">
+              <div className="relative h-48 w-full bg-gradient-to-br from-green-100 to-green-200">
                 <img
                   src={vendorImage}
                   alt={vendorName || "Boutique"}
@@ -477,7 +477,7 @@ function VendorNavBar({
                 </button>
                 <button
                   onClick={handleCopyLink}
-                  className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   <Share2 className="w-5 h-5" />
                   Copier le lien

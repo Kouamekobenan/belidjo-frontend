@@ -111,7 +111,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
         {/* ── Header ── */}
         <div className="py-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-600 mb-1">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-green-600 mb-1">
               E-Boutique Côte d'Ivoire
             </p>
             <h2 className="text-3xl font-black text-slate-900 tracking-tight">
@@ -164,14 +164,14 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Que cherchez-vous ?"
-                className="w-full pl-12 pr-4 py-4 bg-white border-none rounded-2xl shadow-sm focus:ring-2 focus:ring-teal-500 text-sm"
+                className="w-full pl-12 pr-4 py-4 bg-white border-none rounded-2xl shadow-sm focus:ring-2 focus:ring-green-500 text-sm"
               />
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`px-5 py-4 rounded-2xl font-bold text-sm shadow-sm transition-all ${
                 showFilters || hasActiveFilters
-                  ? "bg-teal-600 text-white"
+                  ? "bg-green-600 text-white"
                   : "bg-white text-slate-600"
               }`}
             >
@@ -257,7 +257,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
             {hasActiveFilters && (
               <button
                 onClick={clearAllFilters}
-                className="mt-4 text-teal-600 font-bold text-sm underline underline-offset-2"
+                className="mt-4 text-green-600 font-bold text-sm underline underline-offset-2"
               >
                 Effacer les filtres
               </button>
@@ -270,12 +270,12 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
                 {/* En-tête catégorie */}
                 <div className="flex items-center gap-3 mb-5">
                   <div className="flex items-center gap-2">
-                    <Tag size={16} className="text-teal-600" />
+                    <Tag size={16} className="text-green-600" />
                     <h3 className="text-xl font-black text-slate-800 tracking-tight">
                       {category}
                     </h3>
                   </div>
-                  <span className="text-xs font-black bg-teal-50 text-teal-700 border border-teal-100 px-3 py-1 rounded-full">
+                  <span className="text-xs font-black bg-green-50 text-green-700 border border-green-100 px-3 py-1 rounded-full">
                     {items.length} article{items.length > 1 ? "s" : ""}
                   </span>
                   <div className="flex-1 h-px bg-slate-200" />
@@ -368,7 +368,7 @@ function ProductCard({
           <h3 className="font-bold text-slate-800 text-sm md:text-base line-clamp-2 mb-1">
             {product.name}
           </h3>
-          <p className="text-teal-600 font-black text-lg price">
+          <p className="text-green-600 font-black text-lg price">
             {product.price.toLocaleString()}{" "}
             <span className="text-[10px] font-bold text-slate-400">FCFA</span>
           </p>
@@ -379,7 +379,7 @@ function ProductCard({
           {/* Commander */}
           <Link
             href={`${detailUrl}?action=order`}
-            className={`flex items-center justify-center gap-1.5 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 text-xs transition-all duration-200 active:scale-95 shadow-sm whitespace-nowrap ${
+            className={`flex items-center justify-center gap-1.5 bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 text-xs transition-all duration-200 active:scale-95 shadow-sm whitespace-nowrap ${
               isGrid ? "flex-1" : "px-5"
             }`}
           >

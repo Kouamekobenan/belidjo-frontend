@@ -80,7 +80,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <div className="bg-teal-600 p-3 rounded-xl">
+                <div className="bg-green-600 p-3 rounded-xl">
                   <Users className="text-white" size={28} />
                 </div>
                 Mes Clients
@@ -91,7 +91,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl px-6 py-3">
+              <div className="bg-gradient-to-br from-green-50 to-green-50 border-2 border-green-200 rounded-xl px-6 py-3">
                 <div className="text-sm text-green-600 font-medium">
                   Total Abonnés
                 </div>
@@ -116,7 +116,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
                 placeholder="Rechercher par nom, téléphone ou email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 text-gray-900 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none transition-colors"
+                className="w-full pl-12 pr-4 py-3 border-2 text-gray-900 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-colors"
               />
             </div>
 
@@ -125,7 +125,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
                 onClick={() => setFilterStatus("all")}
                 className={`px-4 py-3 rounded-xl font-medium transition-all ${
                   filterStatus === "all"
-                    ? "bg-teal-600 text-white shadow-lg"
+                    ? "bg-green-600 text-white shadow-lg"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -135,7 +135,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
                 onClick={() => setFilterStatus("active")}
                 className={`px-4 py-3 rounded-xl font-medium transition-all ${
                   filterStatus === "active"
-                    ? "bg-teal-600 text-white shadow-lg"
+                    ? "bg-green-600 text-white shadow-lg"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -199,7 +199,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
 
                       {/* Email */}
                       <div className="flex items-start gap-3">
-                        <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-2 rounded-lg">
+                        <div className="bg-gradient-to-br from-green-100 to-green-100 p-2 rounded-lg">
                           <Mail className="text-green-600" size={20} />
                         </div>
                         <div>
@@ -220,7 +220,7 @@ export default function CustomerVendor({ vendorId }: { vendorId: string }) {
                     <div className="flex flex-col sm:flex-row gap-3 lg:flex-col">
                       <button
                         onClick={() => handleUnsubscribe(customer.id)}
-                        className="flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white font-medium rounded-xl hover:from-teal-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl"
+                        className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-xl hover:from-green-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl"
                       >
                         <UserMinus size={18} />
                         <span>Désabonner</span>

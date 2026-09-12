@@ -161,8 +161,8 @@ export default function NavbarDashbordVendor({
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
                   isActive(item.href)
-                    ? "bg-teal-600 text-white"
-                    : "hover:bg-teal-600 text-gray-300"
+                    ? "bg-green-600 text-white"
+                    : "hover:bg-green-600 text-gray-300"
                 }`}
               >
                 <item.icon
@@ -191,8 +191,8 @@ export default function NavbarDashbordVendor({
               href="/admin/parametre"
               className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
                 isActive("/admin/parametre")
-                  ? "bg-teal-600 text-white"
-                  : "hover:bg-teal-600 text-gray-300"
+                  ? "bg-green-600 text-white"
+                  : "hover:bg-green-600 text-gray-300"
               }`}
             >
               <Settings
@@ -222,15 +222,15 @@ export default function NavbarDashbordVendor({
           {!isCollapsed ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm">
-                <User className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                <User className="w-4 h-4 text-green-400 flex-shrink-0" />
                 <span className="text-gray-300 truncate">{name}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Phone className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                <Phone className="w-4 h-4 text-green-400 flex-shrink-0" />
                 <span className="text-gray-300">{phone}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <MapPin className="w-4 h-4 text-teal-400 flex-shrink-0" />
+                <MapPin className="w-4 h-4 text-green-400 flex-shrink-0" />
                 <span className="text-gray-300 truncate">
                   {cityName}, Côte d&apos;Ivoire
                 </span>
@@ -238,9 +238,9 @@ export default function NavbarDashbordVendor({
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3">
-              <User className="w-5 h-5 text-teal-400" />
-              <Phone className="w-5 h-5 text-teal-400" />
-              <MapPin className="w-5 h-5 text-teal-400" />
+              <User className="w-5 h-5 text-green-400" />
+              <Phone className="w-5 h-5 text-green-400" />
+              <MapPin className="w-5 h-5 text-green-400" />
             </div>
           )}
         </div>
@@ -287,14 +287,14 @@ export default function NavbarDashbordVendor({
             href="/admin/ui"
             className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
               isActive("/admin/ui")
-                ? "text-teal-400"
-                : "text-gray-400 hover:text-teal-300"
+                ? "text-green-400"
+                : "text-gray-400 hover:text-green-300"
             }`}
           >
             <LayoutDashboard className="w-6 h-6" />
             <span className="text-[10px] font-medium">Dashboard</span>
             {isActive("/admin/ui") && (
-              <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
+              <div className="absolute bottom-0 w-12 h-1 bg-green-400 rounded-t-full" />
             )}
           </Link>
 
@@ -303,14 +303,14 @@ export default function NavbarDashbordVendor({
             href="/admin/products"
             className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
               isActive("/admin/products")
-                ? "text-teal-400"
-                : "text-gray-400 hover:text-teal-300"
+                ? "text-green-400"
+                : "text-gray-400 hover:text-green-300"
             }`}
           >
             <Package className="w-6 h-6" />
             <span className="text-[10px] font-medium">Produits</span>
             {isActive("/admin/products") && (
-              <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
+              <div className="absolute bottom-0 w-12 h-1 bg-green-400 rounded-t-full" />
             )}
           </Link>
 
@@ -319,21 +319,21 @@ export default function NavbarDashbordVendor({
             href="/admin/template/page"
             className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
               isActive("/admin/template/page")
-                ? "text-teal-400"
-                : "text-gray-400 hover:text-teal-300"
+                ? "text-green-400"
+                : "text-gray-400 hover:text-green-300"
             }`}
           >
             <Video className="w-6 h-6" />
             <span className="text-[10px] font-medium">Vidéos</span>
             {isActive("/admin/template/page") && (
-              <div className="absolute bottom-0 w-12 h-1 bg-teal-400 rounded-t-full" />
+              <div className="absolute bottom-0 w-12 h-1 bg-green-400 rounded-t-full" />
             )}
           </Link>
 
           {/* Voir ma boutique */}
           <Link
             href={Url}
-            className="flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative text-gray-400 hover:text-teal-300"
+            className="flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative text-gray-400 hover:text-green-300"
           >
             <Home className="w-6 h-6" />
             <span className="text-[10px] font-medium">Boutique</span>
@@ -342,7 +342,7 @@ export default function NavbarDashbordVendor({
           {/* Menu / Profil */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-teal-300 transition-all duration-200"
+            className="flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-green-300 transition-all duration-200"
           >
             <Menu className="w-6 h-6" />
             <span className="text-[10px] font-medium">Menu</span>
@@ -407,14 +407,14 @@ export default function NavbarDashbordVendor({
               </div>
 
               {/* Informations vendeur */}
-              <div className="bg-gradient-to-br from-teal-900/30 to-teal-800/20 rounded-xl p-4 border border-teal-700/30">
-                <p className="text-xs font-semibold text-teal-300 mb-3 uppercase tracking-wide">
+              <div className="bg-gradient-to-br from-green-900/30 to-green-800/20 rounded-xl p-4 border border-green-700/30">
+                <p className="text-xs font-semibold text-green-300 mb-3 uppercase tracking-wide">
                   Informations vendeur
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-teal-600/20 rounded-lg flex items-center justify-center">
-                      <User className="w-5 h-5 text-teal-400" />
+                    <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
+                      <User className="w-5 h-5 text-green-400" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-400">Nom</p>
@@ -422,8 +422,8 @@ export default function NavbarDashbordVendor({
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-teal-600/20 rounded-lg flex items-center justify-center">
-                      <Phone className="w-5 h-5 text-teal-400" />
+                    <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-green-400" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-400">Téléphone</p>
@@ -431,8 +431,8 @@ export default function NavbarDashbordVendor({
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-teal-600/20 rounded-lg flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-teal-400" />
+                    <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-green-400" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-400">Localisation</p>
@@ -469,7 +469,7 @@ export default function NavbarDashbordVendor({
                   href="/admin/customer"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <button className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-xl shadow-lg transition-all duration-200 font-medium">
+                  <button className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-xl shadow-lg transition-all duration-200 font-medium">
                     <div className="flex items-center gap-3">
                       <Users className="w-5 h-5" />
                       <span>Mes abonnés</span>

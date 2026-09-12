@@ -36,7 +36,7 @@ const VendorListItem = ({
       >
         {/* Cercle Photo / Logo */}
         <div className="relative">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-[3px] border-slate-100 group-hover:border-emerald-400 shadow-md group-hover:shadow-lg group-hover:shadow-emerald-500/15 transition-all duration-300 active:scale-95">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-[3px] border-slate-100 group-hover:border-green-400 shadow-md group-hover:shadow-lg group-hover:shadow-green-500/15 transition-all duration-300 active:scale-95">
             <img
               src={site?.logoUrl ?? photoCouv}
               alt={name}
@@ -44,19 +44,19 @@ const VendorListItem = ({
             />
           </div>
           {/* Badge vérifié */}
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 bg-emerald-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 bg-green-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
             <Store size={10} className="text-white" />
           </div>
         </div>
 
         {/* Nom + Ville */}
         <div className="text-center max-w-[110px] sm:max-w-[130px]">
-          <h3 className="font-bold text-xs sm:text-sm text-slate-800 group-hover:text-emerald-600 transition-colors truncate leading-tight">
+          <h3 className="font-bold text-xs sm:text-sm text-slate-800 group-hover:text-green-600 transition-colors truncate leading-tight">
             {name}
           </h3>
           {city && (
             <span className="inline-flex items-center justify-center gap-0.5 text-[9px] sm:text-[10px] font-medium text-slate-400 mt-0.5">
-              <MapPin size={8} className="text-emerald-400 flex-shrink-0" />
+              <MapPin size={8} className="text-green-400 flex-shrink-0" />
               {city.name}
             </span>
           )}
@@ -165,7 +165,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
     <div className="relative bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 rounded-2xl sm:rounded-[32px] p-4 sm:p-6 md:p-12 mb-8 sm:mb-12 shadow-2xl border border-white/5">
       {/* Décorations — isolées dans leur propre overflow-hidden */}
       <div className="absolute inset-0 rounded-2xl sm:rounded-[32px] overflow-hidden pointer-events-none">
-        <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-teal-500/20 rounded-full blur-3xl" />
+        <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-green-500/20 rounded-full blur-3xl" />
         <div className="absolute bottom-[-30%] left-[-15%] w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl" />
       </div>
 
@@ -174,7 +174,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
         <div className="space-y-1.5 sm:space-y-2">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
             Explorer les{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-400">
               boutiques
             </span>
           </h2>
@@ -186,7 +186,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
         {/* Combobox */}
         <div ref={comboboxRef} className="relative w-full lg:max-w-md">
           <div className="relative">
-            <MapPin className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-teal-400 z-10 pointer-events-none" />
+            <MapPin className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-green-400 z-10 pointer-events-none" />
 
             <button
               type="button"
@@ -197,7 +197,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                 }
               }}
               onKeyDown={handleKeyDown}
-              className="w-full pl-12 sm:pl-14 md:pl-16 pr-11 sm:pr-12 md:pr-14 py-3.5 sm:py-4 md:py-5 lg:py-6 bg-white/10 backdrop-blur-xl border-2 border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl text-left hover:bg-white/15 hover:border-teal-400/50 focus:bg-white/15 focus:border-teal-400 focus:outline-none transition-all duration-300 shadow-lg hover:shadow-teal-500/20 active:scale-[0.98]"
+              className="w-full pl-12 sm:pl-14 md:pl-16 pr-11 sm:pr-12 md:pr-14 py-3.5 sm:py-4 md:py-5 lg:py-6 bg-white/10 backdrop-blur-xl border-2 border-white/10 rounded-xl sm:rounded-2xl lg:rounded-3xl text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl text-left hover:bg-white/15 hover:border-green-400/50 focus:bg-white/15 focus:border-green-400 focus:outline-none transition-all duration-300 shadow-lg hover:shadow-green-500/20 active:scale-[0.98]"
               aria-haspopup="listbox"
               aria-expanded={isOpen}
             >
@@ -205,7 +205,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
             </button>
 
             <ChevronRight
-              className={`absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-teal-400 pointer-events-none transition-transform duration-300 ${
+              className={`absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 h-5 w-5 sm:h-6 sm:w-6 text-green-400 pointer-events-none transition-transform duration-300 ${
                 isOpen ? "rotate-[270deg]" : "rotate-90"
               }`}
             />
@@ -240,7 +240,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
 
                 <div className="flex-shrink-0 p-4 border-b border-white/10">
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-teal-400" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-green-400" />
                     <input
                       ref={inputRef}
                       type="text"
@@ -251,7 +251,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                         setHighlightedIndex(-1);
                       }}
                       onKeyDown={handleKeyDown}
-                      className="w-full pl-12 pr-10 py-4 bg-white/5 border-2 border-white/10 rounded-2xl text-white placeholder-slate-500 focus:bg-white/10 focus:border-teal-400/50 focus:outline-none transition-all text-base font-medium"
+                      className="w-full pl-12 pr-10 py-4 bg-white/5 border-2 border-white/10 rounded-2xl text-white placeholder-slate-500 focus:bg-white/10 focus:border-green-400/50 focus:outline-none transition-all text-base font-medium"
                     />
                     {searchQuery && (
                       <button
@@ -271,13 +271,13 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                   <button
                     type="button"
                     onClick={() => handleSelectCity("all")}
-                    className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${selectedCity === "all" ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400" : "text-white active:bg-white/10"}`}
+                    className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${selectedCity === "all" ? "bg-green-500/20 text-green-300 border-l-4 border-green-400" : "text-white active:bg-white/10"}`}
                   >
                     <span className="flex items-center gap-3">
-                      <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
+                      <MapPin className="h-5 w-5 text-green-400 flex-shrink-0" />
                       <span className="flex-1">Toutes les localisations</span>
                       {selectedCity === "all" && (
-                        <span className="text-teal-400 text-xl">✓</span>
+                        <span className="text-green-400 text-xl">✓</span>
                       )}
                     </span>
                   </button>
@@ -287,13 +287,13 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                         key={city?.id || `city-${index}`}
                         type="button"
                         onClick={() => handleSelectCity(city?.id)}
-                        className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${selectedCity === city?.id ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400" : "text-white active:bg-white/10"}`}
+                        className={`w-full px-5 py-5 text-left font-bold text-base transition-all border-b border-white/5 ${selectedCity === city?.id ? "bg-green-500/20 text-green-300 border-l-4 border-green-400" : "text-white active:bg-white/10"}`}
                       >
                         <span className="flex items-center gap-3">
-                          <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
+                          <MapPin className="h-5 w-5 text-green-400 flex-shrink-0" />
                           <span className="flex-1">{city?.name}</span>
                           {selectedCity === city?.id && (
-                            <span className="text-teal-400 text-xl">✓</span>
+                            <span className="text-green-400 text-xl">✓</span>
                           )}
                         </span>
                       </button>
@@ -327,10 +327,10 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
               </div>
 
               {/* ── DESKTOP : dropdown ── */}
-              <div className="hidden lg:block absolute top-full mt-3 w-full bg-slate-800/95 backdrop-blur-xl border-2 border-teal-400/30 rounded-3xl shadow-2xl shadow-teal-500/10 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="hidden lg:block absolute top-full mt-3 w-full bg-slate-800/95 backdrop-blur-xl border-2 border-green-400/30 rounded-3xl shadow-2xl shadow-green-500/10 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="p-4 border-b border-white/10 bg-slate-900/50">
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-teal-400" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-green-400" />
                     <input
                       ref={inputRef}
                       type="text"
@@ -341,7 +341,7 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                         setHighlightedIndex(-1);
                       }}
                       onKeyDown={handleKeyDown}
-                      className="w-full pl-12 pr-10 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-500 focus:bg-white/10 focus:border-teal-400/50 focus:outline-none transition-all text-base font-medium"
+                      className="w-full pl-12 pr-10 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-500 focus:bg-white/10 focus:border-green-400/50 focus:outline-none transition-all text-base font-medium"
                     />
                     {searchQuery && (
                       <button
@@ -357,17 +357,17 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                   </div>
                 </div>
 
-                <div className="max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-teal-500/30 scrollbar-track-transparent">
+                <div className="max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-green-500/30 scrollbar-track-transparent">
                   <button
                     type="button"
                     onClick={() => handleSelectCity("all")}
                     onMouseEnter={() => setHighlightedIndex(-1)}
-                    className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${selectedCity === "all" ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400" : highlightedIndex === -1 ? "bg-white/10 text-white" : "text-white hover:bg-white/5"}`}
+                    className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${selectedCity === "all" ? "bg-green-500/20 text-green-300 border-l-4 border-green-400" : highlightedIndex === -1 ? "bg-white/10 text-white" : "text-white hover:bg-white/5"}`}
                     role="option"
                     aria-selected={selectedCity === "all"}
                   >
                     <span className="flex items-center gap-3">
-                      <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
+                      <MapPin className="h-5 w-5 text-green-400 flex-shrink-0" />
                       Toutes les localisations
                     </span>
                   </button>
@@ -379,12 +379,12 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
                         type="button"
                         onClick={() => handleSelectCity(city?.id)}
                         onMouseEnter={() => setHighlightedIndex(index)}
-                        className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${selectedCity === city?.id ? "bg-teal-500/20 text-teal-300 border-l-4 border-teal-400" : highlightedIndex === index ? "bg-white/10 text-white" : "text-white hover:bg-white/5"}`}
+                        className={`w-full px-6 py-5 text-left font-semibold text-base transition-all ${selectedCity === city?.id ? "bg-green-500/20 text-green-300 border-l-4 border-green-400" : highlightedIndex === index ? "bg-white/10 text-white" : "text-white hover:bg-white/5"}`}
                         role="option"
                         aria-selected={selectedCity === city?.id}
                       >
                         <span className="flex items-center gap-3">
-                          <MapPin className="h-5 w-5 text-teal-400 flex-shrink-0" />
+                          <MapPin className="h-5 w-5 text-green-400 flex-shrink-0" />
                           {city?.name}
                         </span>
                       </button>
@@ -462,7 +462,7 @@ export function VendorList({ data, onVendorClick }: VendorListProps) {
           </p>
           <button
             onClick={() => setSelectedCity("all")}
-            className="mt-4 text-emerald-600 font-bold hover:underline"
+            className="mt-4 text-green-600 font-bold hover:underline"
           >
             Voir partout
           </button>

@@ -26,8 +26,8 @@ function Avatar({ name }: { name: string }) {
   return (
     <div className="relative inline-flex">
       {/* Anneau animé */}
-      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-teal-400 via-cyan-400 to-blue-500 animate-spin-slow p-[3px]" />
-      <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 text-white text-3xl font-bold shadow-xl ring-4 ring-white z-10">
+      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-green-400 via-cyan-400 to-blue-500 animate-spin-slow p-[3px]" />
+      <div className="relative flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-cyan-600 text-white text-3xl font-bold shadow-xl ring-4 ring-white z-10">
         {initials}
       </div>
       {/* Badge actif */}
@@ -54,15 +54,15 @@ function InfoCard({
     <div
       className={`group flex items-start gap-4 p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${
         accent
-          ? "bg-gradient-to-br from-teal-50 to-cyan-50 border-teal-200 hover:border-teal-400"
+          ? "bg-gradient-to-br from-green-50 to-cyan-50 border-green-200 hover:border-green-400"
           : "bg-white border-gray-100 hover:border-gray-300"
       }`}
     >
       <div
         className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
           accent
-            ? "bg-teal-500 text-white"
-            : "bg-gray-100 text-gray-500 group-hover:bg-teal-100 group-hover:text-teal-600"
+            ? "bg-green-500 text-white"
+            : "bg-gray-100 text-gray-500 group-hover:bg-green-100 group-hover:text-green-600"
         }`}
       >
         <Icon className="w-5 h-5" />
@@ -73,7 +73,7 @@ function InfoCard({
         </p>
         <p
           className={`text-sm font-medium truncate ${
-            accent ? "text-teal-700" : "text-gray-800"
+            accent ? "text-green-700" : "text-gray-800"
           }`}
         >
           {value || <span className="text-gray-400 italic">Non renseigné</span>}
@@ -130,11 +130,11 @@ function formatDate(dateStr: string | undefined | null): string {
 // ─── Page "non connecté" ────────────────────────────────────────────────────
 function NotLoggedIn() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50 to-cyan-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-cyan-100 flex items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 max-w-md w-full p-10 text-center">
         {/* Icône */}
-        <div className="mx-auto mb-6 w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-100 to-cyan-100 flex items-center justify-center">
-          <User className="w-10 h-10 text-teal-600" />
+        <div className="mx-auto mb-6 w-20 h-20 rounded-2xl bg-gradient-to-br from-green-100 to-cyan-100 flex items-center justify-center">
+          <User className="w-10 h-10 text-green-600" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           Accès à votre profil
@@ -145,7 +145,7 @@ function NotLoggedIn() {
         </p>
         <Link
           href="/users/ui/login"
-          className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold rounded-2xl shadow-lg shadow-teal-200 hover:shadow-xl hover:shadow-teal-300 hover:from-teal-600 hover:to-cyan-600 transition-all duration-300 transform hover:-translate-y-0.5"
+          className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 bg-gradient-to-r from-green-500 to-cyan-500 text-white font-semibold rounded-2xl shadow-lg shadow-green-200 hover:shadow-xl hover:shadow-green-300 hover:from-green-600 hover:to-cyan-600 transition-all duration-300 transform hover:-translate-y-0.5"
         >
           <LogIn className="w-5 h-5" />
           Se connecter
@@ -169,9 +169,9 @@ export default function ProfileComponent() {
   if (!user) return <NotLoggedIn />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/40 to-cyan-100/60">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50/40 to-cyan-100/60">
       {/* ── Bannière hero ── */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-teal-600 via-teal-500 to-cyan-500">
+      <div className="relative overflow-hidden bg-gradient-to-r from-green-600 via-green-500 to-cyan-500">
         {/* Motif décoratif */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-72 h-72 rounded-full bg-white -translate-x-1/2 -translate-y-1/2" />
@@ -220,7 +220,7 @@ export default function ProfileComponent() {
       {/* ── Contenu principal ── */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         {/* Message de bienvenue */}
-        <div className="bg-gradient-to-r from-teal-500 to-cyan-500 rounded-2xl p-5 flex items-center gap-4 text-white shadow-lg shadow-teal-200">
+        <div className="bg-gradient-to-r from-green-500 to-cyan-500 rounded-2xl p-5 flex items-center gap-4 text-white shadow-lg shadow-green-200">
           <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
             <CheckCircle className="w-6 h-6" />
           </div>
@@ -275,9 +275,9 @@ export default function ProfileComponent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Link
               href="/vendor"
-              className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-teal-300 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
+              className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-green-300 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
             >
-              <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center group-hover:bg-teal-500 group-hover:text-white transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors">
                 <ShoppingBag className="w-5 h-5" />
               </div>
               <div>
@@ -291,9 +291,9 @@ export default function ProfileComponent() {
             </Link>
             <Link
               href={`/profile/${user.id}`}
-              className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-teal-300 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
+              className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-green-300 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
             >
-              <div className="w-10 h-10 rounded-xl bg-gray-50 text-gray-500 flex items-center justify-center group-hover:bg-teal-500 group-hover:text-white transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-gray-50 text-gray-500 flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors">
                 <Settings className="w-5 h-5" />
               </div>
               <div>
@@ -313,7 +313,7 @@ export default function ProfileComponent() {
           Dernière connexion aujourd'hui •
           <Link
             href="/users/ui/login"
-            className="text-teal-500 hover:underline"
+            className="text-green-500 hover:underline"
           >
             Se déconnecter
           </Link>

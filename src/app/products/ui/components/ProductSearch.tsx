@@ -141,18 +141,18 @@ export default function ProductSearch({
                 <button
                   key={tag.label}
                   onClick={() => handleQuickTagClick(tag.label)}
-                  className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-slate-100/80 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border border-slate-200/70 text-xs font-semibold text-slate-700 transition-all duration-200 shadow-sm active:scale-95 group"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-slate-100/80 hover:bg-green-50 hover:text-green-700 hover:border-green-300 border border-slate-200/70 text-xs font-semibold text-slate-700 transition-all duration-200 shadow-sm active:scale-95 group"
                 >
-                  <TagIcon className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+                  <TagIcon className="w-4 h-4 text-green-600 group-hover:scale-110 transition-transform" />
                   <span>{tag.label}</span>
                 </button>
               );
             })}
           </div>
 
-          <div className="p-3 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200/60 text-xs text-emerald-800 flex items-center justify-between gap-3 shadow-sm">
+          <div className="p-3 rounded-2xl bg-gradient-to-r from-green-50 via-green-50 to-green-50 border border-green-200/60 text-xs text-green-800 flex items-center justify-between gap-3 shadow-sm">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
+              <Sparkles className="w-4 h-4 text-green-600 shrink-0" />
               <span>Trouvez en un instant les meilleures offres du moment.</span>
             </div>
           </div>
@@ -179,9 +179,9 @@ export default function ProductSearch({
                 <button
                   key={tag.label}
                   onClick={() => handleQuickTagClick(tag.label)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-medium text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-xs font-medium text-slate-600 hover:bg-green-50 hover:text-green-700 transition-colors"
                 >
-                  <TagIcon className="w-3.5 h-3.5 text-emerald-600" />
+                  <TagIcon className="w-3.5 h-3.5 text-green-600" />
                   <span>{tag.label}</span>
                 </button>
               );
@@ -195,7 +195,7 @@ export default function ProductSearch({
         <div className="space-y-1 bg-white">
           <div className="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
             <span>{results.length} Produit{results.length > 1 ? "s" : ""} trouvé{results.length > 1 ? "s" : ""}</span>
-            <span className="text-emerald-600 flex items-center gap-1 font-semibold">
+            <span className="text-green-600 flex items-center gap-1 font-semibold">
               <TrendingUp className="w-3 h-3" /> Résultats instantanés
             </span>
           </div>
@@ -205,7 +205,7 @@ export default function ProductSearch({
               <button
                 key={product.id}
                 onClick={() => handleSelect(product)}
-                className="w-full group flex items-center gap-3 sm:gap-4 p-3 rounded-2xl bg-white hover:bg-slate-50 transition-all duration-200 text-left border border-transparent hover:border-emerald-500/20"
+                className="w-full group flex items-center gap-3 sm:gap-4 p-3 rounded-2xl bg-white hover:bg-slate-50 transition-all duration-200 text-left border border-transparent hover:border-green-500/20"
               >
                 {/* Image miniature */}
                 <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-100 overflow-hidden shrink-0 border border-slate-200/80 shadow-sm group-hover:shadow-md transition-shadow">
@@ -218,7 +218,7 @@ export default function ProductSearch({
 
                 {/* Info Produit */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-extrabold text-slate-900 text-sm sm:text-base group-hover:text-emerald-600 transition-colors truncate">
+                  <p className="font-extrabold text-slate-900 text-sm sm:text-base group-hover:text-green-600 transition-colors truncate">
                     {product.name}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
@@ -231,15 +231,15 @@ export default function ProductSearch({
                 {/* Prix & Action */}
                 <div className="flex items-center gap-3 shrink-0">
                   <div className="text-right">
-                    <div className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/60 text-emerald-700 font-black text-sm sm:text-base shadow-sm">
+                    <div className="px-3 py-1.5 rounded-xl bg-green-50 border border-green-200/60 text-green-700 font-black text-sm sm:text-base shadow-sm">
                       {product.price.toLocaleString()}{" "}
-                      <span className="text-[10px] font-bold text-emerald-600">
+                      <span className="text-[10px] font-bold text-green-600">
                         FCFA
                       </span>
                     </div>
                   </div>
 
-                  <div className="p-2 rounded-xl text-slate-300 group-hover:text-emerald-600 group-hover:bg-emerald-50 transition-all">
+                  <div className="p-2 rounded-xl text-slate-300 group-hover:text-green-600 group-hover:bg-green-50 transition-all">
                     <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
@@ -259,12 +259,12 @@ export default function ProductSearch({
         <div
           className={`group relative flex items-center gap-2 sm:gap-3 bg-white rounded-2xl sm:rounded-3xl px-3.5 sm:px-4 py-2.5 sm:py-3 border-2 transition-all duration-300 shadow-sm ${
             isOpen
-              ? "border-emerald-500 ring-4 ring-emerald-500/15 shadow-xl shadow-emerald-500/10"
-              : "border-slate-200/90 hover:border-emerald-400 hover:shadow-md"
+              ? "border-green-500 ring-4 ring-green-500/15 shadow-xl shadow-green-500/10"
+              : "border-slate-200/90 hover:border-green-400 hover:shadow-md"
           }`}
         >
           {/* Icône animée */}
-          <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 group-focus-within:bg-emerald-500 group-focus-within:text-white transition-all duration-300 shrink-0">
+          <div className="p-2 rounded-xl bg-green-50 text-green-600 group-focus-within:bg-green-500 group-focus-within:text-white transition-all duration-300 shrink-0">
             <Search className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
 
@@ -279,7 +279,7 @@ export default function ProductSearch({
           />
 
           {loading && (
-            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-emerald-500 shrink-0" />
+            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-green-500 shrink-0" />
           )}
 
           {query && (
@@ -324,12 +324,12 @@ export default function ProductSearch({
         aria-label="Rechercher un article"
         className={
           triggerClassName ??
-          "relative group flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white hover:bg-emerald-50 border-2 border-slate-200/90 hover:border-emerald-400 text-slate-700 hover:text-emerald-700 transition-all duration-300 shadow-sm hover:shadow-md"
+          "relative group flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white hover:bg-green-50 border-2 border-slate-200/90 hover:border-green-400 text-slate-700 hover:text-green-700 transition-all duration-300 shadow-sm hover:shadow-md"
         }
       >
-        <Search className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 group-hover:scale-110 transition-transform" />
+        <Search className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 group-hover:scale-110 transition-transform" />
         <span className="hidden sm:inline font-bold text-xs sm:text-sm">Rechercher</span>
-        <span className="hidden md:inline-block px-1.5 py-0.5 text-[10px] font-extrabold bg-emerald-50 text-emerald-700 rounded-md border border-emerald-200/60">
+        <span className="hidden md:inline-block px-1.5 py-0.5 text-[10px] font-extrabold bg-green-50 text-green-700 rounded-md border border-green-200/60">
           PRODUITS
         </span>
       </button>
@@ -346,7 +346,7 @@ export default function ProductSearch({
           <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border-2 border-slate-200/90 overflow-hidden animate-in zoom-in-95 duration-200 z-10 flex flex-col max-h-[85vh]">
             {/* Header de la recherche */}
             <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/80 flex items-center gap-3">
-              <div className="p-2.5 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0">
+              <div className="p-2.5 rounded-2xl bg-green-50 text-green-600 border border-green-100 shrink-0">
                 <Search className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
 
@@ -360,7 +360,7 @@ export default function ProductSearch({
               />
 
               {loading && (
-                <Loader2 className="w-5 h-5 animate-spin text-emerald-500 shrink-0" />
+                <Loader2 className="w-5 h-5 animate-spin text-green-500 shrink-0" />
               )}
 
               <button

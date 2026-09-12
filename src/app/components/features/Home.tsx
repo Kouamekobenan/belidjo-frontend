@@ -63,7 +63,7 @@ const Navbar = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg opacity-75 blur group-hover:opacity-100 transition-opacity"></div>
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-500 to-green-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
                   <Image
                     src={LOGO_SRC}
                     width={80}
@@ -80,7 +80,7 @@ const Navbar = () => {
                 isScrolled ? "text-gray-900" : "text-white"
               }`}
             >
-              <span className="bg-gradient-to-r from-teal-500 to-green-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-green-500 to-green-500 bg-clip-text text-transparent">
                 {cityName}
               </span>
             </span>
@@ -126,7 +126,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             <Link
               href="/users/ui/login"
-              className="group inline-flex items-center space-x-2 px-5 py-2.5 text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+              className="group inline-flex items-center space-x-2 px-5 py-2.5 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
             >
               <LogIn className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               <span>Connexion Vendeur</span>
@@ -192,7 +192,7 @@ const Navbar = () => {
               <a
                 href="/users/ui/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-center space-x-2 w-full px-5 py-3 text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-lg font-semibold transition-all"
+                className="flex items-center justify-center space-x-2 w-full px-5 py-3 text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-lg font-semibold transition-all"
               >
                 <LogIn className="w-5 h-5" />
                 <span>Connexion Vendeur</span>
@@ -211,10 +211,10 @@ const Navbar = () => {
 
 const StepCard = ({ number, title, description }: Items) => (
   <div className="group text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-    <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4 rounded-full bg-gradient-to-r from-teal-600 to-teal-700 text-white text-xl font-black shadow-lg group-hover:scale-110 transition-transform">
+    <div className="w-14 h-14 flex items-center justify-center mx-auto mb-4 rounded-full bg-gradient-to-r from-green-600 to-green-700 text-white text-xl font-black shadow-lg group-hover:scale-110 transition-transform">
       {number}
     </div>
-    <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-teal-600 transition-colors">
+    <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
       {title}
     </h3>
     <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
@@ -246,7 +246,7 @@ export default function HomePage() {
         <section className="bg-gradient-to-br from-white to-gray-50 shadow-2xl rounded-3xl p-6 sm:p-8 lg:p-12 mb-12 sm:mb-16 lg:mb-20">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-gray-900 mb-8 sm:mb-12 text-center px-2">
             Pourquoi choisir{" "}
-            <span className="bg-gradient-to-r from-teal-500 to-green-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">
               {cityName}
             </span>
             ?
@@ -256,7 +256,7 @@ export default function HomePage() {
             <div className="group p-6 sm:p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white">
               <div className="flex justify-center mb-6">
                 <span className="text-5xl p-4 bg-blue-100 rounded-2xl group-hover:scale-110 transition-transform">
-                  <Backpack className="w-10 h-10 sm:w-12 sm:h-12 text-teal-600" />
+                  <Backpack className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
                 </span>
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 text-center">
@@ -271,9 +271,9 @@ export default function HomePage() {
             {/* Carte 2 */}
             <div className="group p-6 sm:p-8 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-2xl bg-white">
               <div className="flex justify-center mb-6">
-                <span className="text-5xl p-4 bg-teal-100 rounded-2xl group-hover:scale-110 transition-transform">
+                <span className="text-5xl p-4 bg-green-100 rounded-2xl group-hover:scale-110 transition-transform">
                   <Zap
-                    className="w-10 h-10 sm:w-12 sm:h-12 text-teal-600"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-green-600"
                     fill="currentColor"
                   />
                 </span>
@@ -343,7 +343,7 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-4 text-center">
               Comment devenir vendeur sur{" "}
-              <span className="bg-gradient-to-r from-teal-500 to-green-600 bg-clip-text text-transparent italic">
+              <span className="bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent italic">
                 {cityName}
               </span>
             </h2>
@@ -372,7 +372,7 @@ export default function HomePage() {
 
               {/* Étape 2 */}
               <div className="relative flex flex-col items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-50 z-10">
-                <div className="w-14 h-14 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mb-4 border-4 border-white shadow-md">
+                <div className="w-14 h-14 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-4 border-4 border-white shadow-md">
                   <Store size={24} />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">2. Ma Boutique</h3>
@@ -400,7 +400,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center gap-4">
               <Link
                 href="/vendor/vendorform"
-                className="group flex items-center gap-3 bg-teal-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-teal-700 transition-all transform hover:scale-105 shadow-xl"
+                className="group flex items-center gap-3 bg-green-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-green-700 transition-all transform hover:scale-105 shadow-xl"
               >
                 Créer ma boutique maintenant
               </Link>
@@ -423,8 +423,8 @@ export default function HomePage() {
         aria-label="Voir les vendeurs"
       >
         <div className="relative">
-          <div className="absolute inset-0 bg-teal-600 rounded-full animate-ping opacity-75"></div>
-          <div className="relative w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform group-hover:scale-110">
+          <div className="absolute inset-0 bg-green-600 rounded-full animate-ping opacity-75"></div>
+          <div className="relative w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform group-hover:scale-110">
             <ShoppingBag className="w-6 h-6 sm:w-7 sm:h-7" />
           </div>
           <div className="hidden lg:block absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">

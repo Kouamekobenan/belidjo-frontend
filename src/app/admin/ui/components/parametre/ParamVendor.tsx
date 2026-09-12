@@ -117,7 +117,7 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
         {/* En-tête */}
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
               <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
             <div>
@@ -134,7 +134,7 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
         {/* Section: Lien de la boutique */}
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-slate-200">
           <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
+            <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
             <h2 className="text-lg sm:text-xl font-bold text-slate-900">
               Lien de votre boutique
             </h2>
@@ -155,12 +155,12 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
                 type="text"
                 value={shopUrl}
                 readOnly
-                className="flex-1 bg-white border border-slate-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-slate-800 font-medium text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 min-w-0"
+                className="flex-1 bg-white border border-slate-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-slate-800 font-medium text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 min-w-0"
               />
               <div className="flex gap-2">
                 <button
                   onClick={() => handleCopy(shopUrl, "url")}
-                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg text-sm"
+                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg text-sm"
                 >
                   {copiedUrl ? (
                     <>
@@ -190,7 +190,7 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
         {/* Section: Options de partage */}
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-slate-200">
           <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
+            <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
             <h2 className="text-lg sm:text-xl font-bold text-slate-900">
               Partager votre boutique
             </h2>
@@ -203,7 +203,7 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
           {/* Bouton de partage natif */}
           <button
             onClick={handleNativeShare}
-            className="w-full mb-4 px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white rounded-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] text-sm sm:text-base"
+            className="w-full mb-4 px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] text-sm sm:text-base"
           >
             <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
             Partager maintenant
@@ -264,7 +264,7 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
         {/* Section: QR Code */}
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border border-slate-200">
           <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <QrCode className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
+            <QrCode className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
             <h2 className="text-lg sm:text-xl font-bold text-slate-900">
               QR Code
             </h2>
@@ -298,7 +298,7 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
               <a
                 href={qrCodeUrl}
                 download={`qr-code-${vendorProfile?.name}.png`}
-                className="mt-3 sm:mt-4 px-4 sm:px-6 py-2.5 sm:py-3 bg-teal-500 cursor-pointer hover:bg-teal-600 text-white rounded-xl transition-colors font-medium flex items-center gap-2 shadow-md hover:shadow-lg text-sm sm:text-base"
+                className="mt-3 sm:mt-4 px-4 sm:px-6 py-2.5 sm:py-3 bg-green-500 cursor-pointer hover:bg-green-600 text-white rounded-xl transition-colors font-medium flex items-center gap-2 shadow-md hover:shadow-lg text-sm sm:text-base"
               >
                 <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                 Télécharger le QR Code
@@ -310,7 +310,7 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
         {/* Info supplémentaire */}
         <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl">
           <div className="flex items-start gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-teal-500 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
               <span className="text-white font-bold text-base sm:text-lg">
                 💡
               </span>

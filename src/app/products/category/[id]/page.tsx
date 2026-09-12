@@ -47,7 +47,7 @@ export default function CategoryProductsPage({
           <div>
             <Link
               href="/vendor"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-teal-600 mb-2"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-green-600 mb-2"
             >
               <ChevronLeft size={14} /> Retour au catalogue
             </Link>
@@ -133,14 +133,14 @@ function ProductCard({ product }: { product: IProduct }) {
           <h3 className="font-bold text-slate-800 text-sm md:text-base line-clamp-2 mb-1">
             {product.name}
           </h3>
-          <p className="text-teal-600 font-black text-lg price">
+          <p className="text-green-600 font-black text-lg price">
             {product.price.toLocaleString()}{" "}
             <span className="text-[10px] font-bold text-slate-400">FCFA</span>
           </p>
           {vendorName && (
             <Link
               href={`/products/ui/page/${product.vendorId}`}
-              className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400 hover:text-teal-600 mt-1"
+              className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400 hover:text-green-600 mt-1"
             >
               <Store size={11} /> {vendorName}
             </Link>
@@ -149,7 +149,7 @@ function ProductCard({ product }: { product: IProduct }) {
 
         <Link
           href={`${detailUrl}?action=order`}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl py-2.5 text-xs transition-all duration-200 active:scale-95 shadow-sm mt-auto"
+          className="flex-1 flex items-center justify-center gap-1.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl py-2.5 text-xs transition-all duration-200 active:scale-95 shadow-sm mt-auto"
         >
           <ShoppingCart size={13} />
           Commander

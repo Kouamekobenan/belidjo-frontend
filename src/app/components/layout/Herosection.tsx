@@ -20,7 +20,7 @@ export const HeroSection = () => {
         />
         {/* Overlay Professionnel : Mélange de dégradé sombre et de couleur de marque */}
         <div className="absolute inset-0 bg-slate-900/70 mix-blend-multiply"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-teal-900/40 via-transparent to-slate-900/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-green-900/40 via-transparent to-slate-900/90"></div>
         {/* Texture de grille subtile */}
         <div className="absolute inset-0 opacity-[0.15] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
       </div>
@@ -51,7 +51,7 @@ export const HeroSection = () => {
         <div className="mt-10 flex flex-col sm:flex-row gap-5 justify-center px-4">
           <Link
             href="/vendor/vendorform"
-            className="group relative inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-teal-500 hover:bg-teal-400 rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 overflow-hidden"
+            className="group relative inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-green-500 hover:bg-green-400 rounded-xl shadow-[0_0_20px_rgba(20,184,166,0.4)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 overflow-hidden"
           >
             <span className="relative flex items-center">
               Démarrer ma boutique

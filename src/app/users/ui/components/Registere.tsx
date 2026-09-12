@@ -165,29 +165,29 @@ export default function RegisterForm() {
   // Classes de style
   const inputClass = (name: keyof RegisterDto) => `
     w-full pl-11 pr-4 text-gray-800 py-3 border rounded-xl 
-    focus:ring-2 focus:ring-teal-500 focus:border-teal-500 
+    focus:ring-2 focus:ring-green-500 focus:border-green-500 
     transition-all duration-300 ease-in-out
     ${
       errors[name]
         ? "border-red-500 focus:border-red-500 focus:ring-red-200"
-        : "border-gray-300 hover:border-teal-400"
+        : "border-gray-300 hover:border-green-400"
     }
   `;
 
   const selectClass = (name: keyof RegisterDto) => `
     w-full pl-11 text-gray-800 pr-10 py-3 border rounded-xl 
-    focus:ring-2 focus:ring-teal-500 focus:border-teal-500 
+    focus:ring-2 focus:ring-green-500 focus:border-green-500 
     transition-all duration-300 ease-in-out appearance-none bg-white
     ${
       errors[name]
         ? "border-red-500 focus:border-red-500 focus:ring-red-200"
-        : "border-gray-300 hover:border-teal-400"
+        : "border-gray-300 hover:border-green-400"
     }
     ${loadingCities ? "opacity-60 cursor-not-allowed" : ""}
   `;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-blue-100 to-purple-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-100 to-purple-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-sm sm:max-w-md">
         <div className="bg-white rounded-3xl shadow-2xl p-4 sm:p-8 transition-all duration-300 border border-gray-100">
           {/* Header */}
@@ -196,13 +196,13 @@ export default function RegisterForm() {
               <div className="flex justify-center items-center pb-6">
                 <Link
                   href="/vendor"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-100 hover:to-cyan-700 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-green-100 hover:to-cyan-700 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                 >
                   <span>Accueil</span>
                 </Link>
               </div>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-1 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-700">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-1 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-700">
               Inscription
             </h1>
             <p className="text-sm sm:text-base text-gray-500">
@@ -300,7 +300,7 @@ export default function RegisterForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[37px] p-1 text-gray-500 hover:text-teal-600 transition-colors"
+                className="absolute right-3 top-[37px] p-1 text-gray-500 hover:text-green-600 transition-colors"
                 aria-label={
                   showPassword
                     ? "Masquer le mot de passe"
@@ -359,9 +359,9 @@ export default function RegisterForm() {
             <button
               type="submit"
               disabled={loading || loadingCities}
-              className="w-full bg-teal-600 cursor-pointer text-white py-3 rounded-xl font-semibold text-base sm:text-lg
-                hover:bg-teal-700 focus:ring-4 focus:ring-teal-200 transition-all duration-300 
-                shadow-lg shadow-teal-300/50 hover:shadow-xl hover:shadow-teal-400/60
+              className="w-full bg-green-600 cursor-pointer text-white py-3 rounded-xl font-semibold text-base sm:text-lg
+                hover:bg-green-700 focus:ring-4 focus:ring-green-200 transition-all duration-300 
+                shadow-lg shadow-green-300/50 hover:shadow-xl hover:shadow-green-400/60
                 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
@@ -381,7 +381,7 @@ export default function RegisterForm() {
               Vous avez déjà un compte ?{" "}
               <Link
                 href="/users/ui/login"
-                className="text-teal-600 hover:text-teal-700 font-semibold hover:underline transition-colors"
+                className="text-green-600 hover:text-green-700 font-semibold hover:underline transition-colors"
               >
                 Se connecter
               </Link>
@@ -394,14 +394,14 @@ export default function RegisterForm() {
           En créant un compte, vous acceptez nos{" "}
           <a
             href="#"
-            className="text-teal-600 hover:underline transition-colors"
+            className="text-green-600 hover:underline transition-colors"
           >
             Conditions d'utilisation
           </a>{" "}
           et notre{" "}
           <a
             href="#"
-            className="text-teal-600 hover:underline transition-colors"
+            className="text-green-600 hover:underline transition-colors"
           >
             Politique de confidentialité
           </a>

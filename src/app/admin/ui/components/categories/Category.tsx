@@ -56,7 +56,7 @@ export default function VendorCategoriesDashboard({
   if (loading && categories.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
       </div>
     );
   }
@@ -79,7 +79,7 @@ export default function VendorCategoriesDashboard({
           placeholder="Rechercher parmi vos catégories..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 text-gray-950 border-2 border-gray-200 rounded-xl focus:border-teal-500 outline-none transition-all"
+          className="w-full pl-12 pr-4 py-3 text-gray-950 border-2 border-gray-200 rounded-xl focus:border-green-500 outline-none transition-all"
         />
       </div>
       {/* Grille de catégories (Lecture seule) */}

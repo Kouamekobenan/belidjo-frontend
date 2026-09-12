@@ -15,7 +15,7 @@ export const AnimatedHeroTitle = () => {
         <span
           className={`
             inline-block
-            bg-gradient-to-r from-teal-500 via-green-500 to-pink-600 
+            bg-gradient-to-r from-green-500 via-green-500 to-pink-600 
             bg-clip-text text-transparent
             animate-gradient-x
             transform transition-all duration-1000
@@ -63,7 +63,7 @@ export const AnimatedHeroTitle = () => {
             <span className="relative z-10">Fais tes achats </span>
           </span>
           <span className="relative inline-block">
-            <span className="text-teal-400 font-extrabold animate-bounce-subtle">
+            <span className="text-green-400 font-extrabold animate-bounce-subtle">
               en un clic
             </span>
             <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-purple-600 transform origin-left scale-x-0 animate-underline"></span>

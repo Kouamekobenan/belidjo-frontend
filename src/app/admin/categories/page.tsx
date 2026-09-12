@@ -18,7 +18,7 @@ export default function CategoryPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-8 text-center space-y-6 border border-gray-100">
             {/* Icône animée */}
             <div className="relative">
-              <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg transform hover:scale-105 transition-transform duration-300">
                 <AlertCircle className="w-10 h-10 text-white" />
               </div>
               <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
@@ -38,7 +38,7 @@ export default function CategoryPage() {
             {/* Bouton de connexion */}
             <Link
               href="/users/ui/login"
-              className="group relative inline-flex items-center justify-center gap-3 w-full px-6 py-4 bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-700 hover:to-teal-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+              className="group relative inline-flex items-center justify-center gap-3 w-full px-6 py-4 bg-gradient-to-r from-green-600 to-green-600 hover:from-green-700 hover:to-green-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
               <LogIn className="w-5 h-5 relative z-10" />
@@ -50,7 +50,7 @@ export default function CategoryPage() {
               Pas encore de compte ?{" "}
               <Link
                 href="/users/ui/register"
-                className="text-teal-600 hover:text-teal-700 font-medium underline-offset-4 hover:underline"
+                className="text-green-600 hover:text-green-700 font-medium underline-offset-4 hover:underline"
               >
                 Créer un compte
               </Link>

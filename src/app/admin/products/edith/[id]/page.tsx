@@ -125,7 +125,7 @@ export default function EditProductPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center space-y-4">
-          <Loader2 className="w-12 h-12 animate-spin text-teal-600 mx-auto" />
+          <Loader2 className="w-12 h-12 animate-spin text-green-600 mx-auto" />
           <div>
             <h2 className="text-xl font-semibold text-gray-800">
               Chargement du produit
@@ -153,7 +153,7 @@ export default function EditProductPage() {
           </div>
           <button
             onClick={() => router.push("/admin/products")}
-            className="w-full px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors duration-200"
+            className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200"
           >
             Retour
           </button>

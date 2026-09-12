@@ -125,7 +125,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
                     />
                   </div>
                 ) : (
-                  <div className="h-10 w-10 flex-shrink-0 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center font-bold text-lg">
+                  <div className="h-10 w-10 flex-shrink-0 rounded-xl bg-green-500/10 text-green-600 flex items-center justify-center font-bold text-lg">
                     🔔
                   </div>
                 )}

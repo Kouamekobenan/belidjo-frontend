@@ -98,11 +98,11 @@ export default function CreateVendorForm() {
     <div className="max-w-2xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-100 my-10">
       {/* Header */}
 
-      <div className="bg-gradient-to-r from-teal-600 to-emerald-600 p-8 text-white text-center">
+      <div className="bg-gradient-to-r from-green-600 to-green-600 p-8 text-white text-center">
         <div className="flex  items-center ">
           <Link
             href="/vendor"
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-teal-100 hover:to-cyan-700 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-green-100 hover:to-cyan-700 text-black font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
           >
             <span>Accueil</span>
           </Link>
@@ -113,7 +113,7 @@ export default function CreateVendorForm() {
         <h2 className="text-2xl font-black tracking-tight text-white">
           Espace Futur Vendeur
         </h2>
-        <p className="text-teal-50 text-sm mt-2 font-medium">
+        <p className="text-green-50 text-sm mt-2 font-medium">
           Parlez-nous de votre boutique NoBoutik
         </p>
       </div>
@@ -125,7 +125,7 @@ export default function CreateVendorForm() {
         {/* Nom commercial */}
         <div>
           <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
-            <Store size={16} className="text-teal-600" /> Nom commercial
+            <Store size={16} className="text-green-600" /> Nom commercial
           </label>
           <input
             {...register("name")}
@@ -133,7 +133,7 @@ export default function CreateVendorForm() {
             className={`w-full px-4 py-3 rounded-xl border ${
               errors.name
                 ? "border-red-500 bg-red-50"
-                : "border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                : "border-slate-200 focus:border-green-500 focus:ring-2 focus:ring-green-100"
             } outline-none transition-all`}
           />
           {errors.name && (
@@ -146,7 +146,7 @@ export default function CreateVendorForm() {
           {/* Ville CORRIGÉ */}
           <div>
             <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
-              <MapPin size={16} className="text-teal-600" /> Ville
+              <MapPin size={16} className="text-green-600" /> Ville
             </label>
             <select
               {...register("cityId")} // INDISPENSABLE pour que React Hook Form capte la valeur
@@ -154,7 +154,7 @@ export default function CreateVendorForm() {
               className={`w-full px-4 py-3 rounded-xl border bg-white outline-none transition-all appearance-none cursor-pointer ${
                 errors.cityId
                   ? "border-red-500 bg-red-50"
-                  : "border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                  : "border-slate-200 focus:border-green-500 focus:ring-2 focus:ring-green-100"
               }`}
             >
               <option value="">
@@ -175,19 +175,19 @@ export default function CreateVendorForm() {
           {/* Domaine */}
           <div>
             <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
-              <Globe size={16} className="text-teal-600" /> Domaine souhaité
+              <Globe size={16} className="text-green-600" /> Domaine souhaité
             </label>
             <input
               {...register("site.domain")}
               placeholder="ex: ma-boutique"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 outline-none transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-green-500 outline-none transition-all"
             />
           </div>
         </div>
         {/* Description */}
         <div>
           <label className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
-            <FileText size={16} className="text-teal-600" /> Description de
+            <FileText size={16} className="text-green-600" /> Description de
             l'activité
           </label>
           <textarea
@@ -197,7 +197,7 @@ export default function CreateVendorForm() {
             className={`w-full px-4 py-3 rounded-xl border ${
               errors.site?.description
                 ? "border-red-500 bg-red-50"
-                : "border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                : "border-slate-200 focus:border-green-500 focus:ring-2 focus:ring-green-100"
             } outline-none transition-all resize-none`}
           />
           {errors.site?.description && (

@@ -86,7 +86,7 @@ export default function DashbordVendor() {
         {/* 1. EN-TÊTE PRO */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="bg-teal-500 p-3 rounded-2xl shadow-lg shadow-teal-200">
+            <div className="bg-green-500 p-3 rounded-2xl shadow-lg shadow-green-200">
               <LayoutDashboard className="text-white w-6 h-6" />
             </div>
             <div>
@@ -105,7 +105,7 @@ export default function DashbordVendor() {
             <span className="text-xs font-bold text-slate-400 uppercase block">
               Boutique
             </span>
-            <span className="text-teal-600 font-bold">{user.name}</span>
+            <span className="text-green-600 font-bold">{user.name}</span>
           </div>
         </header>
 
@@ -126,8 +126,8 @@ export default function DashbordVendor() {
               </span>
             }
             icon={DollarSign}
-            color="text-emerald-600"
-            bgColor="bg-emerald-50"
+            color="text-green-600"
+            bgColor="bg-green-50"
           />
           <QuickStatCard
             title="Produits"
@@ -157,7 +157,7 @@ export default function DashbordVendor() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
             <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-teal-500" /> Tendance
+              <TrendingUp className="w-5 h-5 text-green-500" /> Tendance
               Hebdomadaire
             </h3>
             <ResponsiveContainer width="100%" height={300}>
