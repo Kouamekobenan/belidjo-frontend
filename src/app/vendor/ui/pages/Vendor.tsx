@@ -89,8 +89,8 @@ const ErrorState = ({ message, onRetry }: ErrorStateProps) => (
 const EmptyState = () => (
   <div className="text-center max-w-md mx-auto p-10 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-100">
     <div className="mb-6">
-      <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-100 to-green-100 rounded-full mb-4">
-        <Store className="h-12 w-12 text-green-600" />
+      <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-100 to-green-100 rounded-full mb-4 p-4">
+        <img src="/images/shop.png" alt="Shop" className="w-full h-full object-contain" />
       </div>
       <h2 className="text-2xl font-bold text-gray-900 mb-3">
         Aucun Partenaire Disponible
@@ -211,7 +211,7 @@ export default function VendorPage() {
   };
 //  py-2 sm:py-5 px-2 sm:px-3 lg:px-8
   return (
-    <div className="max-w-7xl  bg-gradient-to-b from-gray-50 to-white min-h-screen">
+    <div className="w-full bg-gradient-to-b from-gray-50 to-white min-h-screen">
       <PageHeader />
 
       <main className="mt-8" role="main" aria-label="Liste des partenaires">

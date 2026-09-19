@@ -99,9 +99,9 @@ export default function FlashStoryBar() {
         <div className="max-w-7xl mx-auto relative">
           {/* Header label */}
           <div className="px-4 pt-3 pb-1 flex items-center gap-2">
-            <Zap className="w-4 h-4 text-orange-500" />
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Flash Stories
+            <Zap className="w-4 h-4 text-orange-500 fill-orange-500" />
+            <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">
+              Bons Plans Express
             </span>
             <div className="flex-1 h-px bg-slate-100 ml-2" />
           </div>

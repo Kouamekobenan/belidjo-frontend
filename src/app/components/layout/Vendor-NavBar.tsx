@@ -125,7 +125,7 @@ function VendorNavBar({
                   className="group relative cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
                 >
                   <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-                  <Store className="w-5 h-5" />
+                  <img src="/images/shop.png" alt="Shop" className="w-5 h-5 object-contain" />
                   <span>Profile vendeur</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -135,7 +135,7 @@ function VendorNavBar({
                   className="group relative cursor-pointer inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-base font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
                 >
                   <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-                  <Store className="w-5 h-5" />
+                  <img src="/images/shop.png" alt="Shop" className="w-5 h-5 object-contain" />
                   <span>Catalogue</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -257,7 +257,7 @@ function VendorNavBar({
               className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-green-600 active:bg-green-50 transition-all duration-200 group"
             >
               <div className="relative">
-                <Store className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                <img src="/images/shop.png" alt="Vendeur" className="w-6 h-6 object-contain group-hover:scale-110 transition-transform" />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
               </div>
               <span className="text-xs font-medium">Vendeur</span>
@@ -268,7 +268,7 @@ function VendorNavBar({
               className="flex flex-col items-center justify-center space-y-1 text-gray-600 hover:text-green-600 active:bg-green-50 transition-all duration-200 group"
             >
               <div className="relative">
-                <Store className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                <img src="/images/shop.png" alt="Catalogue" className="w-6 h-6 object-contain group-hover:scale-110 transition-transform" />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
               </div>
               <span className="text-xs font-medium">Catalogue</span>
