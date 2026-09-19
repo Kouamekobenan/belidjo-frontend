@@ -57,14 +57,14 @@ export default function ProductListAdmin() {
     );
   }
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 w-full min-w-0 max-w-full overflow-x-hidden">
       <NavbarDashbordVendor
         name={user?.name}
         phone={user?.phone}
         cityName={user?.cityName}
         vendorProfile={user?.vendorProfile}
       />
-      <main className="flex-1 w-full pt-20 md:pt-2 mb-20 md:mb-1">
+      <main className="flex-1 w-full min-w-0 max-w-full overflow-x-hidden pt-20 md:pt-2 mb-20 md:mb-1">
         <VendorProductList vendorId={vendorId} />
       </main>
     </div>

@@ -62,7 +62,7 @@ export default function CategoryPage() {
   }
   // Interface principale avec design moderne
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 w-full min-w-0 max-w-full overflow-x-hidden">
       <NavbarDashbordVendor
         name={user?.name}
         phone={user?.phone}
@@ -70,7 +70,7 @@ export default function CategoryPage() {
         vendorProfile={user?.vendorProfile}
       />
       {/* Contenu principal */}
-      <main className="flex-1 p-2 pt-20 md-pt-2 mb-20 md:mb-1">
+      <main className="flex-1 w-full min-w-0 max-w-full overflow-x-hidden pt-20 md:pt-2 mb-20 md:mb-1">
         <CategoriesList vendorId={vendorId} />
       </main>
     </div>

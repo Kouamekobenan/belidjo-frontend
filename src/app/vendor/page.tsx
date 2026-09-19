@@ -16,6 +16,7 @@ import { cityName } from "../lib/globals.type";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Carrosel from "./ui/components/Carrosel";
+import FlashStoryBar from "./ui/components/FlashStoryBar";
 import { useAuth } from "../context/AuthContext";
 import { UserRole } from "../users/domain/enums/role.enum";
 import ProductSearch from "../products/ui/components/ProductSearch";
@@ -272,6 +273,7 @@ export default function Vendors() {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
       <div>
         <Navbar />
+        <FlashStoryBar />
         <Carrosel />
         <main className="relative z-0 pb-12 px-4 max-w-7xl mx-auto">
           <VendorPage />

@@ -30,6 +30,7 @@ import VendorMetricsOverview from "./VendorMetricsOverview";
 import VendorQuickActions from "./VendorQuickActions";
 import VendorRecentOrders from "./VendorRecentOrders";
 import VendorTopProducts from "./VendorTopProducts";
+import FlashStoryManager from "../flash-story/FlashStoryManager";
 
 const repo = new ProductRepository(new ProductMapper());
 const getProducts = new GetProductsByVendorUseCase(repo);
@@ -191,6 +192,11 @@ export default function DashbordVendor() {
         {/* 2. RACCOURCIS COMMERÇANT (Actions Rapides) */}
         {/* ========================================================================= */}
         <VendorQuickActions vendorId={vendorId} storeName={user.name} />
+
+        {/* ========================================================================= */}
+        {/* 2.5. FLASH STORY — Créer & Gérer votre Story éphémère */}
+        {/* ========================================================================= */}
+        <FlashStoryManager />
 
         {/* ========================================================================= */}
         {/* 3. MÉTRIQUES & KPIS VENTES / STOCK */}
