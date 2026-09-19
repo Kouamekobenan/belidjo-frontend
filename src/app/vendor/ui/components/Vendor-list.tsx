@@ -44,8 +44,8 @@ const VendorListItem = ({
             />
           </div>
           {/* Badge vérifié */}
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 bg-green-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
-            <Store size={10} className="text-white" />
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 bg-green-500 rounded-full flex items-center justify-center shadow-md border-2 border-white overflow-hidden p-0.5">
+            <img src="/images/shop.png" alt="Shop" className="w-full h-full object-contain" />
           </div>
         </div>
 
@@ -162,9 +162,9 @@ const VendorFilters = ({ selectedCity, setSelectedCity, cityOptions }: any) => {
      * Les décorations d'arrière-plan (blobs) sont déplacées dans un div
      * enfant avec overflow-hidden pour ne pas affecter le combobox.
      */
-    <div className="relative bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 rounded-2xl sm:rounded-[32px] p-4 sm:p-6 md:p-12 mb-8 sm:mb-12 shadow-2xl border border-white/5">
+    <div className="relative bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 w-full p-4 sm:p-6 md:p-12 mb-8 sm:mb-12 shadow-2xl border-y border-white/5">
       {/* Décorations — isolées dans leur propre overflow-hidden */}
-      <div className="absolute inset-0 rounded-2xl sm:rounded-[32px] overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-green-500/20 rounded-full blur-3xl" />
         <div className="absolute bottom-[-30%] left-[-15%] w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl" />
       </div>
@@ -447,7 +447,7 @@ export function VendorList({ data, onVendorClick }: VendorListProps) {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
+    <div className="w-full py-6 sm:py-10">
       <VendorFilters
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
@@ -455,7 +455,7 @@ export function VendorList({ data, onVendorClick }: VendorListProps) {
       />
 
       {filteredVendors.length === 0 ? (
-        <div className="text-center py-20 bg-slate-50 rounded-[32px] border-2 border-dashed border-slate-200 mt-8">
+        <div className="mx-4 sm:mx-8 text-center py-20 bg-slate-50 rounded-[32px] border-2 border-dashed border-slate-200 mt-8">
           <MapPin size={48} className="mx-auto text-slate-300 mb-4" />
           <p className="text-xl font-bold text-slate-900">
             Désolé, personne ici !
@@ -468,7 +468,7 @@ export function VendorList({ data, onVendorClick }: VendorListProps) {
           </button>
         </div>
       ) : (
-        <ul className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 sm:gap-6 mt-8">
+        <ul className="px-4 sm:px-6 lg:px-8 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 sm:gap-6 mt-8">
           {filteredVendors.map((vendor) => (
             <VendorListItem
               key={vendor.id}

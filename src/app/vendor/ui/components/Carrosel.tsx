@@ -21,77 +21,51 @@ const phrases = [
 
 function AnimatedShopButton() {
   const [idx, setIdx] = useState(0);
-  const [sliding, setSliding] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setSliding(true);
-      setTimeout(() => {
-        setIdx((prev) => (prev + 1) % phrases.length);
-        setSliding(false);
-      }, 600);
-    }, 4000);
+      setIdx((prev) => (prev + 1) % phrases.length);
+    }, 3500);
     return () => clearInterval(timer);
   }, []);
-
-  const next = (idx + 1) % phrases.length;
 
   return (
     <Link
       href="/vendor/vendorform"
-      className={`
-        relative group overflow-hidden
-        flex w-full sm:inline-flex sm:w-auto items-center gap-3
-        px-6 py-3.5 sm:px-8 sm:py-4 rounded-2xl
-        transition-all duration-500 ease-out
-        shadow-[0_10px_20px_-10px_rgba(0,0,0,0.3)]
-        hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.4)]
-        hover:-translate-y-1 active:scale-95
-        bg-gradient-to-r ${phrases[idx].bg}
-      `}
-      style={{ minWidth: 280 }}
+      className={`relative group inline-flex items-center justify-between gap-3 sm:gap-4 px-5 sm:px-7 py-3.5 sm:py-4 rounded-full bg-gradient-to-r ${phrases[idx].bg} text-white font-bold text-sm tracking-wide shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_35px_rgba(0,0,0,0.4)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-700 overflow-hidden border border-white/20 w-full sm:w-auto max-w-md sm:max-w-none`}
+      style={{ minWidth: 320 }}
     >
-      <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Shimmer Light Beam Effect */}
+      <div className="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent skew-x-[-25deg] group-hover:left-[200%] transition-all duration-1000 ease-out pointer-events-none" />
 
-      <div className="relative z-10 flex items-center justify-center w-8 h-8 bg-white/20 rounded-lg backdrop-blur-sm group-hover:rotate-12 transition-transform duration-300">
-        <Store className="w-4 h-4 text-white" />
+      {/* Left Icon */}
+      <div className="relative z-10 flex items-center justify-center w-9 h-9 rounded-full bg-white/20 backdrop-blur-md border border-white/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 flex-shrink-0 p-1.5 overflow-hidden">
+        <img src="/images/shop.png" alt="Shop Icon" className="w-full h-full object-contain" />
       </div>
 
-      <div
-        className="relative z-10 flex-1 overflow-hidden pointer-events-none"
-        style={{ height: LINE_H }}
-      >
-        <div
-          className="flex flex-col"
-          style={{
-            transform: sliding
-              ? `translateY(-${LINE_H}px)`
-              : "translateY(0px)",
-            transition: sliding
-              ? "transform 0.6s cubic-bezier(0.65, 0, 0.35, 1)"
-              : "none",
-          }}
-        >
+      {/* Fluid Crisp Text Transition */}
+      <div className="relative z-10 flex-1 h-6 overflow-hidden min-w-[180px] sm:min-w-[210px]">
+        {phrases.map((phrase, i) => (
           <span
-            className="flex items-center gap-2 text-sm font-extrabold text-white tracking-wide uppercase whitespace-nowrap"
-            style={{ height: LINE_H }}
+            key={i}
+            className={`absolute inset-0 flex items-center justify-center text-xs sm:text-sm md:text-base font-black uppercase tracking-wider text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] whitespace-nowrap transition-all duration-700 ease-in-out ${
+              i === idx
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-4 pointer-events-none"
+            }`}
           >
-            {phrases[idx].text}
+            {phrase.text}
           </span>
-          <span
-            className="flex items-center gap-2 text-sm font-extrabold text-white tracking-wide uppercase whitespace-nowrap"
-            style={{ height: LINE_H }}
-          >
-            {phrases[next].text}
-          </span>
-        </div>
+        ))}
       </div>
 
-      <div className="relative z-10">
-        <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-2 transition-transform duration-300 ease-out" />
+      {/* Right Arrow */}
+      <div className="relative z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white text-slate-900 group-hover:bg-white group-hover:scale-105 group-hover:translate-x-1 transition-all duration-300 shadow-md flex-shrink-0">
+        <ArrowRight className="w-4 h-4 stroke-[3]" />
       </div>
 
-      <Sparkles className="absolute right-2 top-2 w-3 h-3 text-white/40 opacity-0 group-hover:opacity-100 group-hover:animate-pulse" />
+      {/* Floating Sparkle */}
+      <Sparkles className="absolute right-3 top-2 w-3.5 h-3.5 text-white/70 opacity-60 group-hover:opacity-100 group-hover:scale-125 group-hover:rotate-45 transition-all duration-500 pointer-events-none" />
     </Link>
   );
 }
