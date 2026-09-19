@@ -273,8 +273,8 @@ export default function Vendors() {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
       <div>
         <Navbar />
-        <FlashStoryBar />
         <Carrosel />
+        <FlashStoryBar />
         <main className="relative z-0 pb-12 px-4 max-w-7xl mx-auto">
           <VendorPage />
         </main>

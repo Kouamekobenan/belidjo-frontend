@@ -40,32 +40,36 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
 
   // Récupérer la liste des notifications & Featured Popup au lancement
   const refreshNotifications = useCallback(async () => {
-    if (!user?.id) {
-      setNotifications([]);
-      return;
-    }
-
     try {
       setLoading(true);
       setError(null);
-      const list = await repository.getByUserId(user.id);
-      setNotifications(list);
 
-      // 🌟 Popup / Modal au Lancement ("Featured Vendor / Boutique en Vedette")
+      // 1. Récupérer les notifications In-App si l'utilisateur est connecté
+      if (user?.id) {
+        const list = await repository.getByUserId(user.id);
+        setNotifications(list);
+      } else {
+        setNotifications([]);
+      }
+
+      // 2. 🌟 Popup / Modal au Lancement ("Featured Vendor / Boutique en Vedette")
       if (!hasCheckedStartup.current) {
         hasCheckedStartup.current = true;
         try {
-          const featuredPopup = await repository.getFeaturedPopup(user.id);
+          const featuredPopup = await repository.getFeaturedPopup(user?.id || "guest");
           if (featuredPopup && !featuredPopup.isRead) {
             setStartupNotification(featuredPopup);
-          } else {
-            // Fallback : recherche d'une notification prioritaire non lue
-            const priorityNotif = list.find(
-              (n) => !n.isRead && (n.priority === "URGENT" || n.priority === "HIGH" || n.type === "FEATURED_VENDOR")
-            );
-            if (priorityNotif) {
-              setStartupNotification(priorityNotif);
-            }
+          } else if (user?.id) {
+            // Fallback pour utilisateur connecté : recherche d'une notification prioritaire non lue
+            setNotifications((prev) => {
+              const priorityNotif = prev.find(
+                (n) => !n.isRead && (n.priority === "URGENT" || n.priority === "HIGH" || n.type === "FEATURED_VENDOR")
+              );
+              if (priorityNotif) {
+                setStartupNotification(priorityNotif);
+              }
+              return prev;
+            });
           }
         } catch {
           // Ignorer si pas de popup dédiée
@@ -82,7 +86,30 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   useEffect(() => {
     hasCheckedStartup.current = false;
     refreshNotifications();
-  }, [refreshNotifications]);
+
+    // 🔄 Polling automatique toutes les 30 secondes pour les notifications In-App
+    const intervalId = setInterval(() => {
+      if (user?.id) {
+        refreshNotifications();
+      }
+    }, 30000);
+
+    // 🔄 Rafraîchissement automatique au retour sur la fenêtre/onglet
+    const handleFocus = () => {
+      refreshNotifications();
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("focus", handleFocus);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("focus", handleFocus);
+      }
+    };
+  }, [refreshNotifications, user?.id]);
 
   // Écouter les Push notifications FCM en premier plan
   useEffect(() => {
