@@ -297,13 +297,19 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
   useEffect(() => {
     const checkSubscription = async () => {
       try {
-        if (!userId) {
+        if (!userId || !vendorId) {
           setIsLoading(false);
           return;
         }
-        const response = await api.get(`/customer/user/${userId}`);
-        setCustomer(response.data.data);
-        setIsSubscribed(response.data.data || false);
+        const response = await api.get(`/customer/user/${userId}/vendor/${vendorId}`);
+        const custData = response.data?.data ?? response.data;
+        if (custData && custData.id) {
+          setCustomer(custData);
+          setIsSubscribed(true);
+        } else {
+          setCustomer(undefined);
+          setIsSubscribed(false);
+        }
       } catch (error) {
         console.error("Erreur lors de la vérification:", error);
         setIsSubscribed(false);
@@ -322,10 +328,11 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
     }
     setIsLoading(true);
     try {
-      if (isSubscribed) {
+      if (isSubscribed && customerId) {
         const response = await api.delete(`/customer/${customerId}`);
-        if (response.status === 200) {
+        if (response.status === 200 || response.status === 204) {
           setIsSubscribed(false);
+          setCustomer(undefined);
           toast.success("Désabonnement réussi");
         }
       } else {
@@ -336,6 +343,8 @@ const SubscribeButton = ({ vendorId }: SubscribeButtonProps) => {
         };
         const response = await api.post("/customer", clientData);
         if (response.status === 201 || response.status === 200) {
+          const createdCust = response.data?.data || response.data;
+          setCustomer(createdCust);
           setIsSubscribed(true);
           toast.success("Abonnement réussi ! 🎉");
           const formData = {
