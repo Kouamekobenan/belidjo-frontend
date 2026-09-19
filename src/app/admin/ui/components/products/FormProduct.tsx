@@ -1,5 +1,7 @@
 "use client";
+
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import Image from "next/image";
 import {
   initialFormData,
   IProductToEdit,
@@ -11,7 +13,6 @@ import {
   DollarSign,
   Hash,
   FileText,
-  Tag,
   Upload,
   X,
   Check,
@@ -21,13 +22,13 @@ import {
   ChevronRight,
   Sparkles,
   RefreshCw,
+  Eye,
+  ShoppingBag,
+  Tag,
+  Store,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Category } from "@/app/categories/domain/entities/category.entity";
-
-// ============================================
-// INTERFACES
-// ============================================
 
 interface ProductFormProps {
   productToEdit?: IProductToEdit;
@@ -38,10 +39,6 @@ interface ProductFormProps {
   suggestedName?: string;
 }
 
-// ============================================
-// COMPOSANT PRINCIPAL
-// ============================================
-
 export default function ProductForm({
   productToEdit,
   onSubmit,
@@ -50,62 +47,22 @@ export default function ProductForm({
   onCategoryChange,
   suggestedName,
 }: ProductFormProps) {
-  // États
   const [formData, setFormData] = useState<CreateProductDto>(initialFormData);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<
-    Record<string, string>
-  >({});
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [isDragOver, setIsDragOver] = useState(false);
 
-  // États pour la navigation dans l'arbre
+  // Arbre de catégories (Parent / Enfant)
   const [selectedParent, setSelectedParent] = useState<Category | null>(null);
   const [selectedChild, setSelectedChild] = useState<Category | null>(null);
 
-  // États pour tracker les modifications manuelles
   const [hasUserEditedName, setHasUserEditedName] = useState(false);
-  const [hasUserEditedDescription, setHasUserEditedDescription] =
-    useState(false);
+  const [hasUserEditedDescription, setHasUserEditedDescription] = useState(false);
 
-  // Effet pour auto-compléter le nom et la description depuis la catégorie sélectionnée
-  useEffect(() => {
-    if (selectedChild) {
-      // Auto-compléter le nom si l'utilisateur ne l'a pas modifié
-      if (!hasUserEditedName) {
-        const generatedName = generateProductName(
-          selectedParent,
-          selectedChild,
-        );
-        setFormData((prev) => ({ ...prev, name: generatedName }));
-      }
-
-      // Auto-compléter la description si l'utilisateur ne l'a pas modifiée
-      if (!hasUserEditedDescription && selectedChild.description) {
-        setFormData((prev) => ({
-          ...prev,
-          description: selectedChild.description || "",
-        }));
-      }
-    }
-  }, [
-    selectedChild,
-    selectedParent,
-    hasUserEditedName,
-    hasUserEditedDescription,
-  ]);
-
-  // Effet pour l'autocomplétion externe (si le parent passe un nom suggéré)
-  useEffect(() => {
-    if (
-      suggestedName &&
-      !hasUserEditedName &&
-      (!formData.name || formData.name === "")
-    ) {
-      setFormData((prev) => ({ ...prev, name: suggestedName }));
-    }
-  }, [suggestedName, hasUserEditedName]);
+  // Mode Édition ou Création
+  const isEditMode = !!productToEdit;
 
   // Charger les données en mode modification
   useEffect(() => {
@@ -123,11 +80,7 @@ export default function ProductForm({
       setHasUserEditedName(true);
       setHasUserEditedDescription(true);
 
-      // Restaurer la sélection de catégorie
-      const category = findCategoryById(
-        productToEdit.categoryId,
-        availableCategories,
-      );
+      const category = findCategoryById(productToEdit.categoryId, availableCategories);
       if (category) {
         const parent = findParentCategory(category.id, availableCategories);
         setSelectedParent(parent);
@@ -136,23 +89,18 @@ export default function ProductForm({
     }
   }, [productToEdit]);
 
-  // Fonction pour générer un nom de produit basé sur les catégories
-  const generateProductName = (
-    parent: Category | null,
-    child: Category,
-  ): string => {
-    if (!parent) return child.name;
-    return `${child.name} ${parent.name}`;
-  };
+  // Saisie suggérée externe
+  useEffect(() => {
+    if (suggestedName && !hasUserEditedName && (!formData.name || formData.name === "")) {
+      setFormData((prev) => ({ ...prev, name: suggestedName }));
+    }
+  }, [suggestedName, hasUserEditedName]);
 
-  // Fonction pour trouver une catégorie par ID
-  const findCategoryById = (
-    id: string,
-    categories: Category[],
-  ): Category | null => {
-    for (const cat of categories) {
+  // Recherche de catégorie dans l'arbre
+  const findCategoryById = (id: string, list: Category[]): Category | null => {
+    for (const cat of list) {
       if (cat.id === id) return cat;
-      if (cat.children) {
+      if (cat.children && cat.children.length > 0) {
         const found = findCategoryById(id, cat.children);
         if (found) return found;
       }
@@ -160,492 +108,509 @@ export default function ProductForm({
     return null;
   };
 
-  // Fonction pour trouver le parent d'une catégorie
-  const findParentCategory = (
-    childId: string,
-    categories: Category[],
-  ): Category | null => {
-    for (const cat of categories) {
-      if (cat.children?.some((c) => c.id === childId)) {
+  const findParentCategory = (childId: string, list: Category[]): Category | null => {
+    for (const cat of list) {
+      if (cat.children && cat.children.some((c) => c.id === childId)) {
         return cat;
+      }
+      if (cat.children && cat.children.length > 0) {
+        const found = findParentCategory(childId, cat.children);
+        if (found) return found;
       }
     }
     return null;
   };
 
-  // Gestion des changements de champs
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value, type } = e.target;
-
-    // Marquer que l'utilisateur a édité manuellement
-    if (name === "name") {
-      setHasUserEditedName(true);
-    }
-    if (name === "description") {
-      setHasUserEditedDescription(true);
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "number" ? parseFloat(value) || 0 : value,
-    }));
-    setValidationErrors((prev) => {
-      const { [name]: _, ...rest } = prev;
-      return rest;
-    });
+  // Auto-génération de nom basé sur les catégories
+  const generateProductName = (parent: Category | null, child: Category): string => {
+    if (!parent) return child.name;
+    return `${child.name} - ${parent.name}`;
   };
 
-  // Réinitialiser le nom pour revoir l'auto-complétion
-  const resetNameToAutoComplete = () => {
-    if (selectedChild) {
-      const generatedName = generateProductName(selectedParent, selectedChild);
+  // Sélection d'une catégorie parente
+  const handleParentSelect = (parent: Category) => {
+    setSelectedParent(parent);
+    setSelectedChild(null);
+    setFormData((prev) => ({ ...prev, categoryId: "" }));
+  };
+
+  // Sélection d'une sous-catégorie
+  const handleChildSelect = (child: Category) => {
+    setSelectedChild(child);
+    setFormData((prev) => ({ ...prev, categoryId: child.id }));
+
+    if (onCategoryChange) {
+      onCategoryChange(child);
+    }
+
+    if (!hasUserEditedName) {
+      const generatedName = generateProductName(selectedParent, child);
       setFormData((prev) => ({ ...prev, name: generatedName }));
-      setHasUserEditedName(false);
-      toast.success("Nom réinitialisé avec la suggestion", { icon: "✨" });
+    }
+
+    if (!hasUserEditedDescription && child.description) {
+      setFormData((prev) => ({ ...prev, description: child.description || "" }));
     }
   };
 
-  // Réinitialiser la description pour revoir l'auto-complétion
-  const resetDescriptionToAutoComplete = () => {
-    if (selectedChild && selectedChild.description) {
-      setFormData((prev) => ({
-        ...prev,
-        description: selectedChild.description || "",
-      }));
-      setHasUserEditedDescription(false);
-      toast.success("Description réinitialisée avec celle de la catégorie", {
-        icon: "✨",
-      });
-    }
-  };
+  // Changements de champs texte/nombre
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
 
-  // Gestion de la sélection de catégorie
-  const handleSelectCategory = (cat: Category, isParent: boolean) => {
-    if (isParent) {
-      // Si on change de parent et qu'une sous-catégorie était déjà sélectionnée
-      if (selectedParent?.id !== cat.id) {
-        setSelectedParent(cat);
-        setSelectedChild(null);
-        setFormData((prev) => ({ ...prev, categoryId: "" }));
-        setHasUserEditedName(false);
-        setHasUserEditedDescription(false);
-      } else {
-        setSelectedParent(cat);
-      }
-    } else {
-      // Sélection d'une sous-catégorie
-      setSelectedChild(cat);
-      setFormData((prev) => ({ ...prev, categoryId: cat.id }));
+    if (name === "name") setHasUserEditedName(true);
+    if (name === "description") setHasUserEditedDescription(true);
 
-      // Déclencher l'événement de changement de catégorie
-      if (onCategoryChange) onCategoryChange(cat);
-
-      // L'auto-complétion se fera via useEffect
+    let parsedValue: any = value;
+    if (name === "price" || name === "quantity") {
+      parsedValue = value === "" ? 0 : Math.max(0, parseFloat(value) || 0);
     }
 
-    setValidationErrors((prev) => {
-      const { categoryId, ...rest } = prev;
-      return rest;
-    });
+    setFormData((prev) => ({ ...prev, [name]: parsedValue }));
+
+    if (validationErrors[name]) {
+      setValidationErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   // Gestion de l'image
-  const processImageFile = (file: File | null) => {
-    setValidationErrors((prev) => {
-      const { image, ...rest } = prev;
-      return rest;
-    });
-    if (!file) {
-      setImageFile(null);
+  const handleFileChange = (file: File | null) => {
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Veuillez sélectionner un fichier image valide (JPG, PNG, WEBP).");
       return;
     }
-    const validImageTypes = [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/webp",
-    ];
-    if (!validImageTypes.includes(file.type)) {
-      setValidationErrors((prev) => ({
-        ...prev,
-        image: "Format non supporté",
-      }));
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("L'image ne doit pas dépasser 2 Mo.");
       return;
     }
+
     setImageFile(file);
     const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result as string);
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
     reader.readAsDataURL(file);
-  };
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) =>
-    processImageFile(e.target.files?.[0] || null);
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = () => setIsDragOver(false);
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file?.type.startsWith("image/")) processImageFile(file);
   };
 
   const removeImage = () => {
     setImageFile(null);
     setImagePreview("");
+    setFormData((prev) => ({ ...prev, imageUrl: "" }));
   };
 
+  // Validation
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
-    if (!formData.name.trim()) errors.name = "Le nom est obligatoire";
-    if (!formData.description.trim())
-      errors.description = "La description est obligatoire";
-    if (!formData.categoryId)
-      errors.categoryId = "Veuillez choisir une catégorie";
-    if (formData.price <= 0) errors.price = "Le prix doit être > 0";
+
+    if (!formData.name.trim()) errors.name = "Le nom du produit est obligatoire.";
+    if (!formData.categoryId) errors.categoryId = "Veuillez sélectionner une sous-catégorie.";
+    if (formData.price <= 0) errors.price = "Le prix doit être supérieur à 0 FCFA.";
+    if (formData.quantity < 0) errors.quantity = "La quantité ne peut pas être négative.";
+
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  const internalHandleSubmit = async (e: FormEvent) => {
+  // Soumission
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+
+    if (!validateForm()) {
+      toast.error("Veuillez corriger les erreurs dans le formulaire.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       await onSubmit(formData, imageFile);
-    } catch (error) {
-      toast.error("Erreur d'enregistrement");
+    } catch (err) {
+      console.error("Erreur de soumission:", err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <button
-          onClick={onCancel}
-          className="flex items-center text-gray-600 mb-6 hover:text-black transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" /> Retour
-        </button>
+    <div className="bg-slate-50/60 p-4 sm:p-6 lg:p-8 font-sans">
+      <div className="max-w-7xl mx-auto">
 
-        <form onSubmit={internalHandleSubmit} className="space-y-8">
-          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-            {/* ZONE IMAGE */}
-            <div className="p-8 border-b border-gray-100 bg-gray-50/50">
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <ImageIcon className="w-6 h-6 mr-2 text-green-600" /> Image du
-                produit
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="aspect-video md:aspect-square rounded-2xl bg-white border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden relative">
-                  {imagePreview ? (
-                    <>
-                      <img
-                        src={imagePreview}
-                        className="w-full h-full object-cover"
-                        alt="Preview"
-                      />
-                      <button
-                        type="button"
-                        onClick={removeImage}
-                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-colors"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </>
-                  ) : (
-                    <div className="text-gray-400 text-center p-4">
-                      <Upload className="w-12 h-12 mx-auto mb-2 opacity-20" />
-                      <p className="text-sm">Aucune image sélectionnée</p>
-                    </div>
-                  )}
-                </div>
-                <div
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center transition-colors ${isDragOver ? "border-green-500 bg-green-50" : "border-gray-200 bg-white"}`}
-                >
-                  <input
-                    type="file"
-                    id="img-input"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    accept="image/*"
-                  />
-                  <label
-                    htmlFor="img-input"
-                    className="cursor-pointer bg-green-600 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:bg-green-700 transition-all"
-                  >
-                    Choisir une photo
-                  </label>
-                  <p className="mt-4 text-xs text-gray-500 uppercase tracking-widest">
-                    PNG, JPG ou WEBP (Max 2Mo)
-                  </p>
-                </div>
-              </div>
-              {validationErrors.image && (
-                <p className="mt-2 text-red-500 text-sm flex items-center">
-                  <AlertCircle className="w-4 h-4 mr-1" />{" "}
-                  {validationErrors.image}
-                </p>
-              )}
+        {/* Header du formulaire */}
+        <div className="flex items-center justify-between gap-4 mb-8 bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onCancel}
+              type="button"
+              className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl transition-colors"
+              title="Retour"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900">
+                {isEditMode ? "Modifier le Produit" : "Ajouter un Nouveau Produit"}
+              </h1>
+              <p className="text-xs text-slate-500 font-medium mt-0.5">
+                {isEditMode
+                  ? "Mettez à jour les caractéristiques de l'article"
+                  : "Remplissez les détails pour le publier sur NoBoutik"}
+              </p>
             </div>
+          </div>
 
-            {/* SECTION CATEGORIE (TREE) */}
-            <div className="p-8 border-b border-gray-100">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-800 flex items-center">
-                  <Tag className="w-6 h-6 mr-2 text-green-600" /> Choisir la
-                  catégorie
-                </h2>
-                {selectedChild && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600 bg-green-50 px-4 py-2 rounded-full">
-                    <Check className="w-4 h-4 text-green-600" />
-                    <span className="font-medium">
-                      {selectedParent?.name} → {selectedChild.name}
-                    </span>
-                  </div>
-                )}
-              </div>
+          <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
+            <Sparkles className="w-3.5 h-3.5" />
+            {isEditMode ? "Mode Édition" : "Mode Création"}
+          </span>
+        </div>
 
-              <div className="space-y-6">
-                {/* Niveau 1: Racines */}
-                <div>
-                  <p className="text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">
-                    1. Catégorie principale
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    {availableCategories.map((cat) => (
-                      <button
-                        key={cat.id}
-                        type="button"
-                        onClick={() => handleSelectCategory(cat, true)}
-                        className={`px-6 py-3 rounded-2xl font-semibold transition-all border-2 ${selectedParent?.id === cat.id ? "bg-green-600 border-green-600 text-white shadow-lg scale-105" : "bg-white border-gray-100 text-gray-600 hover:border-green-200 hover:shadow-md"}`}
-                      >
-                        {cat.name}
-                        {selectedParent?.id === cat.id && (
-                          <ChevronRight className="w-4 h-4 ml-2 inline" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
+        {/* Grille principale Formulaire + Aperçu Storefront */}
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+          {/* Formulaire (Col span 8) */}
+          <div className="lg:col-span-8 space-y-6">
+
+            {/* 1. INFORMATIONS GÉNÉRALES */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
+                <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
+                  <Package className="w-4 h-4" />
                 </div>
-
-                {/* Niveau 2: Enfants */}
-                {selectedParent &&
-                  selectedParent.children &&
-                  selectedParent.children.length > 0 && (
-                    <div className="p-6 bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl animate-in slide-in-from-top-2 duration-300 border border-green-100">
-                      <p className="text-xs font-bold text-green-700 mb-4 uppercase tracking-wider flex items-center">
-                        <ChevronRight className="w-4 h-4 mr-1" />
-                        2. Sous-catégorie de {selectedParent.name}
-                      </p>
-                      <div className="flex flex-wrap gap-3">
-                        {selectedParent.children.map((sub) => (
-                          <button
-                            key={sub.id}
-                            type="button"
-                            onClick={() => handleSelectCategory(sub, false)}
-                            className={`flex items-center px-5 py-3 rounded-xl font-medium transition-all ${formData.categoryId === sub.id ? "bg-black text-white shadow-xl scale-105" : "bg-white text-gray-700 hover:shadow-md hover:scale-102 border border-gray-100"}`}
-                          >
-                            {sub.name}
-                            {formData.categoryId === sub.id && (
-                              <Check className="w-4 h-4 ml-2" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                {validationErrors.categoryId && (
-                  <p className="text-red-500 text-sm flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />{" "}
-                    {validationErrors.categoryId}
-                  </p>
-                )}
+                <h3 className="font-bold text-slate-900 text-base">Informations Générales</h3>
               </div>
-            </div>
 
-            {/* INFORMATIONS PRODUIT */}
-            <div className="p-8 space-y-6">
-              {/* Champ Nom avec option de réinitialisation */}
+              {/* Nom du produit */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold text-gray-700 ml-1">
-                    Nom de l'article *
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Nom du produit <span className="text-red-500">*</span>
                   </label>
-                  {hasUserEditedName && selectedChild && (
+                  {selectedChild && !hasUserEditedName && (
                     <button
                       type="button"
-                      onClick={resetNameToAutoComplete}
-                      className="text-xs text-green-600 hover:text-green-800 font-medium flex items-center gap-1 transition-colors"
+                      onClick={() => setHasUserEditedName(true)}
+                      className="text-[11px] font-bold text-green-600 hover:underline flex items-center gap-1"
                     >
-                      <RefreshCw className="w-3 h-3" />
-                      Réinitialiser
+                      <RefreshCw className="w-3 h-3" /> Nom auto-généré
                     </button>
                   )}
                 </div>
-                <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors">
-                    <Package className="w-5 h-5" />
-                  </div>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Ex: Pagne Bazin Riche"
-                    className={`w-full pl-12 pr-4 py-4 bg-white border-2 rounded-2xl focus:outline-none transition-all ${validationErrors.name ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-green-500 text-black shadow-sm hover:border-gray-200"}`}
-                  />
-                </div>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Ex: Sac en cuir artisanal Bondoukou"
+                  className={`w-full px-4 py-3 bg-slate-50 border ${
+                    validationErrors.name ? "border-red-500" : "border-slate-200"
+                  } rounded-2xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-green-600 focus:bg-white transition-all`}
+                />
                 {validationErrors.name && (
-                  <p className="text-red-500 text-xs font-medium ml-1">
-                    {validationErrors.name}
-                  </p>
+                  <p className="text-xs text-red-500 font-semibold">{validationErrors.name}</p>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <InputField
-                  label="Prix (FCFA)"
-                  name="price"
-                  type="number"
-                  value={formData.price}
-                  onChange={handleChange}
-                  icon={<DollarSign />}
-                  error={validationErrors.price}
-                  required
-                />
-                <InputField
-                  label="Stock disponible"
-                  name="quantity"
-                  type="number"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  icon={<Hash />}
-                  error={validationErrors.quantity}
-                  required
-                />
-              </div>
-
-              {/* Champ Description avec option de réinitialisation */}
+              {/* Description */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold text-gray-700 ml-1">
-                    Description détaillée *
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Description & Caractéristiques
                   </label>
-                  {hasUserEditedDescription &&
-                    selectedChild &&
-                    selectedChild.description && (
-                      <button
-                        type="button"
-                        onClick={resetDescriptionToAutoComplete}
-                        className="text-xs text-green-600 hover:text-green-800 font-medium flex items-center gap-1 transition-colors"
-                      >
-                        <RefreshCw className="w-3 h-3" />
-                        Réinitialiser
-                      </button>
-                    )}
+                  <span className="text-[11px] text-slate-400">
+                    {formData.description?.length || 0}/500 car.
+                  </span>
                 </div>
                 <textarea
                   name="description"
                   rows={4}
+                  maxLength={500}
                   value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Matière, taille, coloris..."
-                  className={`w-full p-4 bg-white border-2 rounded-2xl focus:outline-none transition-all resize-none ${validationErrors.description ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-green-500 text-black shadow-sm hover:border-gray-200"}`}
+                  onChange={handleInputChange}
+                  placeholder="Décrivez les atouts, la matière et les détails du produit..."
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-green-600 focus:bg-white transition-all"
                 />
-                <div className="flex justify-between px-1">
-                  {validationErrors.description ? (
-                    <p className="text-red-500 text-xs font-medium">
-                      {validationErrors.description}
-                    </p>
-                  ) : (
-                    <div />
+              </div>
+            </div>
+
+            {/* 2. CATÉGORIE ET CLASSIFICATION */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
+                <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+                  <Tag className="w-4 h-4" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-base">Catégorie du Produit</h3>
+              </div>
+
+              {/* Étape 1 : Sélection Catégorie Parente */}
+              <div className="space-y-3">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                  1. Choisissez une Catégorie Principale <span className="text-red-500">*</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {availableCategories.map((cat) => {
+                    const isSelected = selectedParent?.id === cat.id;
+                    return (
+                      <button
+                        type="button"
+                        key={cat.id}
+                        onClick={() => handleParentSelect(cat)}
+                        className={`px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 ${
+                          isSelected
+                            ? "bg-slate-900 text-white shadow-sm"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        <span>{cat.name}</span>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-green-400" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Étape 2 : Sélection Sous-catégorie */}
+              {selectedParent && selectedParent.children && selectedParent.children.length > 0 && (
+                <div className="space-y-3 pt-3 border-t border-slate-100 animate-in fade-in">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                    2. Choisissez une Sous-catégorie <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedParent.children.map((child) => {
+                      const isSelected = selectedChild?.id === child.id;
+                      return (
+                        <button
+                          type="button"
+                          key={child.id}
+                          onClick={() => handleChildSelect(child)}
+                          className={`px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 ${
+                            isSelected
+                              ? "bg-green-600 text-white shadow-md shadow-green-600/20"
+                              : "bg-green-50 text-green-800 border border-green-200 hover:bg-green-100"
+                          }`}
+                        >
+                          <span>{child.name}</span>
+                          {isSelected && <Check className="w-3.5 h-3.5" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {validationErrors.categoryId && (
+                <p className="text-xs text-red-500 font-semibold">{validationErrors.categoryId}</p>
+              )}
+            </div>
+
+            {/* 3. PRIX ET GESTION DU STOCK */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
+                <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
+                  <DollarSign className="w-4 h-4" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-base">Prix & Stock</h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* Prix en FCFA */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                    Prix de vente (FCFA) <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      name="price"
+                      min="0"
+                      value={formData.price || ""}
+                      onChange={handleInputChange}
+                      placeholder="0"
+                      className={`w-full pl-4 pr-16 py-3 bg-slate-50 border ${
+                        validationErrors.price ? "border-red-500" : "border-slate-200"
+                      } rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-green-600 focus:bg-white transition-all`}
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-green-600">
+                      FCFA
+                    </span>
+                  </div>
+                  {validationErrors.price && (
+                    <p className="text-xs text-red-500 font-semibold">{validationErrors.price}</p>
                   )}
-                  <p className="text-[10px] text-gray-400 font-bold uppercase">
-                    {formData.description.length} / 500
+                </div>
+
+                {/* Quantité en Stock */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                    Quantité en Stock <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="0"
+                    value={formData.quantity}
+                    onChange={handleInputChange}
+                    placeholder="1"
+                    className={`w-full px-4 py-3 bg-slate-50 border ${
+                      validationErrors.quantity ? "border-red-500" : "border-slate-200"
+                    } rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-green-600 focus:bg-white transition-all`}
+                  />
+                  {validationErrors.quantity && (
+                    <p className="text-xs text-red-500 font-semibold">{validationErrors.quantity}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* 4. PHOTO DU PRODUIT */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
+                <div className="w-8 h-8 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600">
+                  <ImageIcon className="w-4 h-4" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-base">Photo du Produit</h3>
+              </div>
+
+              {imagePreview ? (
+                <div className="relative w-full h-64 rounded-3xl overflow-hidden border border-slate-200 group">
+                  <Image src={imagePreview} alt="Aperçu" fill className="object-cover" />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute top-3 right-3 p-2 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg transition-transform transform group-hover:scale-110"
+                    title="Supprimer la photo"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragOver(true);
+                  }}
+                  onDragLeave={() => setIsDragOver(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragOver(false);
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleFileChange(e.dataTransfer.files[0]);
+                    }
+                  }}
+                  className={`border-2 border-dashed rounded-3xl p-8 text-center transition-all cursor-pointer ${
+                    isDragOver ? "border-green-600 bg-green-50/50" : "border-slate-200 hover:border-slate-400 bg-slate-50"
+                  }`}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => e.target.files && handleFileChange(e.target.files[0])}
+                    className="hidden"
+                    id="product-image-upload"
+                  />
+                  <label htmlFor="product-image-upload" className="cursor-pointer space-y-3 block">
+                    <div className="w-14 h-14 rounded-2xl bg-white shadow-md flex items-center justify-center mx-auto text-green-600">
+                      <Upload className="w-7 h-7" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-800">
+                        Glissez-déposez une image ou <span className="text-green-600 underline">parcourez</span>
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1">Formats acceptés : JPG, PNG, WEBP (Max 2 Mo)</p>
+                    </div>
+                  </label>
+                </div>
+              )}
+            </div>
+
+            {/* Boutons de soumission */}
+            <div className="flex items-center justify-end gap-4 pt-4">
+              <button
+                type="button"
+                onClick={onCancel}
+                disabled={isSubmitting}
+                className="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl text-xs transition-colors"
+              >
+                Annuler
+              </button>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-2xl text-xs shadow-lg shadow-green-600/20 hover:shadow-xl transition-all transform hover:-translate-y-0.5 disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Enregistrement...</span>
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4" />
+                    <span>{isEditMode ? "Enregistrer les modifications" : "Publier le produit"}</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+          </div>
+
+          {/* Aperçu en direct sur la boutique NoBoutik (Col span 4) */}
+          <div className="lg:col-span-4 space-y-6">
+            <div className="sticky top-6 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-4">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                <Eye className="w-4 h-4 text-green-600" />
+                <h3 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Aperçu Fiche Client</h3>
+              </div>
+
+              {/* Carte Produit Virtuelle */}
+              <div className="bg-slate-50 rounded-3xl p-4 border border-slate-200 space-y-3">
+                <div className="relative w-full h-48 rounded-2xl bg-slate-200 overflow-hidden">
+                  {imagePreview ? (
+                    <Image src={imagePreview} alt="Aperçu" fill className="object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-400">
+                      <ImageIcon className="w-10 h-10 mb-1" />
+                      <span className="text-[10px] font-bold">Photo du produit</span>
+                    </div>
+                  )}
+
+                  <span className="absolute top-2 right-2 px-2.5 py-1 bg-emerald-600 text-white font-bold text-[10px] rounded-full shadow-md">
+                    {formData.quantity > 0 ? `Stock: ${formData.quantity}` : "Épuisé"}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[10px] font-bold text-green-600 uppercase tracking-wider block">
+                    {selectedChild?.name || "Catégorie"}
+                  </span>
+                  <h4 className="font-extrabold text-slate-900 text-sm line-clamp-2">
+                    {formData.name || "Nom du produit"}
+                  </h4>
+                  <p className="text-[11px] text-slate-500 line-clamp-2 mt-1">
+                    {formData.description || "Description de l'article..."}
                   </p>
                 </div>
+
+                <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
+                  <span className="font-black text-slate-900 text-base">
+                    {formData.price > 0 ? `${formData.price.toLocaleString("fr-FR")} FCFA` : "Prix FCFA"}
+                  </span>
+
+                  <button type="button" disabled className="px-3 py-1.5 bg-green-600 text-white rounded-xl text-[10px] font-bold opacity-80">
+                    Acheter
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-3 bg-green-50 rounded-2xl border border-green-100 text-[11px] text-green-800 font-medium">
+                💡 Cet aperçu montre exactement comment votre produit sera affiché auprès des clients sur NoBoutik.
               </div>
             </div>
           </div>
 
-          {/* ACTIONS */}
-          <div className="flex flex-col-reverse sm:flex-row justify-end gap-4">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="px-8 py-4 text-gray-500 font-bold hover:text-black transition-colors"
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-green-600 text-white px-10 py-4 rounded-2xl font-bold shadow-2xl hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[200px] transition-all"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="animate-spin mr-2 w-5 h-5" />
-                  Enregistrement...
-                </>
-              ) : (
-                <>
-                  <Check className="mr-2 w-5 h-5" />
-                  {productToEdit ? "Mettre à jour" : "Mettre en vente"}
-                </>
-              )}
-            </button>
-          </div>
         </form>
       </div>
     </div>
   );
 }
-
-// ============================================
-// COMPOSANTS RÉUTILISABLES
-// ============================================
-
-const InputField: React.FC<any> = ({
-  label,
-  name,
-  value,
-  onChange,
-  error,
-  type = "text",
-  placeholder,
-  icon,
-  required,
-}) => (
-  <div className="space-y-2">
-    <label className="text-sm font-bold text-gray-700 ml-1">
-      {label} {required && "*"}
-    </label>
-    <div className="relative group">
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors">
-        {icon}
-      </div>
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className={`w-full pl-12 pr-4 py-4 bg-white border-2 rounded-2xl focus:outline-none transition-all ${error ? "border-red-200 bg-red-50 focus:border-red-500" : "border-gray-100 focus:border-green-500 text-black shadow-sm hover:border-gray-200"}`}
-      />
-    </div>
-    {error && <p className="text-red-500 text-xs font-medium ml-1">{error}</p>}
-  </div>
-);

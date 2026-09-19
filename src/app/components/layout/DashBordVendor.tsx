@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -18,9 +20,11 @@ import {
   Home,
   Clock,
   Sparkles,
-  Video, // ✅ Ajout de l'icône Video
+  Video,
+  Store,
+  ExternalLink,
 } from "lucide-react";
-import { IvendorProfile, User as VendorProfile } from "@/app/lib/globals.type";
+import { IvendorProfile } from "@/app/lib/globals.type";
 
 interface NavbarDashbordVendorProps {
   id?: string;
@@ -40,10 +44,9 @@ export default function NavbarDashbordVendor({
 }: NavbarDashbordVendorProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showTrialBanner, setShowTrialBanner] = useState(true);
   const pathname = usePathname();
 
-  const Url = `/products/ui/page/${vendorProfile?.id}`;
+  const publicStoreUrl = `/products/ui/page/${vendorProfile?.id}`;
   const imageLogo = vendorProfile?.logoUrl ?? "/images/bj.png";
 
   const menuItems = [
@@ -55,469 +58,321 @@ export default function NavbarDashbordVendor({
     },
     {
       href: "/admin/products",
-      label: "Produits",
+      label: "Gestion des Produits",
       shortLabel: "Produits",
       icon: Package,
     },
     {
       href: "/admin/categories",
-      label: "Catégories produits",
+      label: "Catégories",
       shortLabel: "Catégories",
       icon: AlignVerticalDistributeEnd,
     },
     {
       href: "/admin/customer",
-      label: "Mes abonnés",
+      label: "Mes Abonnés & Clients",
       shortLabel: "Clients",
       icon: Users,
     },
     {
       href: "/admin/template/page",
-      label: "Créateur de vidéos",
+      label: "Créateur de Vidéos",
       shortLabel: "Vidéos",
-      icon: Video, // ✅ Icône mise à jour
+      icon: Video,
     },
   ];
 
-  // Fonction pour vérifier si un lien est actif
   const isActive = (href: string) => {
     return pathname === href || pathname?.startsWith(href + "/");
   };
 
   return (
     <>
-      {/* Sidebar Desktop */}
+      {/* ========================================================================= */}
+      {/* SIDEBAR DESKTOP PRO (Modern Slate Layout) */}
+      {/* ========================================================================= */}
       <aside
-        className={`hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white transition-all duration-300 ease-in-out z-40 shadow-2xl ${
+        className={`hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-slate-950 text-slate-300 transition-all duration-300 ease-in-out z-40 shadow-2xl border-r border-slate-800/80 ${
           isCollapsed ? "w-20" : "w-72"
         }`}
       >
-        {/* En-tête avec Logo */}
-        <div className="p-4 border-b border-gray-700">
+        {/* En-tête avec Logo et Nom Boutique */}
+        <div className="p-4 border-b border-slate-800/80">
           <div className="flex items-center justify-between">
-            <Link href={Url} className="flex items-center gap-3">
-              <div className="relative w-12 h-12 flex-shrink-0 rounded-full overflow-hidden bg-white p-1 shadow-lg">
+            <Link href={publicStoreUrl} className="flex items-center gap-3 group overflow-hidden">
+              <div className="relative w-11 h-11 flex-shrink-0 rounded-2xl overflow-hidden bg-white p-1 shadow-md border border-slate-700">
                 <Image
                   src={imageLogo}
                   fill
                   alt={`Logo ${name}`}
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
               {!isCollapsed && (
                 <div className="overflow-hidden">
-                  <h1 className="text-lg font-bold text-white truncate">
-                    {vendorProfile?.name}
+                  <h1 className="text-sm font-black text-white truncate group-hover:text-green-400 transition-colors">
+                    {vendorProfile?.name || name}
                   </h1>
-                  <p className="text-xs text-gray-400 truncate">
-                    Espace vendeur
+                  <p className="text-[11px] font-semibold text-green-400 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span>Espace Marchand</span>
                   </p>
                 </div>
               )}
             </Link>
 
-            {/* Bouton de collapse */}
+            {/* Bouton de réduction / affichage */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl transition-colors shrink-0"
               aria-label={isCollapsed ? "Étendre" : "Réduire"}
             >
-              {isCollapsed ? (
-                <ChevronRight className="w-5 h-5" />
-              ) : (
-                <ChevronLeft className="w-5 h-5" />
-              )}
+              {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Badge essai gratuit dans sidebar (version collapsed) */}
+        {/* Banner statut & essai gratuit */}
         {!isCollapsed && (
-          <div className="mx-3 mt-4 mb-2 bg-gradient-to-r from-amber-600/20 to-orange-600/20 border border-amber-500/30 rounded-lg p-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="w-4 h-4 text-amber-400" />
-              <span className="text-xs font-bold text-amber-400">
-                ESSAI GRATUIT
+          <div className="mx-3 mt-4 mb-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-2xl p-3.5">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5 text-amber-400">
+                <Clock className="w-4 h-4" />
+                <span className="text-[11px] font-black uppercase tracking-wider">Compte Vendeur</span>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">
+                Actif
               </span>
             </div>
-            <p className="text-xs text-gray-300 mb-3">
-              {trialDaysRemaining} jours restants pour profiter de toutes les
-              fonctionnalités
+            <p className="text-[11px] text-slate-300 mb-2">
+              {trialDaysRemaining} jours restants dans votre abonnement
             </p>
-            <Link href="#">
-              <button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-semibold py-2 rounded-lg transition-all">
-                Passer à Premium
+            <Link href={publicStoreUrl} target="_blank">
+              <button className="w-full bg-slate-900 hover:bg-green-600 text-white text-[11px] font-bold py-2 rounded-xl transition-all border border-slate-700 flex items-center justify-center gap-1">
+                <span>Voir ma boutique</span>
+                <ExternalLink className="w-3 h-3" />
               </button>
             </Link>
           </div>
         )}
 
-        {/* Menu de navigation */}
-        <nav className="flex-1 py-6 overflow-y-auto">
-          <div className="space-y-2 px-3">
-            {menuItems.map((item) => (
+        {/* Navigation principale */}
+        <nav className="flex-1 py-4 overflow-y-auto space-y-1 px-3">
+          {menuItems.map((item) => {
+            const active = isActive(item.href);
+            return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
-                  isActive(item.href)
-                    ? "bg-green-600 text-white"
-                    : "hover:bg-green-600 text-gray-300"
+                className={`flex items-center gap-3 px-3.5 py-3 rounded-2xl transition-all duration-200 group ${
+                  active
+                    ? "bg-green-600 text-white font-bold shadow-lg shadow-green-600/30"
+                    : "hover:bg-slate-900 text-slate-400 hover:text-white"
                 }`}
+                title={isCollapsed ? item.label : undefined}
               >
                 <item.icon
                   className={`w-5 h-5 flex-shrink-0 ${
-                    isActive(item.href)
-                      ? "text-white"
-                      : "text-gray-300 group-hover:text-white"
+                    active ? "text-white" : "text-slate-400 group-hover:text-green-400"
                   }`}
                 />
                 {!isCollapsed && (
-                  <span
-                    className={`text-sm font-medium ${
-                      isActive(item.href)
-                        ? "text-white"
-                        : "text-gray-300 group-hover:text-white"
-                    }`}
-                  >
-                    {item.label}
-                  </span>
+                  <span className="text-xs font-semibold truncate">{item.label}</span>
                 )}
               </Link>
-            ))}
+            );
+          })}
 
-            {/* Paramètres */}
-            <Link
-              href="/admin/parametre"
-              className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
-                isActive("/admin/parametre")
-                  ? "bg-green-600 text-white"
-                  : "hover:bg-green-600 text-gray-300"
+          {/* Paramètres */}
+          <Link
+            href="/admin/parametre"
+            className={`flex items-center gap-3 px-3.5 py-3 rounded-2xl transition-all duration-200 group ${
+              isActive("/admin/parametre")
+                ? "bg-green-600 text-white font-bold shadow-lg shadow-green-600/30"
+                : "hover:bg-slate-900 text-slate-400 hover:text-white"
+            }`}
+            title={isCollapsed ? "Paramètres" : undefined}
+          >
+            <Settings
+              className={`w-5 h-5 flex-shrink-0 ${
+                isActive("/admin/parametre") ? "text-white" : "text-slate-400 group-hover:text-green-400"
               }`}
-            >
-              <Settings
-                className={`w-5 h-5 flex-shrink-0 ${
-                  isActive("/admin/parametre")
-                    ? "text-white"
-                    : "text-gray-300 group-hover:text-white"
-                }`}
-              />
-              {!isCollapsed && (
-                <span
-                  className={`text-sm font-medium ${
-                    isActive("/admin/parametre")
-                      ? "text-white"
-                      : "text-gray-300 group-hover:text-white"
-                  }`}
-                >
-                  Paramètre
-                </span>
-              )}
-            </Link>
-          </div>
+            />
+            {!isCollapsed && <span className="text-xs font-semibold truncate">Paramètres</span>}
+          </Link>
         </nav>
 
-        {/* Informations du vendeur */}
-        <div className="p-4 border-t border-gray-700 bg-gray-800/50">
+        {/* Footer informations vendeur */}
+        <div className="p-4 border-t border-slate-800/80 bg-slate-900/50">
           {!isCollapsed ? (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-sm">
-                <User className="w-4 h-4 text-green-400 flex-shrink-0" />
-                <span className="text-gray-300 truncate">{name}</span>
+            <div className="space-y-2 text-xs text-slate-400">
+              <div className="flex items-center gap-2 truncate">
+                <User className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                <span className="font-semibold text-white truncate">{name}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Phone className="w-4 h-4 text-green-400 flex-shrink-0" />
-                <span className="text-gray-300">{phone}</span>
+              <div className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                <span>{phone}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <MapPin className="w-4 h-4 text-green-400 flex-shrink-0" />
-                <span className="text-gray-300 truncate">
-                  {cityName}, Côte d&apos;Ivoire
-                </span>
+              <div className="flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                <span className="truncate">{cityName || "Bondoukou"}, CI</span>
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-3">
-              <User className="w-5 h-5 text-green-400" />
-              <Phone className="w-5 h-5 text-green-400" />
-              <MapPin className="w-5 h-5 text-green-400" />
+            <div className="flex flex-col items-center gap-2">
+              <User className="w-4 h-4 text-green-400" />
             </div>
           )}
         </div>
       </aside>
 
-      {/* Header Mobile */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-gray-900 to-gray-800 text-white shadow-xl">
+      {/* ========================================================================= */}
+      {/* HEADER MOBILE (Haut de page) */}
+      {/* ========================================================================= */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-slate-950 text-white border-b border-slate-800/80 shadow-md">
         <div className="flex items-center justify-between px-4 py-3">
-          {/* Logo et nom */}
-          <Link href={Url} className="flex items-center gap-3">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white p-1 shadow-lg">
-              <Image
-                src={imageLogo}
-                fill
-                alt={`Logo ${name}`}
-                className="object-cover"
-              />
+          <Link href={publicStoreUrl} className="flex items-center gap-3">
+            <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-white p-0.5 border border-slate-700">
+              <Image src={imageLogo} fill alt={`Logo ${name}`} className="object-contain" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-white truncate max-w-[180px]">
-                {vendorProfile?.name}
+              <h1 className="text-sm font-bold text-white truncate max-w-[160px]">
+                {vendorProfile?.name || name}
               </h1>
-              <p className="text-xs text-gray-400">Espace vendeur</p>
+              <p className="text-[10px] text-green-400 font-semibold">NoBoutik Marchand</p>
             </div>
           </Link>
 
-          {/* Bouton Paramètres */}
           <Link href="/admin/parametre">
-            <button
-              className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-              aria-label="Paramètres"
-            >
-              <Settings className="w-6 h-6" />
+            <button className="p-2 hover:bg-slate-800 rounded-xl text-slate-300 transition-colors">
+              <Settings className="w-5 h-5" />
             </button>
           </Link>
         </div>
       </div>
 
-      {/* Navigation Mobile Bottom - Style App */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-gray-900 to-gray-800 border-t border-gray-700 shadow-2xl">
+      {/* ========================================================================= */}
+      {/* BARRE DE NAVIGATION MOBILE BOTTOM (Style App Native iOS/Android) */}
+      {/* ========================================================================= */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950 border-t border-slate-800/80 shadow-2xl">
         <div className="grid grid-cols-5 h-16">
-          {/* Dashboard */}
+          
           <Link
             href="/admin/ui"
-            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
-              isActive("/admin/ui")
-                ? "text-green-400"
-                : "text-gray-400 hover:text-green-300"
+            className={`flex flex-col items-center justify-center space-y-1 relative transition-all ${
+              isActive("/admin/ui") ? "text-green-400 font-bold" : "text-slate-400 hover:text-white"
             }`}
           >
-            <LayoutDashboard className="w-6 h-6" />
-            <span className="text-[10px] font-medium">Dashboard</span>
+            <LayoutDashboard className="w-5 h-5" />
+            <span className="text-[10px]">Dashboard</span>
             {isActive("/admin/ui") && (
-              <div className="absolute bottom-0 w-12 h-1 bg-green-400 rounded-t-full" />
+              <div className="absolute bottom-0 w-8 h-1 bg-green-500 rounded-t-full" />
             )}
           </Link>
 
-          {/* Produits */}
           <Link
             href="/admin/products"
-            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
-              isActive("/admin/products")
-                ? "text-green-400"
-                : "text-gray-400 hover:text-green-300"
+            className={`flex flex-col items-center justify-center space-y-1 relative transition-all ${
+              isActive("/admin/products") ? "text-green-400 font-bold" : "text-slate-400 hover:text-white"
             }`}
           >
-            <Package className="w-6 h-6" />
-            <span className="text-[10px] font-medium">Produits</span>
+            <Package className="w-5 h-5" />
+            <span className="text-[10px]">Produits</span>
             {isActive("/admin/products") && (
-              <div className="absolute bottom-0 w-12 h-1 bg-green-400 rounded-t-full" />
+              <div className="absolute bottom-0 w-8 h-1 bg-green-500 rounded-t-full" />
             )}
           </Link>
 
-          {/* ✅ Créateur de vidéos */}
           <Link
             href="/admin/template/page"
-            className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative ${
-              isActive("/admin/template/page")
-                ? "text-green-400"
-                : "text-gray-400 hover:text-green-300"
+            className={`flex flex-col items-center justify-center space-y-1 relative transition-all ${
+              isActive("/admin/template/page") ? "text-green-400 font-bold" : "text-slate-400 hover:text-white"
             }`}
           >
-            <Video className="w-6 h-6" />
-            <span className="text-[10px] font-medium">Vidéos</span>
+            <Video className="w-5 h-5" />
+            <span className="text-[10px]">Vidéos</span>
             {isActive("/admin/template/page") && (
-              <div className="absolute bottom-0 w-12 h-1 bg-green-400 rounded-t-full" />
+              <div className="absolute bottom-0 w-8 h-1 bg-green-500 rounded-t-full" />
             )}
           </Link>
 
-          {/* Voir ma boutique */}
           <Link
-            href={Url}
-            className="flex flex-col items-center justify-center space-y-1 transition-all duration-200 relative text-gray-400 hover:text-green-300"
+            href={publicStoreUrl}
+            target="_blank"
+            className="flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-white transition-all"
           >
-            <Home className="w-6 h-6" />
-            <span className="text-[10px] font-medium">Boutique</span>
+            <Store className="w-5 h-5" />
+            <span className="text-[10px]">Boutique</span>
           </Link>
 
-          {/* Menu / Profil */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-green-300 transition-all duration-200"
+            className="flex flex-col items-center justify-center space-y-1 text-slate-400 hover:text-white transition-all"
           >
-            <Menu className="w-6 h-6" />
-            <span className="text-[10px] font-medium">Menu</span>
+            <Menu className="w-5 h-5" />
+            <span className="text-[10px]">Menu</span>
           </button>
         </div>
       </nav>
 
       {/* Modal Menu Mobile */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/60 animate-in fade-in duration-200">
-          <div className="absolute bottom-16 left-0 right-0 bg-gradient-to-t from-gray-900 to-gray-800 rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-300 max-h-[70vh] overflow-y-auto">
-            {/* Header du modal */}
-            <div className="sticky top-0 bg-gray-900 border-b border-gray-700 px-4 py-4 flex items-center justify-between rounded-t-3xl">
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/70 animate-in fade-in">
+          <div className="absolute bottom-16 left-0 right-0 bg-slate-900 rounded-t-3xl border-t border-slate-800 shadow-2xl p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-white p-1">
-                  <Image
-                    src={imageLogo}
-                    fill
-                    alt={`Logo ${name}`}
-                    className="object-cover"
-                  />
+                <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-white p-0.5">
+                  <Image src={imageLogo} fill alt={`Logo ${name}`} className="object-contain" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">
-                    {vendorProfile?.name}
-                  </h3>
-                  <p className="text-xs text-gray-400">Mon profil vendeur</p>
+                  <h3 className="text-sm font-bold text-white">{vendorProfile?.name || name}</h3>
+                  <p className="text-xs text-slate-400">Paramètres & Actions</p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 hover:bg-gray-700 rounded-full transition-colors"
-              >
-                <X className="w-6 h-6 text-gray-400" />
+              <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 bg-slate-800 rounded-full text-slate-400">
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="px-4 py-6 space-y-4">
-              {/* Notification essai gratuit dans le modal */}
-              <div className="bg-gradient-to-br from-amber-600/20 to-orange-600/20 border border-amber-500/30 rounded-xl p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="bg-amber-500/20 p-2 rounded-full">
-                    <Sparkles className="w-5 h-5 text-amber-400" />
+            <div className="space-y-2 pt-2">
+              <Link href="/admin/parametre" onClick={() => setIsMobileMenuOpen(false)}>
+                <div className="p-3.5 bg-slate-800 hover:bg-slate-700 rounded-2xl text-white font-bold text-xs flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Settings className="w-5 h-5 text-green-400" />
+                    <span>Paramètres Boutique</span>
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-amber-400">
-                      Essai gratuit actif
-                    </p>
-                    <p className="text-xs text-gray-300">
-                      {trialDaysRemaining} jours restants
-                    </p>
-                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
                 </div>
-                <Link
-                  href="/admin/subscription"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <button className="w-full mt-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-sm font-semibold py-3 rounded-lg transition-all">
-                    Passer à Premium
-                  </button>
-                </Link>
-              </div>
+              </Link>
 
-              {/* Informations vendeur */}
-              <div className="bg-gradient-to-br from-green-900/30 to-green-800/20 rounded-xl p-4 border border-green-700/30">
-                <p className="text-xs font-semibold text-green-300 mb-3 uppercase tracking-wide">
-                  Informations vendeur
-                </p>
-                <div className="space-y-3">
+              <Link href="/admin/categories" onClick={() => setIsMobileMenuOpen(false)}>
+                <div className="p-3.5 bg-slate-800 hover:bg-slate-700 rounded-2xl text-white font-bold text-xs flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
-                      <User className="w-5 h-5 text-green-400" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400">Nom</p>
-                      <p className="text-sm text-white font-medium">{name}</p>
-                    </div>
+                    <AlignVerticalDistributeEnd className="w-5 h-5 text-blue-400" />
+                    <span>Catégories Produits</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
-                      <Phone className="w-5 h-5 text-green-400" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400">Téléphone</p>
-                      <p className="text-sm text-white font-medium">{phone}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-green-400" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-400">Localisation</p>
-                      <p className="text-sm text-white font-medium">
-                        {cityName}, Côte d&apos;Ivoire
-                      </p>
-                    </div>
-                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
                 </div>
-              </div>
+              </Link>
 
-              {/* Actions rapides */}
-              <div className="space-y-2">
-                <p className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wide">
-                  Actions rapides
-                </p>
-
-                {/* ✅ Créateur de vidéos (NOUVEAU) */}
-                <Link
-                  href="/admin/template/page"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <button className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl shadow-lg transition-all duration-200 font-medium">
-                    <div className="flex items-center gap-3">
-                      <Video className="w-5 h-5" />
-                      <span>Créateur de vidéos</span>
-                    </div>
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </Link>
-
-                {/* Mes abonnés */}
-                <Link
-                  href="/admin/customer"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <button className="w-full flex items-center justify-between px-4 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-xl shadow-lg transition-all duration-200 font-medium">
-                    <div className="flex items-center gap-3">
-                      <Users className="w-5 h-5" />
-                      <span>Mes abonnés</span>
-                    </div>
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </Link>
-
-                {/* Catégories (déplacé ici depuis bottom nav) */}
-                <Link
-                  href="/admin/categories"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <button className="w-full flex items-center justify-between px-4 py-4 bg-gray-700/50 hover:bg-gray-700 text-white rounded-xl transition-all duration-200 font-medium">
-                    <div className="flex items-center gap-3">
-                      <AlignVerticalDistributeEnd className="w-5 h-5" />
-                      <span>Catégories</span>
-                    </div>
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </Link>
-
-                {/* Paramètres */}
-                <Link
-                  href="/admin/parametre"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <button className="w-full flex items-center justify-between px-4 py-4 bg-gray-700/50 hover:bg-gray-700 text-white rounded-xl transition-all duration-200 font-medium">
-                    <div className="flex items-center gap-3">
-                      <Settings className="w-5 h-5" />
-                      <span>Paramètres</span>
-                    </div>
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </Link>
-              </div>
+              <Link href="/admin/customer" onClick={() => setIsMobileMenuOpen(false)}>
+                <div className="p-3.5 bg-slate-800 hover:bg-slate-700 rounded-2xl text-white font-bold text-xs flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Users className="w-5 h-5 text-purple-400" />
+                    <span>Mes Abonnés & Clients</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                </div>
+              </Link>
             </div>
           </div>
         </div>
       )}
 
-      {/* Spacer pour le contenu principal (desktop) */}
+      {/* Spacers pour compenser le contenu */}
       <div className={`hidden lg:block ${isCollapsed ? "w-20" : "w-72"}`} />
-
-      {/* Spacer pour le contenu principal (mobile) - top et bottom */}
-      <div
-        className={`lg:hidden ${showTrialBanner ? "h-[116px]" : "h-[60px]"}`}
-      />
+      <div className="lg:hidden h-14" />
       <div className="lg:hidden h-16" />
     </>
   );

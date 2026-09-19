@@ -14,70 +14,87 @@ import {
   Facebook,
   Twitter,
   Download,
+  Store,
+  CreditCard,
+  Clock,
+  Bell,
+  ShieldCheck,
+  Lock,
+  Save,
 } from "lucide-react";
+import toast from "react-hot-toast";
+
+import VendorProfileSettings from "./VendorProfileSettings";
+import VendorPaymentSettings from "./VendorPaymentSettings";
+import VendorHoursSettings from "./VendorHoursSettings";
 
 interface IvendorProfile {
   id?: string;
   name?: string;
-  logoUrl?:string
+  logoUrl?: string;
 }
 
 interface ParamVendorProps {
   vendorProfile?: IvendorProfile;
 }
 
+type TabType = "profile" | "payments" | "hours" | "share" | "notifications";
+
 export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
+  const [activeTab, setActiveTab] = useState<TabType>("profile");
   const [copiedUrl, setCopiedUrl] = useState(false);
-  const [copiedDomain, setCopiedDomain] = useState(false);
   const [showQrCode, setShowQrCode] = useState(false);
 
-  // Construction des URLs
-  const shopUrl = `${window.location.origin}/products/ui/page/${vendorProfile?.id}`;
+  // Notifications state
+  const [notifications, setNotifications] = useState({
+    whatsappOrderAlerts: true,
+    emailOrderAlerts: true,
+    lowStockAlerts: true,
+  });
 
-  // Fonction de copie
-  const handleCopy = useCallback(
-    async (text: string, type: "url" | "domain") => {
-      try {
-        await navigator.clipboard.writeText(text);
+  const shopUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/products/ui/page/${vendorProfile?.id}`
+    : "#";
 
-        if (type === "url") {
-          setCopiedUrl(true);
-          setTimeout(() => setCopiedUrl(false), 3000);
-        } else {
-          setCopiedDomain(true);
-          setTimeout(() => setCopiedDomain(false), 3000);
-        }
-      } catch (err) {
-        console.error("Erreur lors de la copie:", err);
-        alert("Impossible de copier. Veuillez réessayer.");
-      }
-    },
-    []
-  );
+  const handleCopy = useCallback(async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedUrl(true);
+      toast.success("Lien de votre boutique copié dans le presse-papier !");
+      setTimeout(() => setCopiedUrl(false), 3000);
+    } catch (err) {
+      console.error("Erreur copie:", err);
+    }
+  }, []);
 
-  // Fonction de partage natif
   const handleNativeShare = useCallback(async () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Visitez ${vendorProfile?.name}`,
-          text: `Découvrez ma boutique en ligne !`,
+          title: `Visitez ${vendorProfile?.name || "notre boutique"}`,
+          text: `Découvrez ma boutique en ligne sur NoBoutik !`,
           url: shopUrl,
         });
       } catch (err) {
-        console.error("Erreur lors du partage:", err);
+        console.error("Erreur partage:", err);
       }
     } else {
-      handleCopy(shopUrl, "url");
+      handleCopy(shopUrl);
     }
   }, [shopUrl, vendorProfile?.name, handleCopy]);
 
-  // Fonctions de partage social
+  const shareToWhatsApp = () => {
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(
+        `Bonjour ! Découvrez ma boutique en ligne ${vendorProfile?.name || ""} sur NoBoutik : ${shopUrl}`
+      )}`,
+      "_blank"
+    );
+  };
+
   const shareToFacebook = () => {
     window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-        shopUrl
-      )}`,
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shopUrl)}`,
       "_blank"
     );
   };
@@ -86,247 +103,314 @@ export default function ParamVendor({ vendorProfile }: ParamVendorProps) {
     window.open(
       `https://twitter.com/intent/tweet?url=${encodeURIComponent(
         shopUrl
-      )}&text=${encodeURIComponent(`Découvrez ${vendorProfile?.name} !`)}`,
-      "_blank"
-    );
-  };
-
-  const shareToWhatsApp = () => {
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(
-        `Découvrez ma boutique : ${shopUrl}`
-      )}`,
+      )}&text=${encodeURIComponent(`Découvrez ${vendorProfile?.name || "ma boutique"} sur NoBoutik !`)}`,
       "_blank"
     );
   };
 
   const shareByEmail = () => {
     window.location.href = `mailto:?subject=${encodeURIComponent(
-      `Découvrez ${vendorProfile?.name}`
+      `Découvrez ${vendorProfile?.name || "ma boutique"}`
     )}&body=${encodeURIComponent(`Visitez ma boutique en ligne : ${shopUrl}`)}`;
   };
 
-  // Générer un QR Code
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
     shopUrl
   )}`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 p-3 sm:p-4 md:p-6 lg:p-8">
-      <div className="max-w-5xl mx-auto">
-        {/* En-tête */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+    <div className="min-h-screen bg-slate-50/60 p-4 sm:p-6 lg:p-8 font-sans">
+      <div className="max-w-5xl mx-auto space-y-8">
+
+        {/* ========================================================================= */}
+        {/* EN-TÊTE DE LA PAGE DES PARAMÈTRES */}
+        {/* ========================================================================= */}
+        <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/20 shrink-0">
+              <Settings className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-                Paramètres
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Paramètres de la Boutique
               </h1>
-              <p className="text-slate-600 text-xs sm:text-sm">
-                Gérez votre boutique en ligne
+              <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+                Configurez l&apos;identité, les retraits Mobile Money et la sécurité de votre commerce
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Section: Lien de la boutique */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-slate-200">
-          <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-              Lien de votre boutique
-            </h2>
-          </div>
-
-          <p className="text-slate-600 mb-3 sm:mb-4 text-xs sm:text-sm">
-            Partagez ce lien avec vos clients pour qu'ils accèdent directement à
-            votre boutique
-          </p>
-
-          {/* URL Principale */}
-          <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-3 sm:mb-4 border border-slate-200">
-            <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2 block">
-              URL de votre boutique
-            </label>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <input
-                type="text"
-                value={shopUrl}
-                readOnly
-                className="flex-1 bg-white border border-slate-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-slate-800 font-medium text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 min-w-0"
-              />
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleCopy(shopUrl, "url")}
-                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg text-sm"
-                >
-                  {copiedUrl ? (
-                    <>
-                      <Check className="w-4 h-4" />
-                      <span>Copié</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4" />
-                      <span>Copier</span>
-                    </>
-                  )}
-                </button>
-                <a
-                  href={shopUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg text-sm"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  <span>Ouvrir</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Section: Options de partage */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-slate-200">
-          <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-              Partager votre boutique
-            </h2>
-          </div>
-
-          <p className="text-slate-600 mb-4 sm:mb-6 text-xs sm:text-sm">
-            Partagez facilement votre boutique sur vos réseaux sociaux
-          </p>
-
-          {/* Bouton de partage natif */}
           <button
             onClick={handleNativeShare}
-            className="w-full mb-4 px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] text-sm sm:text-base"
+            className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900 hover:bg-green-600 text-white font-bold rounded-2xl text-xs transition-all shadow-md shrink-0"
           >
-            <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
-            Partager maintenant
+            <Share2 className="w-4 h-4" />
+            <span>Partager ma boutique</span>
           </button>
-
-          {/* Réseaux sociaux */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-            <button
-              onClick={shareToWhatsApp}
-              className="flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg sm:rounded-xl transition-colors group"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <span className="text-xs sm:text-sm font-medium text-slate-700">
-                WhatsApp
-              </span>
-            </button>
-
-            <button
-              onClick={shareToFacebook}
-              className="flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg sm:rounded-xl transition-colors group"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Facebook className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <span className="text-xs sm:text-sm font-medium text-slate-700">
-                Facebook
-              </span>
-            </button>
-
-            <button
-              onClick={shareToTwitter}
-              className="flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-lg sm:rounded-xl transition-colors group"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-sky-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Twitter className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <span className="text-xs sm:text-sm font-medium text-slate-700">
-                Twitter
-              </span>
-            </button>
-
-            <button
-              onClick={shareByEmail}
-              className="flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg sm:rounded-xl transition-colors group"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <span className="text-xs sm:text-sm font-medium text-slate-700">
-                Email
-              </span>
-            </button>
-          </div>
         </div>
 
-        {/* Section: QR Code */}
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border border-slate-200">
-          <div className="flex items-center gap-2 mb-3 sm:mb-4">
-            <QrCode className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-              QR Code
-            </h2>
-          </div>
-
-          <p className="text-slate-600 mb-3 sm:mb-4 text-xs sm:text-sm">
-            Générez un QR Code pour permettre à vos clients d'accéder rapidement
-            à votre boutique
-          </p>
+        {/* ========================================================================= */}
+        {/* BARRE D'ONGLETS INTELLIGENTE */}
+        {/* ========================================================================= */}
+        <div className="flex items-center gap-2 bg-white p-2 rounded-3xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar">
+          <button
+            onClick={() => setActiveTab("profile")}
+            className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-xs font-bold transition-all shrink-0 ${
+              activeTab === "profile"
+                ? "bg-green-600 text-white shadow-md shadow-green-600/20"
+                : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            <Store className="w-4 h-4" />
+            <span>Profil Boutique</span>
+          </button>
 
           <button
-            onClick={() => setShowQrCode(!showQrCode)}
-            className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl transition-colors font-medium flex items-center justify-center gap-2 border border-slate-300 text-sm sm:text-base"
+            onClick={() => setActiveTab("payments")}
+            className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-xs font-bold transition-all shrink-0 ${
+              activeTab === "payments"
+                ? "bg-cyan-600 text-white shadow-md shadow-cyan-600/20"
+                : "text-slate-600 hover:bg-slate-100"
+            }`}
           >
-            <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
-            {showQrCode ? "Masquer le QR Code" : "Afficher le QR Code"}
+            <CreditCard className="w-4 h-4" />
+            <span>Paiements Mobile Money</span>
           </button>
 
-          {showQrCode && (
-            <div className="mt-4 sm:mt-6 flex flex-col items-center">
-              <div className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg border-2 sm:border-4 border-slate-200">
-                <img
-                  src={qrCodeUrl}
-                  alt="QR Code de la boutique"
-                  className="w-48 h-48 sm:w-64 sm:h-64"
-                />
-              </div>
-              <p className="text-xs sm:text-sm text-slate-600 mt-3 sm:mt-4 text-center px-4">
-                Scannez ce code avec un téléphone pour accéder à la boutique
-              </p>
-              <a
-                href={qrCodeUrl}
-                download={`qr-code-${vendorProfile?.name}.png`}
-                className="mt-3 sm:mt-4 px-4 sm:px-6 py-2.5 sm:py-3 bg-green-500 cursor-pointer hover:bg-green-600 text-white rounded-xl transition-colors font-medium flex items-center gap-2 shadow-md hover:shadow-lg text-sm sm:text-base"
-              >
-                <Download className="w-4 h-4 sm:w-5 sm:h-5" />
-                Télécharger le QR Code
-              </a>
-            </div>
-          )}
+          <button
+            onClick={() => setActiveTab("hours")}
+            className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-xs font-bold transition-all shrink-0 ${
+              activeTab === "hours"
+                ? "bg-purple-600 text-white shadow-md shadow-purple-600/20"
+                : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            <Clock className="w-4 h-4" />
+            <span>Horaires & Livraison</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("share")}
+            className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-xs font-bold transition-all shrink-0 ${
+              activeTab === "share"
+                ? "bg-slate-900 text-white shadow-md"
+                : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            <QrCode className="w-4 h-4" />
+            <span>Partage & QR Code</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("notifications")}
+            className={`flex items-center gap-2 px-4 py-3 rounded-2xl text-xs font-bold transition-all shrink-0 ${
+              activeTab === "notifications"
+                ? "bg-orange-600 text-white shadow-md shadow-orange-600/20"
+                : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            <Bell className="w-4 h-4" />
+            <span>Notifications & Sécurité</span>
+          </button>
         </div>
 
-        {/* Info supplémentaire */}
-        <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl">
-          <div className="flex items-start gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-base sm:text-lg">
-                💡
-              </span>
+        {/* ========================================================================= */}
+        {/* CONTENU DES ONGLETS */}
+        {/* ========================================================================= */}
+        <div className="animate-in fade-in duration-300">
+          
+          {/* 1. PROFIL BOUTIQUE */}
+          {activeTab === "profile" && <VendorProfileSettings initialData={vendorProfile} />}
+
+          {/* 2. PAIEMENTS & MOBILE MONEY */}
+          {activeTab === "payments" && <VendorPaymentSettings />}
+
+          {/* 3. HORAIRES & LIVRAISON */}
+          {activeTab === "hours" && <VendorHoursSettings />}
+
+          {/* 4. PARTAGE & QR CODE */}
+          {activeTab === "share" && (
+            <div className="space-y-6">
+              {/* Lien principal */}
+              <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 space-y-4">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <Globe className="w-5 h-5 text-green-600" />
+                  <h3 className="font-bold text-slate-900 text-base">Lien Public de votre Boutique</h3>
+                </div>
+
+                <p className="text-xs text-slate-500">
+                  Transmettez ce lien à vos clients sur WhatsApp, Facebook ou Instagram pour qu&apos;ils accèdent directement à vos produits.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                  <input
+                    type="text"
+                    value={shopUrl}
+                    readOnly
+                    className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 outline-none"
+                  />
+                  <div className="flex gap-2 shrink-0">
+                    <button
+                      onClick={() => handleCopy(shopUrl)}
+                      className="px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5"
+                    >
+                      {copiedUrl ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      <span>{copiedUrl ? "Copié" : "Copier"}</span>
+                    </button>
+
+                    <a
+                      href={shopUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2.5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      <span>Ouvrir</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Boutons de Partage Réseaux */}
+              <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 space-y-4">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <Share2 className="w-5 h-5 text-green-600" />
+                  <h3 className="font-bold text-slate-900 text-base">Partage Direct sur les Réseaux</h3>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <button
+                    onClick={shareToWhatsApp}
+                    className="p-4 bg-emerald-50 hover:bg-emerald-600 text-emerald-900 hover:text-white rounded-2xl border border-emerald-100 transition-all flex flex-col items-center gap-2 group"
+                  >
+                    <MessageSquare className="w-6 h-6 text-emerald-600 group-hover:text-white" />
+                    <span className="text-xs font-bold">WhatsApp</span>
+                  </button>
+
+                  <button
+                    onClick={shareToFacebook}
+                    className="p-4 bg-blue-50 hover:bg-blue-600 text-blue-900 hover:text-white rounded-2xl border border-blue-100 transition-all flex flex-col items-center gap-2 group"
+                  >
+                    <Facebook className="w-6 h-6 text-blue-600 group-hover:text-white" />
+                    <span className="text-xs font-bold">Facebook</span>
+                  </button>
+
+                  <button
+                    onClick={shareToTwitter}
+                    className="p-4 bg-sky-50 hover:bg-sky-500 text-sky-900 hover:text-white rounded-2xl border border-sky-100 transition-all flex flex-col items-center gap-2 group"
+                  >
+                    <Twitter className="w-6 h-6 text-sky-500 group-hover:text-white" />
+                    <span className="text-xs font-bold">Twitter</span>
+                  </button>
+
+                  <button
+                    onClick={shareByEmail}
+                    className="p-4 bg-slate-100 hover:bg-slate-900 text-slate-800 hover:text-white rounded-2xl border border-slate-200 transition-all flex flex-col items-center gap-2 group"
+                  >
+                    <Mail className="w-6 h-6 text-slate-700 group-hover:text-white" />
+                    <span className="text-xs font-bold">Email</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* QR Code HD */}
+              <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 space-y-4 text-center sm:text-left">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                  <QrCode className="w-5 h-5 text-green-600" />
+                  <h3 className="font-bold text-slate-900 text-base">QR Code de la Boutique</h3>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                  <div className="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm shrink-0">
+                    <img src={qrCodeUrl} alt="QR Code Boutique" className="w-40 h-40" />
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="font-bold text-slate-900 text-sm">QR Code Téléchargeable HD</h4>
+                    <p className="text-xs text-slate-500 max-w-md">
+                      Imprimez ce QR Code sur vos affiches, sacs d&apos;emballage ou flyers pour permettre à vos clients de scanner et commander immédiatement.
+                    </p>
+
+                    <a
+                      href={qrCodeUrl}
+                      download={`qr-code-${vendorProfile?.name || "boutique"}.png`}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-xs transition-colors shadow-md"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Télécharger le QR Code (PNG)</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1 text-sm sm:text-base">
-                Conseil
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-700">
-                Partagez régulièrement le lien de votre boutique sur vos réseaux
-                sociaux et avec vos contacts pour augmenter votre visibilité et
-                vos ventes !
-              </p>
+          )}
+
+          {/* 5. NOTIFICATIONS & SÉCURITÉ */}
+          {activeTab === "notifications" && (
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                <Bell className="w-5 h-5 text-orange-600" />
+                <h3 className="font-bold text-slate-900 text-base">Préférences de Notification & Sécurité</h3>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">Alertes WhatsApp immédiates</h4>
+                    <p className="text-[11px] text-slate-500">Recevoir un message sur WhatsApp dès qu&apos;un client passe une commande</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={notifications.whatsappOrderAlerts}
+                    onChange={(e) => setNotifications({ ...notifications, whatsappOrderAlerts: e.target.checked })}
+                    className="w-4 h-4 text-green-600 rounded"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">Notifications par Email</h4>
+                    <p className="text-[11px] text-slate-500">Recevoir le récapitulatif quotidien des ventes par mail</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={notifications.emailOrderAlerts}
+                    onChange={(e) => setNotifications({ ...notifications, emailOrderAlerts: e.target.checked })}
+                    className="w-4 h-4 text-green-600 rounded"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">Alerte Stock Faible</h4>
+                    <p className="text-[11px] text-slate-500">Être prévenu lorsque le stock d&apos;un produit passe sous les 5 unités</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={notifications.lowStockAlerts}
+                    onChange={(e) => setNotifications({ ...notifications, lowStockAlerts: e.target.checked })}
+                    className="w-4 h-4 text-green-600 rounded"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+                  <Lock className="w-4 h-4 text-slate-400" /> Sécurité du compte vendeur
+                </span>
+                <button
+                  onClick={() => toast.success("Lien de réinitialisation du mot de passe envoyé !")}
+                  type="button"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors"
+                >
+                  Changer le mot de passe
+                </button>
+              </div>
             </div>
-          </div>
+          )}
+
         </div>
+
       </div>
     </div>
   );
