@@ -90,12 +90,12 @@ export default function FlashStoryBar() {
     );
   }
 
-  // Aucune story à afficher — renvoyer un spacer pour la navbar fixe
-  if (stories.length === 0) return <div className="pt-14 md:pt-[88px]" />;
+  // Aucune story à afficher
+  if (stories.length === 0) return null;
 
   return (
     <>
-      <section className="w-full bg-white border-b border-slate-100 relative pt-14 md:pt-[88px]">
+      <section className="w-full bg-white border-b border-slate-100 relative py-2">
         <div className="max-w-7xl mx-auto relative">
           {/* Header label */}
           <div className="px-4 pt-3 pb-1 flex items-center gap-2">

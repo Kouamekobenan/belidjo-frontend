@@ -33,9 +33,10 @@ export class NotificationRepository implements INotificationRepository {
         )
       : [];
   }
-  async getFeaturedPopup(userId: string): Promise<Notification | null> {
+  async getFeaturedPopup(userId?: string): Promise<Notification | null> {
     try {
-      const response = await api.get(`/notification/${userId}/featured-popup`);
+      const targetId = userId || "guest";
+      const response = await api.get(`/notification/${targetId}/featured-popup`);
       const item = response.data?.data ?? response.data;
       if (!item || typeof item !== "object" || !item.id) return null;
       return new Notification(

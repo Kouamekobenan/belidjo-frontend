@@ -13,7 +13,7 @@ export const useDeviceToken = (userId?: string, jwt?: string) => {
         const token = await requestDeviceToken();
         if (!token || token === lastSentToken.current) return;
 
-        await api.patch("/users/device-token", { deviceToken: token });
+        await api.patch("/users/device-token", { deviceToken: token, userId });
         lastSentToken.current = token;
         console.log("✅ FCM Device token enregistré sur le backend !");
       } catch (error) {

@@ -118,7 +118,7 @@ export default function Carrosel() {
 
   if (loading) {
     return (
-      <div className="w-full bg-slate-900 animate-pulse">
+      <div className="w-full bg-slate-900 animate-pulse pt-14 md:pt-[88px]">
         <div className="max-w-7xl mx-auto px-4 py-10 space-y-6">
           <div className="h-6 bg-slate-700 rounded-lg w-48" />
           <div className="flex gap-4 overflow-hidden">
@@ -141,7 +141,7 @@ export default function Carrosel() {
   const tripleVendors = [...vendors, ...vendors, ...vendors];
 
   return (
-    <section className="w-full bg-slate-900 relative overflow-hidden">
+    <section className="w-full bg-slate-900 relative overflow-hidden pt-14 md:pt-[88px]">
       {/* Glows décoratifs subtils */}
       <div className="absolute -top-32 -left-32 w-64 h-64 bg-green-500/10 rounded-full blur-3xl" />
       <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-green-500/5 rounded-full blur-3xl" />
