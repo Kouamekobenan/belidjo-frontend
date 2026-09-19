@@ -19,6 +19,7 @@ import Carrosel from "./ui/components/Carrosel";
 import { useAuth } from "../context/AuthContext";
 import { UserRole } from "../users/domain/enums/role.enum";
 import ProductSearch from "../products/ui/components/ProductSearch";
+import GlovoFooter from "../components/layout/GlovoFooter";
 
 const LOGO_SRC = "/images/bj.png";
 const SCROLL_THRESHOLD = 20;
@@ -268,12 +269,15 @@ const Navbar = () => {
 
 export default function Vendors() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <Carrosel />
-      <main className="relative z-0 pb-24 md:pb-12 px-4 max-w-7xl mx-auto">
-        <VendorPage />
-      </main>
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
+      <div>
+        <Navbar />
+        <Carrosel />
+        <main className="relative z-0 pb-12 px-4 max-w-7xl mx-auto">
+          <VendorPage />
+        </main>
+      </div>
+      <GlovoFooter />
     </div>
   );
 }
