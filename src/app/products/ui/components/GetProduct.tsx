@@ -268,24 +268,29 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
             {Object.entries(groupedProducts).map(([category, items]) => (
               <section key={category}>
                 {/* En-tête catégorie */}
-                <div className="flex items-center gap-3 mb-5">
+                <div className="flex items-center justify-between gap-3 mb-4">
                   <div className="flex items-center gap-2">
                     <Tag size={16} className="text-green-600" />
-                    <h3 className="text-xl font-black text-slate-800 tracking-tight">
+                    <h3 className="text-lg md:text-xl font-black text-slate-800 tracking-tight">
                       {category}
                     </h3>
+                    <span className="text-xs font-black bg-green-50 text-green-700 border border-green-100 px-2.5 py-0.5 rounded-full">
+                      {items.length}
+                    </span>
                   </div>
-                  <span className="text-xs font-black bg-green-50 text-green-700 border border-green-100 px-3 py-1 rounded-full">
-                    {items.length} article{items.length > 1 ? "s" : ""}
-                  </span>
-                  <div className="flex-1 h-px bg-slate-200" />
+                  <div className="flex items-center gap-2">
+                    <span className="md:hidden text-[11px] font-bold text-slate-400">
+                      Glisser &rarr;
+                    </span>
+                    <div className="hidden md:block flex-1 h-px bg-slate-200 w-32" />
+                  </div>
                 </div>
 
-                {/* Grille / Liste */}
+                {/* Liste des produits : Défilement horizontal sur mobile (style Jumia) / Grille sur desktop */}
                 <div
                   className={
                     viewMode === "grid"
-                      ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+                      ? "flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 overflow-x-auto md:overflow-visible pb-3 md:pb-0 snap-x snap-mandatory scrollbar-none"
                       : "space-y-4"
                   }
                 >
@@ -325,7 +330,7 @@ export default function VendorProducts({ vendorId }: { vendorId: string }) {
   );
 }
 
-// ── Carte produit ──
+// ── Carte produit (Ultra-ergonomique Mobile & Desktop) ──
 function ProductCard({
   product,
   viewMode,
@@ -334,61 +339,56 @@ function ProductCard({
   viewMode: "grid" | "list";
 }) {
   const isGrid = viewMode === "grid";
-  const detailUrl = `${PRODUCT_DETAIL_BASE_PATH}/ui/pages/page/${product.id}`;
+  const detailUrl = `${PRODUCT_DETAIL_BASE_PATH}/ui/pages/page/${product.id}?action=order`;
 
   return (
-    <div
-      className={`group bg-white rounded-b-[20px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex ${
-        isGrid ? "flex-col" : "flex-row items-center p-3"
+    <Link
+      href={detailUrl}
+      className={`group bg-white rounded-2xl md:rounded-3xl overflow-hidden border border-slate-100/80 shadow-sm hover:shadow-xl transition-all duration-300 active:scale-[0.98] flex ${
+        isGrid
+          ? "flex-col w-[150px] xs:w-[170px] sm:w-[190px] md:w-full shrink-0 snap-start"
+          : "flex-row items-center p-2.5 w-full"
       }`}
     >
-      {/* Image */}
+      {/* Image avec arrière-plan vert marque */}
       <div
-        className={`relative bg-slate-100 overflow-hidden flex-shrink-0 ${
-          isGrid ? "aspect-[4/5] w-full" : "w-24 h-24 "
+        className={`relative bg-gradient-to-br from-green-500/15 via-emerald-500/10 to-green-600/20 overflow-hidden flex-shrink-0 ${
+          isGrid ? "aspect-square w-full p-2.5 md:p-4" : "w-20 h-20 md:w-24 md:h-24 p-1.5 rounded-xl"
         }`}
       >
         <img
           src={product.imageUrl || "/placeholder.png"}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+          className="w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300"
         />
       </div>
 
-      {/* Infos + boutons */}
+      {/* Infos produit */}
       <div
-        className={`p-4 flex gap-3 ${
-          isGrid
-            ? "flex-col flex-1"
-            : "flex-row items-center justify-between gap-4 flex-1 ml-4"
+        className={`p-2.5 md:p-4 flex flex-col justify-between ${
+          isGrid ? "flex-1" : "flex-1 ml-3"
         }`}
       >
-        {/* Nom + Prix */}
-        <div className={isGrid ? "" : "min-w-0"}>
-          <h3 className="font-bold text-slate-800 text-sm md:text-base line-clamp-2 mb-1">
+        <div>
+          <h3 className="font-semibold text-slate-800 text-xs md:text-sm line-clamp-2 leading-tight mb-1 group-hover:text-green-600 transition-colors">
             {product.name}
           </h3>
-          <p className="text-green-600 font-black text-lg price">
-            {product.price.toLocaleString()}{" "}
-            <span className="text-[10px] font-bold text-slate-400">FCFA</span>
-          </p>
         </div>
-        {/* ── Deux boutons ── */}
-        <div className={`flex gap-2 ${isGrid ? "flex-col" : "flex-row shrink-0"}`}>
-          {/* Voir les détails */}
-          {/* Commander */}
-          <Link
-            href={`${detailUrl}?action=order`}
-            className={`flex items-center justify-center gap-1.5 bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 text-xs transition-all duration-200 active:scale-95 shadow-sm whitespace-nowrap ${
-              isGrid ? "flex-1" : "px-5"
-            }`}
-          >
-            <ShoppingCart size={13} />
+
+        <div className="mt-1.5 flex items-baseline justify-between gap-1">
+          <p className="text-green-600 font-black text-xs md:text-base tracking-tight">
+            {product.price.toLocaleString()}{" "}
+            <span className="text-[9px] md:text-xs font-bold text-slate-400">FCFA</span>
+          </p>
+
+          {/* Bouton visible uniquement sur écran desktop */}
+          <span className="hidden md:inline-flex items-center gap-1 text-[11px] font-bold bg-green-50 text-green-700 border border-green-100 px-2.5 py-1 rounded-xl group-hover:bg-green-600 group-hover:text-white transition-all">
+            <ShoppingCart size={12} />
             Commander
-          </Link>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -410,3 +410,4 @@ function EmptyView() {
     </div>
   );
 }
+

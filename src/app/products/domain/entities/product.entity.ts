@@ -44,6 +44,7 @@ export const initialFormData: CreateProductDto = {
   quantity: 0,
   imageUrl: "",
   vendorId: "",
+  removeBg: true,
 };
 
 export class Product {

@@ -521,6 +521,29 @@ export default function ProductForm({
                   </label>
                 </div>
               )}
+
+              {/* Option IA : Suppression de l'arrière-plan */}
+              <div className="pt-2">
+                <label className="flex items-start gap-3 p-4 bg-gradient-to-r from-emerald-50/80 to-teal-50/50 border border-emerald-200/80 rounded-2xl cursor-pointer hover:bg-emerald-50 transition-all">
+                  <input
+                    type="checkbox"
+                    checked={!!formData.removeBg}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, removeBg: e.target.checked }))
+                    }
+                    className="mt-0.5 w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500 accent-emerald-600"
+                  />
+                  <div className="text-xs">
+                    <span className="font-bold text-slate-800 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                      Supprimer automatiquement l'arrière-plan par IA
+                    </span>
+                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                      Nettoie l'image du produit pour la rendre transparente et ultra-professionnelle sans altérer sa qualité.
+                    </p>
+                  </div>
+                </label>
+              </div>
             </div>
 
             {/* Boutons de soumission */}
