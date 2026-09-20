@@ -175,8 +175,8 @@ export default function ProductDetail() {
         <div className="bg-white lg:rounded-[40px] lg:shadow-2xl lg:border lg:border-gray-100 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* --- SECTION IMAGE (Haute sur mobile) --- */}
-            <div className="relative p-4  bg-gray-100">
-              <div className="relative w-full rounded-2xl  h-[50vh] sm:h-[500px] lg:h-[650px]">
+            <div className="relative p-6 bg-gradient-to-br from-green-500/15 via-emerald-500/10 to-green-600/20">
+              <div className="relative w-full rounded-2xl h-[50vh] sm:h-[500px] lg:h-[650px] p-4">
                 {product.imageUrl ? (
                   <Image
                     src={product.imageUrl}
@@ -184,7 +184,7 @@ export default function ProductDetail() {
                     fill
                     priority
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover rounded-2xl lg:object-contain"
+                    className="object-contain rounded-2xl drop-shadow-xl"
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-gray-400">

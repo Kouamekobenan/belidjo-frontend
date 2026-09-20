@@ -108,7 +108,6 @@ export default function Carrosel() {
       </div>
     );
   }
-
   if (vendors.length === 0) return null;
 
   // Triple les vendeurs pour le scroll infini

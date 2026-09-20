@@ -25,6 +25,9 @@ export class ProductRepository implements IProductRepository {
         if (dto.vendorId) {
           formData.append("vendorId", dto.vendorId);
         }
+        if (dto.removeBg) {
+          formData.append("removeBg", "true");
+        }
         // 3. Envoyer FormData (l'en-tête 'Content-Type: multipart/form-data' est souvent auto-géré)
         response = await api.post(url, formData, {
           headers: { "Content-Type": "multipart/form-data" },

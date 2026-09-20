@@ -7,4 +7,5 @@ export interface CreateProductDto {
   imageUrl: string;
   // fileId: string;
   vendorId?: string;
+  removeBg?: boolean;
 }

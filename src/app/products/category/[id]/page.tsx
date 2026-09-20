@@ -115,46 +115,46 @@ export default function CategoryProductsPage({
 }
 
 function ProductCard({ product }: { product: IProduct }) {
-  const detailUrl = `/products/ui/pages/page/${product.id}`;
+  const detailUrl = `/products/ui/pages/page/${product.id}?action=order`;
   const vendorName = product.vendor?.user?.name;
 
   return (
-    <div className="group bg-white rounded-[28px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col">
-      <div className="relative bg-slate-100 overflow-hidden flex-shrink-0 aspect-[4/5] w-full">
+    <Link
+      href={detailUrl}
+      className="group bg-white rounded-2xl md:rounded-3xl overflow-hidden border border-slate-100/80 shadow-sm hover:shadow-xl transition-all duration-300 active:scale-[0.98] flex flex-col"
+    >
+      <div className="relative bg-gradient-to-br from-green-500/15 via-emerald-500/10 to-green-600/20 overflow-hidden flex-shrink-0 aspect-square w-full p-3 md:p-4">
         <img
           src={product.imageUrl || "/placeholder.png"}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+          className="w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300"
         />
       </div>
 
-      <div className="p-4 flex flex-col gap-3 flex-1">
+      <div className="p-3 md:p-4 flex flex-col justify-between flex-1">
         <div>
-          <h3 className="font-bold text-slate-800 text-sm md:text-base line-clamp-2 mb-1">
+          <h3 className="font-semibold text-slate-800 text-xs md:text-sm line-clamp-2 leading-tight mb-1 group-hover:text-green-600 transition-colors">
             {product.name}
           </h3>
-          <p className="text-green-600 font-black text-lg price">
-            {product.price.toLocaleString()}{" "}
-            <span className="text-[10px] font-bold text-slate-400">FCFA</span>
-          </p>
           {vendorName && (
-            <Link
-              href={`/products/ui/page/${product.vendorId}`}
-              className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400 hover:text-green-600 mt-1"
-            >
+            <p className="inline-flex items-center gap-1 text-[10px] md:text-xs font-medium text-slate-400 mt-0.5">
               <Store size={11} /> {vendorName}
-            </Link>
+            </p>
           )}
         </div>
 
-        <Link
-          href={`${detailUrl}?action=order`}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl py-2.5 text-xs transition-all duration-200 active:scale-95 shadow-sm mt-auto"
-        >
-          <ShoppingCart size={13} />
-          Commander
-        </Link>
+        <div className="mt-2 flex items-baseline justify-between">
+          <p className="text-green-600 font-black text-xs md:text-base tracking-tight">
+            {product.price.toLocaleString()}{" "}
+            <span className="text-[9px] md:text-xs font-bold text-slate-400">FCFA</span>
+          </p>
+
+          <span className="hidden md:inline-flex items-center gap-1 text-[11px] font-bold bg-green-50 text-green-700 border border-green-100 px-2.5 py-1 rounded-xl group-hover:bg-green-600 group-hover:text-white transition-all">
+            <ShoppingCart size={12} />
+            Commander
+          </span>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
