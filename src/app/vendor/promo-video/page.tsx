@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { PromoVideo, CreatePromoVideoDto } from "../domain/entities/promo-video.entity";
-import { GetMyPromoVideoUseCase } from "../application/usecases/get-my-promo-video.usecase";
-import { GeneratePromoVideoUseCase } from "../application/usecases/generate-promo-video.usecase";
-import { promoVideoRepository } from "../infrastructure/api/promo-video.api";
+import { PromoVideo, CreatePromoVideoDto } from "./domain/entities/promo-video.entity";
+import { GetMyPromoVideoUseCase } from "./application/usecases/get-my-promo-video.usecase";
+import { GeneratePromoVideoUseCase } from "./application/usecases/generate-promo-video.usecase";
+import { promoVideoRepository } from "./infrastructure/api/promo-video.api";
 import { useAuth } from "@/app/context/AuthContext";
 import { GetProductsByVendorUseCase } from "@/app/products/application/usecases/get-product.usecase";
 import { ProductRepository } from "@/app/products/infrastructure/product-repository";
