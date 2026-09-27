@@ -145,14 +145,14 @@ export default function DashbordVendor() {
           </div>
 
           {/* Filtre temporel & Bouton statut */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
-              <Filter className="w-4 h-4 text-slate-400 ml-2" />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+            <div className="flex items-center gap-1 sm:gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 overflow-x-auto max-w-full scrollbar-none">
+              <Filter className="w-4 h-4 text-slate-400 ml-2 shrink-0 hidden sm:block" />
               {(["today", "7days", "month", "year"] as TimePeriod[]).map((p) => (
                 <button
                   key={p}
                   onClick={() => setPeriod(p)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
                     period === p
                       ? "bg-white text-slate-900 shadow-xs"
                       : "text-slate-500 hover:text-slate-900"
@@ -163,7 +163,7 @@ export default function DashbordVendor() {
               ))}
             </div>
 
-            <div className="hidden sm:flex items-center gap-2 px-4 py-2.5 bg-green-50 text-green-700 rounded-2xl border border-green-200 text-xs font-bold">
+            <div className="hidden sm:flex items-center gap-2 px-4 py-2.5 bg-green-50 text-green-700 rounded-2xl border border-green-200 text-xs font-bold shrink-0">
               <Store className="w-4 h-4 text-green-600" />
               <span>Boutique Ouverte</span>
             </div>

@@ -36,7 +36,7 @@ export const GlovoFooter = () => {
   };
 
   return (
-    <footer className="relative bg-gray-900 text-gray-300 font-sans mt-12 rounded-t-[2.5rem] sm:rounded-t-[3.5rem] border-t-4 border-green-600 shadow-2xl overflow-hidden">
+    <footer className="relative bg-gray-900 text-gray-300 font-sans mt-12 rounded-t-[20px] sm:rounded-t-[4.5rem] border-t-6 border-green-600 shadow-2xl overflow-hidden">
       {/* ========================================================================= */}
       {/* BANNIÈRE SUPERIEURE : APPLICATION MOBILE (Couleurs Unies NoBoutik) */}
       {/* ========================================================================= */}
@@ -322,55 +322,7 @@ export const GlovoFooter = () => {
       {/* SÉLECTEUR REGIONAL & MOYENS DE PAIEMENT */}
       {/* ========================================================================= */}
       <div className="border-t border-b border-gray-800 bg-gray-950/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-5">
-
-            {/* Sélecteur Pays / Langue */}
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2 px-3.5 py-2 bg-gray-900 border border-gray-700 rounded-xl text-xs text-white">
-                <Globe className="w-4 h-4 text-green-500" />
-                <select
-                  value={selectedCountry}
-                  onChange={(e) => setSelectedCountry(e.target.value)}
-                  className="bg-transparent font-semibold cursor-pointer outline-none text-white pr-2"
-                >
-                  <option value="ci" className="bg-gray-900 text-white">🇨🇮 Côte d'Ivoire (CI)</option>
-                </select>
-              </div>
-
-              <div className="flex items-center gap-2 px-3.5 py-2 bg-gray-900 border border-gray-700 rounded-xl text-xs text-white">
-                <select
-                  value={selectedLang}
-                  onChange={(e) => setSelectedLang(e.target.value)}
-                  className="bg-transparent font-semibold cursor-pointer outline-none text-white pr-2"
-                >
-                  <option value="fr" className="bg-gray-900 text-white">Français (FR)</option>
-                  <option value="en" className="bg-gray-900 text-white">English (EN)</option>
-                </select>
-              </div>
-
-              <div className="px-3.5 py-2 bg-gray-900 border border-gray-700 rounded-xl text-xs font-bold text-green-400">
-                Devise: XOF (FCFA)
-              </div>
-            </div>
-
-            {/* Badges de paiement Mobile Money */}
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mr-2 hidden sm:inline">
-                Paiements acceptés :
-              </span>
-              {GLOVO_FOOTER_DATA.paymentMethods.map((pm) => (
-                <span
-                  key={pm.name}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm ${pm.color} transition-transform hover:scale-105`}
-                >
-                  {pm.name}
-                </span>
-              ))}
-            </div>
-
-          </div>
-        </div>
+      
       </div>
 
       {/* ========================================================================= */}
